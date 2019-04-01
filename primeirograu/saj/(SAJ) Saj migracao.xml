@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SAJ) Saj migracao">
-    <description><![CDATA[...]]></description>  
+    <description><![CDATA[....]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (SAJ) Saj migracao">
+    <swimlane name="NÃ³ de Desvio - (SAJ) Saj migracao">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="Início">
+    <start-state name="InÃ­cio">
         <task name="Tarefa inicial"/>
         <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ"/>
     </start-state>  
@@ -20,26 +20,26 @@
         <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Em Tramitação na Turma Recursal" name="(SAJ) Em Tramitação na Turma Recursal">
+        <transition to="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal" name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Concluso para Decisão" name="(SAJ) Concluso para Decisão">
+        <transition to="(SAJ) Concluso para DecisÃ£o" name="(SAJ) Concluso para DecisÃ£o">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Concluso para Sentença" name="(SAJ) Concluso para Sentença">
+        <transition to="(SAJ) Concluso para SentenÃ§a" name="(SAJ) Concluso para SentenÃ§a">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Concluso para Pedido de Urgência" name="(SAJ) Concluso para Pedido de Urgência">
+        <transition to="(SAJ) Concluso para Pedido de UrgÃªncia" name="(SAJ) Concluso para Pedido de UrgÃªncia">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso">
@@ -57,221 +57,451 @@
         <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Concluso para Embargos de Declaração" name="(SAJ) Concluso para Embargos de Declaração">
+        <transition to="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o" name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Concluso para Embargos a Execução" name="(SAJ) Concluso para Embargos a Execução">
+        <transition to="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o" name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Aguard. Manifestação de Intimação" name="(SAJ) Aguard. Manifestação de Intimação">
+        <transition to="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o" name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Aguard. Cump. Diligência Interna" name="(SAJ) Aguard. Cump. Diligência Interna">
+        <transition to="(SAJ) Aguard. Cump. DiligÃªncia Interna" name="(SAJ) Aguard. Cump. DiligÃªncia Interna">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Aguard. retorno de Carta Precatória" name="(SAJ) Aguard. retorno de Carta Precatória">
+        <transition to="(SAJ) Aguard. retorno de Carta PrecatÃ³ria" name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Aguard. manifestação do Magistrado" name="(SAJ) Aguard. manifestação do Magistrado">
+        <transition to="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado" name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Elaboração de Cálculo" name="(SAJ) Elaboração de Cálculo">
+        <transition to="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo" name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Aud. Conciliação realizada sem realização no sistema" name="(SAJ) Aud. Conciliação realizada sem realização no sistema">
+        <transition to="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema" name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão">
+        <transition to="(SAJ) Controle de Sobrestamento-SuspensÃ£o" name="(SAJ) Controle de Sobrestamento-SuspensÃ£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (SAJ) Saj migracao">
-        <task name="Nó de Desvio - (SAJ) Saj migracao" swimlane="Nó de Desvio - (SAJ) Saj migracao"/>
-        <transition to="Término" name="Término"/>
+    <end-state name="TÃ©rmino"/>
+    <task-node end-tasks="true" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+        <task name="NÃ³ de Desvio - (SAJ) Saj migracao" swimlane="NÃ³ de Desvio - (SAJ) Saj migracao"/>
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
         <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ"/>
         <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado"/>
-        <transition to="(SAJ) Em Tramitação na Turma Recursal" name="(SAJ) Em Tramitação na Turma Recursal"/>
+        <transition to="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal" name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal"/>
         <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho"/>
-        <transition to="(SAJ) Concluso para Decisão" name="(SAJ) Concluso para Decisão"/>
-        <transition to="(SAJ) Concluso para Sentença" name="(SAJ) Concluso para Sentença"/>
-        <transition to="(SAJ) Concluso para Pedido de Urgência" name="(SAJ) Concluso para Pedido de Urgência"/>
+        <transition to="(SAJ) Concluso para DecisÃ£o" name="(SAJ) Concluso para DecisÃ£o"/>
+        <transition to="(SAJ) Concluso para SentenÃ§a" name="(SAJ) Concluso para SentenÃ§a"/>
+        <transition to="(SAJ) Concluso para Pedido de UrgÃªncia" name="(SAJ) Concluso para Pedido de UrgÃªncia"/>
         <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso"/>
         <transition to="(SAJ) Concluso para Despacho Inicial" name="(SAJ) Concluso para Despacho Inicial"/>
         <transition to="(SAJ) Concluso para Desinteresse" name="(SAJ) Concluso para Desinteresse"/>
         <transition to="(SAJ) Concluso para Competencia Declinada" name="(SAJ) Concluso para Competencia Declinada"/>
         <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online"/>
-        <transition to="(SAJ) Concluso para Embargos de Declaração" name="(SAJ) Concluso para Embargos de Declaração"/>
-        <transition to="(SAJ) Concluso para Embargos a Execução" name="(SAJ) Concluso para Embargos a Execução"/>
-        <transition to="(SAJ) Aguard. Manifestação de Intimação" name="(SAJ) Aguard. Manifestação de Intimação"/>
-        <transition to="(SAJ) Aguard. Cump. Diligência Interna" name="(SAJ) Aguard. Cump. Diligência Interna"/>
+        <transition to="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o" name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o"/>
+        <transition to="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o" name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o"/>
+        <transition to="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o" name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o"/>
+        <transition to="(SAJ) Aguard. Cump. DiligÃªncia Interna" name="(SAJ) Aguard. Cump. DiligÃªncia Interna"/>
         <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial"/>
-        <transition to="(SAJ) Aguard. retorno de Carta Precatória" name="(SAJ) Aguard. retorno de Carta Precatória"/>
+        <transition to="(SAJ) Aguard. retorno de Carta PrecatÃ³ria" name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria"/>
         <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal"/>
-        <transition to="(SAJ) Aguard. manifestação do Magistrado" name="(SAJ) Aguard. manifestação do Magistrado"/>
-        <transition to="(SAJ) Elaboração de Cálculo" name="(SAJ) Elaboração de Cálculo"/>
-        <transition to="(SAJ) Aud. Conciliação realizada sem realização no sistema" name="(SAJ) Aud. Conciliação realizada sem realização no sistema"/>
-        <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão"/>
+        <transition to="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado" name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado"/>
+        <transition to="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo" name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo"/>
+        <transition to="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema" name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema"/>
+        <transition to="(SAJ) Controle de Sobrestamento-SuspensÃ£o" name="(SAJ) Controle de Sobrestamento-SuspensÃ£o"/>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF"/>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento"/>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos"/>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens"/>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Arquivado">
         <task name="(SAJ) Arquivado" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal" name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para DecisÃ£o" name="(SAJ) Concluso para DecisÃ£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para SentenÃ§a" name="(SAJ) Concluso para SentenÃ§a">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Pedido de UrgÃªncia" name="(SAJ) Concluso para Pedido de UrgÃªncia">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho Inicial" name="(SAJ) Concluso para Despacho Inicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Desinteresse" name="(SAJ) Concluso para Desinteresse">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Competencia Declinada" name="(SAJ) Concluso para Competencia Declinada">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o" name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o" name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o" name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Cump. DiligÃªncia Interna" name="(SAJ) Aguard. Cump. DiligÃªncia Interna">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Carta PrecatÃ³ria" name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado" name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo" name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema" name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Controle de Sobrestamento-SuspensÃ£o" name="(SAJ) Controle de Sobrestamento-SuspensÃ£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Em Tramitação na Turma Recursal">
-        <task name="(SAJ) Em Tramitação na Turma Recursal" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal">
+        <task name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Despacho">
         <task name="(SAJ) Concluso para Despacho" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Concluso para Decisão">
-        <task name="(SAJ) Concluso para Decisão" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Concluso para DecisÃ£o">
+        <task name="(SAJ) Concluso para DecisÃ£o" swimlane="Secretaria"/>
+        <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal" name="(SAJ) Em TramitaÃ§Ã£o na Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para DecisÃ£o" name="(SAJ) Concluso para DecisÃ£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para SentenÃ§a" name="(SAJ) Concluso para SentenÃ§a">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Pedido de UrgÃªncia" name="(SAJ) Concluso para Pedido de UrgÃªncia">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho Inicial" name="(SAJ) Concluso para Despacho Inicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Desinteresse" name="(SAJ) Concluso para Desinteresse">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Competencia Declinada" name="(SAJ) Concluso para Competencia Declinada">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o" name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o" name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o" name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Cump. DiligÃªncia Interna" name="(SAJ) Aguard. Cump. DiligÃªncia Interna">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Carta PrecatÃ³ria" name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado" name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo" name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema" name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Controle de Sobrestamento-SuspensÃ£o" name="(SAJ) Controle de Sobrestamento-SuspensÃ£o">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Concluso para Sentença">
-        <task name="(SAJ) Concluso para Sentença" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Concluso para SentenÃ§a">
+        <task name="(SAJ) Concluso para SentenÃ§a" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Concluso para Pedido de Urgência">
-        <task name="(SAJ) Concluso para Pedido de Urgência" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Concluso para Pedido de UrgÃªncia">
+        <task name="(SAJ) Concluso para Pedido de UrgÃªncia" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Analise de Recurso">
         <task name="(SAJ) Concluso para Analise de Recurso" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Despacho Inicial">
         <task name="(SAJ) Concluso para Despacho Inicial" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Desinteresse">
         <task name="(SAJ) Concluso para Desinteresse" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Competencia Declinada">
         <task name="(SAJ) Concluso para Competencia Declinada" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Aguard. Sistemas online">
         <task name="(SAJ) Concluso para Aguard. Sistemas online" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Concluso para Embargos de Declaração">
-        <task name="(SAJ) Concluso para Embargos de Declaração" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o">
+        <task name="(SAJ) Concluso para Embargos de DeclaraÃ§Ã£o" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Concluso para Embargos a Execução">
-        <task name="(SAJ) Concluso para Embargos a Execução" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o">
+        <task name="(SAJ) Concluso para Embargos a ExecuÃ§Ã£o" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Aguard. Manifestação de Intimação">
-        <task name="(SAJ) Aguard. Manifestação de Intimação" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o">
+        <task name="(SAJ) Aguard. ManifestaÃ§Ã£o de IntimaÃ§Ã£o" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Aguard. Cump. Diligência Interna">
-        <task name="(SAJ) Aguard. Cump. Diligência Interna" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Aguard. Cump. DiligÃªncia Interna">
+        <task name="(SAJ) Aguard. Cump. DiligÃªncia Interna" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. retorno de Mandado Judicial">
         <task name="(SAJ) Aguard. retorno de Mandado Judicial" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Aguard. retorno de Carta Precatória">
-        <task name="(SAJ) Aguard. retorno de Carta Precatória" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria">
+        <task name="(SAJ) Aguard. retorno de Carta PrecatÃ³ria" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. retorno da Turma Recursal">
         <task name="(SAJ) Aguard. retorno da Turma Recursal" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Aguard. manifestação do Magistrado">
-        <task name="(SAJ) Aguard. manifestação do Magistrado" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado">
+        <task name="(SAJ) Aguard. manifestaÃ§Ã£o do Magistrado" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Elaboração de Cálculo">
-        <task name="(SAJ) Elaboração de Cálculo" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo">
+        <task name="(SAJ) ElaboraÃ§Ã£o de CÃ¡lculo" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Aud. Conciliação realizada sem realização no sistema">
-        <task name="(SAJ) Aud. Conciliação realizada sem realização no sistema" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema">
+        <task name="(SAJ) Aud. ConciliaÃ§Ã£o realizada sem realizaÃ§Ã£o no sistema" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <task-node end-tasks="true" name="(SAJ) Controle de Sobrestamento-Suspensão">
-        <task name="(SAJ) Controle de Sobrestamento-Suspensão" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
-        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+    <task-node end-tasks="true" name="(SAJ) Controle de Sobrestamento-SuspensÃ£o">
+        <task name="(SAJ) Controle de Sobrestamento-SuspensÃ£o" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processo Suspenso - art. 40 LEF">
+        <task name="(SAJ) Processo Suspenso - art. 40 LEF" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processo Suspenso por Parcelamento">
+        <task name="(SAJ) Processo Suspenso por Parcelamento" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processos Suspensos">
+        <task name="(SAJ) Processos Suspensos" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
+        <task name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" swimlane="Secretaria"/>
+        <transition to="TÃ©rmino" name="Encaminhar para analise de secretaria"/>
+        <transition to="NÃ³ de Desvio - (SAJ) Saj migracao" name="NÃ³ de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
