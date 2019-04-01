@@ -15,9 +15,13 @@ Secretaria  Corregedoria   Magistrado Corregedor]]></description>
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(EF) É Embargos à Execução Fiscal?" name="(EF) É Embargos à Execução Fiscal?"/>
+        <transition to="(EF) É de outro fluxo?" name="(EF) É de outro fluxo?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('ef:fbg:fbc') || tramitacaoProcessualService.recuperaVariavel('ef:fbg:saj')? '(EF) Secretaria - ANALISAR' : '(EF) É Embargos à Execução Fiscal?'}" name="(EF) É de outro fluxo?">
+        <transition to="(EF) É Embargos à Execução Fiscal?" name="(EF) É Embargos à Execução Fiscal?"/>
+        <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
+    </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == '1118' ? '(EF) Tem pedido de urgência?' : '(EF) Preparar ato judicial de decisão inicial'}" name="(EF) É Embargos à Execução Fiscal?">
         <transition to="(EF) Preparar ato judicial de decisão inicial" name="(EF) Preparar ato judicial de decisão inicial"/>
         <transition to="(EF) Tem pedido de urgência?" name="(EF) Tem pedido de urgência?"/>

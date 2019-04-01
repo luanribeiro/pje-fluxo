@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SAJ) Saj migracao">
-    <description><![CDATA[...]]></description>  
+    <description><![CDATA[..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (SAJ) Saj migracao">
         <assignment actor-id="#{actor.id}"/>
@@ -20,7 +20,7 @@
         <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
@@ -90,7 +90,29 @@
         <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
     </task-node>
+    <process-state name="(SAJ) Encaminhar para novo fluxo EF">
+        <sub-process name="(EF) Fluxo básico geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:saj', true)}"/>
+        </event>
+    </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SAJ) Saj migracao">
         <task name="Nó de Desvio - (SAJ) Saj migracao" swimlane="Nó de Desvio - (SAJ) Saj migracao"/>
@@ -118,160 +140,456 @@
         <transition to="(SAJ) Elaboração de Cálculo" name="(SAJ) Elaboração de Cálculo"/>
         <transition to="(SAJ) Aud. Conciliação realizada sem realização no sistema" name="(SAJ) Aud. Conciliação realizada sem realização no sistema"/>
         <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão"/>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF"/>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento"/>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos"/>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens"/>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Arquivado">
         <task name="(SAJ) Arquivado" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Em Tramitação na Turma Recursal" name="(SAJ) Em Tramitação na Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Decisão" name="(SAJ) Concluso para Decisão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Sentença" name="(SAJ) Concluso para Sentença">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Pedido de Urgência" name="(SAJ) Concluso para Pedido de Urgência">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho Inicial" name="(SAJ) Concluso para Despacho Inicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Desinteresse" name="(SAJ) Concluso para Desinteresse">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Competencia Declinada" name="(SAJ) Concluso para Competencia Declinada">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos de Declaração" name="(SAJ) Concluso para Embargos de Declaração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos a Execução" name="(SAJ) Concluso para Embargos a Execução">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Manifestação de Intimação" name="(SAJ) Aguard. Manifestação de Intimação">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Cump. Diligência Interna" name="(SAJ) Aguard. Cump. Diligência Interna">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Carta Precatória" name="(SAJ) Aguard. retorno de Carta Precatória">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. manifestação do Magistrado" name="(SAJ) Aguard. manifestação do Magistrado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Elaboração de Cálculo" name="(SAJ) Elaboração de Cálculo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aud. Conciliação realizada sem realização no sistema" name="(SAJ) Aud. Conciliação realizada sem realização no sistema">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Em Tramitação na Turma Recursal">
         <task name="(SAJ) Em Tramitação na Turma Recursal" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Despacho">
         <task name="(SAJ) Concluso para Despacho" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Decisão">
         <task name="(SAJ) Concluso para Decisão" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="(SAJ) Processos migrados do SAJ" name="(SAJ) Processos migrados do SAJ">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Arquivado" name="(SAJ) Arquivado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Em Tramitação na Turma Recursal" name="(SAJ) Em Tramitação na Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho" name="(SAJ) Concluso para Despacho">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Decisão" name="(SAJ) Concluso para Decisão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Sentença" name="(SAJ) Concluso para Sentença">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Pedido de Urgência" name="(SAJ) Concluso para Pedido de Urgência">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Analise de Recurso" name="(SAJ) Concluso para Analise de Recurso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Despacho Inicial" name="(SAJ) Concluso para Despacho Inicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Desinteresse" name="(SAJ) Concluso para Desinteresse">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Competencia Declinada" name="(SAJ) Concluso para Competencia Declinada">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Aguard. Sistemas online" name="(SAJ) Concluso para Aguard. Sistemas online">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos de Declaração" name="(SAJ) Concluso para Embargos de Declaração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Concluso para Embargos a Execução" name="(SAJ) Concluso para Embargos a Execução">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Manifestação de Intimação" name="(SAJ) Aguard. Manifestação de Intimação">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. Cump. Diligência Interna" name="(SAJ) Aguard. Cump. Diligência Interna">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Mandado Judicial" name="(SAJ) Aguard. retorno de Mandado Judicial">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno de Carta Precatória" name="(SAJ) Aguard. retorno de Carta Precatória">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. retorno da Turma Recursal" name="(SAJ) Aguard. retorno da Turma Recursal">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aguard. manifestação do Magistrado" name="(SAJ) Aguard. manifestação do Magistrado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Elaboração de Cálculo" name="(SAJ) Elaboração de Cálculo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Aud. Conciliação realizada sem realização no sistema" name="(SAJ) Aud. Conciliação realizada sem realização no sistema">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Controle de Sobrestamento-Suspensão" name="(SAJ) Controle de Sobrestamento-Suspensão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso - art. 40 LEF" name="(SAJ) Processo Suspenso - art. 40 LEF">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processo Suspenso por Parcelamento" name="(SAJ) Processo Suspenso por Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Suspensos" name="(SAJ) Processos Suspensos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Sentença">
         <task name="(SAJ) Concluso para Sentença" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Pedido de Urgência">
         <task name="(SAJ) Concluso para Pedido de Urgência" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Analise de Recurso">
         <task name="(SAJ) Concluso para Analise de Recurso" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Despacho Inicial">
         <task name="(SAJ) Concluso para Despacho Inicial" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Desinteresse">
         <task name="(SAJ) Concluso para Desinteresse" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Competencia Declinada">
         <task name="(SAJ) Concluso para Competencia Declinada" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Aguard. Sistemas online">
         <task name="(SAJ) Concluso para Aguard. Sistemas online" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Embargos de Declaração">
         <task name="(SAJ) Concluso para Embargos de Declaração" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Concluso para Embargos a Execução">
         <task name="(SAJ) Concluso para Embargos a Execução" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. Manifestação de Intimação">
         <task name="(SAJ) Aguard. Manifestação de Intimação" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. Cump. Diligência Interna">
         <task name="(SAJ) Aguard. Cump. Diligência Interna" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. retorno de Mandado Judicial">
         <task name="(SAJ) Aguard. retorno de Mandado Judicial" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. retorno de Carta Precatória">
         <task name="(SAJ) Aguard. retorno de Carta Precatória" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. retorno da Turma Recursal">
         <task name="(SAJ) Aguard. retorno da Turma Recursal" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aguard. manifestação do Magistrado">
         <task name="(SAJ) Aguard. manifestação do Magistrado" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Elaboração de Cálculo">
         <task name="(SAJ) Elaboração de Cálculo" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Aud. Conciliação realizada sem realização no sistema">
         <task name="(SAJ) Aud. Conciliação realizada sem realização no sistema" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(SAJ) Controle de Sobrestamento-Suspensão">
         <task name="(SAJ) Controle de Sobrestamento-Suspensão" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para analise de secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
         <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processo Suspenso - art. 40 LEF">
+        <task name="(SAJ) Processo Suspenso - art. 40 LEF" swimlane="Secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
+        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processo Suspenso por Parcelamento">
+        <task name="(SAJ) Processo Suspenso por Parcelamento" swimlane="Secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
+        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processos Suspensos">
+        <task name="(SAJ) Processos Suspensos" swimlane="Secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
+        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens">
+        <task name="(SAJ) Processos Baixados - Loc. do Devedor ou de Bens" swimlane="Secretaria"/>
+        <transition to="Término" name="Encaminhar para analise da secretaria VCiv"/>
+        <transition to="Nó de Desvio - (SAJ) Saj migracao" name="Nó de Desvio - (SAJ) Saj migracao">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SAJ) Encaminhar para novo fluxo EF" name="Encaminhar para novo fluxo EF">
+            <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.removerSituacao('jus:suspenso')}"/>
+        </event>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
@@ -321,5 +639,6 @@
     </event>
     <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event> 
+    </event>  
+    <!-- ACTIONS --> 
 </process-definition>
