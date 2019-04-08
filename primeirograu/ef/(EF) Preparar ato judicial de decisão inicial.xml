@@ -2,9 +2,7 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Preparar ato judicial de decisão inicial">
     <description><![CDATA[Código do fluxo: EF_PAJ_DEC_INI
-
 Descrição: Fluxo destinado ao preparo de atos judiciais de decisão inicial..
-
 Raia        Localização Papel
 Assessoria  Gabinete    Magistrado
 Assessoria  Assessoria  Assessor
@@ -42,13 +40,11 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: minuta_ato_judicial
    Label: Minuta em elaboração de ato judicial
    Escrita: Sim
    Obrig. Sim
    Tipo: Editor
-
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -58,6 +54,9 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Concluso para decisão inicial - ASSINAR" name="Encaminhar para assinatura"/>
+        <transition to="(EF) Encaminhar para Secretaria - ANALISAR" name="(EF) Encaminhar para Secretaria - ANALISAR">
+            <condition expression="#{parametroUtil.getParametro('pje:tjrn:processosMovimentacaoManualSecretariaEF').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso).concat('_'))}"/>
+        </transition>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64,'.concat(parametroUtil.getParametro('idTipoDocumentoDecisaoCitacao')))}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
@@ -77,6 +76,10 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             <action expression="#{processoHome.fazerTriagemExecucaoFiscal('(EF) Concluso para decisão inicial - MINUTAR', true, true, true, true)}"/>
         </event>
     </task-node>
+    <process-state name="(EF) Encaminhar para Secretaria - ANALISAR">
+        <sub-process name="(EF) Fluxo básico geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <task-node end-tasks="true" name="(EF) Concluso para decisão inicial - ASSINAR">
         <task name="(EF) Concluso para decisão inicial - ASSINAR" swimlane="Magistrado">
             <controller>
@@ -86,19 +89,16 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Frame
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Habilitar Movimentação em Lote
-
 3. Variável: assinaturaLote
    Label: 
    Escrita: Sim
