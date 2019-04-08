@@ -59,7 +59,7 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
         </transition>
         <transition to="(EF) Concluso para decisão inicial - ASSINAR" name="Encaminhar para assinatura"/>
         <transition to="(EF) Encaminhar para Secretaria - ANALISAR" name="(EF) Encaminhar para Secretaria - ANALISAR">
-            <condition expression="#{parametroUtil.getParametro('pje:tjrn:processosMovimentacaoManualSecretariaEF').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso).concat('_'))}"/>
+            <condition expression="#{parametroUtil.getParametro('pje:tjrn:processosMovimentacaoManualSecretariaEF').contains(' '.concat(tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).concat(' '))}"/>
         </transition>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64,'.concat(parametroUtil.getParametro('idTipoDocumentoDecisaoCitacao')))}"/>
