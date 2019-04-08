@@ -2,7 +2,9 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Preparar ato judicial de decisão inicial">
     <description><![CDATA[Código do fluxo: EF_PAJ_DEC_INI
+
 Descrição: Fluxo destinado ao preparo de atos judiciais de decisão inicial..
+
 Raia        Localização Papel
 Assessoria  Gabinete    Magistrado
 Assessoria  Assessoria  Assessor
@@ -40,11 +42,13 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
+
 1. Variável: minuta_ato_judicial
    Label: Minuta em elaboração de ato judicial
    Escrita: Sim
    Obrig. Sim
    Tipo: Editor
+
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -89,16 +93,19 @@ Magistrado  Secretaria  Chefe de Secretaria]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
+
 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Frame
+
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Habilitar Movimentação em Lote
+
 3. Variável: assinaturaLote
    Label: 
    Escrita: Sim
