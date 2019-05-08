@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Controle de prazo"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (SG) Controle de prazo">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5906')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <transition to="(SG) Existe expediente com prazo em aberto?" name="(SG) Existe expediente com prazo em aberto?"/>
+    </start-state>  
+    <!-- NODES -->
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND ppe.pessoaParte.idPessoa != 4266 AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Já existe registro do processo na tarefa?' : (entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND ppe.pessoaParte.idPessoa != 4266 AND ppe.tipoPrazo != 'S' AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Já existe registro do processo na tarefa?' : '(SG) Verificar pendência de cumprimentos')}" name="(SG) Existe expediente com prazo em aberto?">
+        <transition to="(SG) Já existe registro do processo na tarefa?" name="(SG) Já existe registro do processo na tarefa?"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
+    </decision>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Prazo - AGUARDAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Verificar pendência de cumprimentos' : '(SG) Prazo - AGUARDAR'}" name="(SG) Já existe registro do processo na tarefa?">
+        <transition to="(SG) Prazo - AGUARDAR" name="(SG) Prazo - AGUARDAR"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
+    </decision>
+    <task-node end-tasks="true" name="(SG) Prazo - AGUARDAR">
+        <task name="(SG) Prazo - AGUARDAR" swimlane="Secretaria">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: aviso1
+   Label: O processo contém expediente com prazo em curso. Após o fechamento de todos os prazos que estão abertos, o processo será encaminhado automaticamente para tarefa "(SG) Prazo decorrido - ANALISAR".
+   Escrita: Sim
+   Obrig.: Não
+   Tipo: Aviso
+
+2. Variável: movimentacaoLote
+   Label:
+   Escrita: Sim
+   Obrig.: Não
+   Tipo: Habilitar Movimentação em Lote]]></description>
+        <transition to="Nó de Desvio - (SG) Controle de prazo" name="Nó de Desvio - (SG) Controle de prazo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Ainda há prazo em aberto?" name="(SG) Ainda há prazo em aberto?">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Cancelar e sair da tarefa"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaCiencia')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Ainda há prazo em aberto?')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
+        </event>
+    </task-node>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe  WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND ppe.pessoaParte.idPessoa != 4266  AND ppe.tipoPrazo != 'S' AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Prazo - AGUARDAR' : '(SG) Há expediente com prazo pendente de manifestação?'}" name="(SG) Ainda há prazo em aberto?">
+        <transition to="(SG) Prazo - AGUARDAR" name="(SG) Prazo - AGUARDAR"/>
+        <transition to="(SG) Há expediente com prazo pendente de manifestação?" name="(SG) Há expediente com prazo pendente de manifestação?"/>
+    </decision>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND ppe.pendenteManifestacao = true AND ppe.tipoPrazo &lt;&gt; 'S' AND ppe.fechado = true&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Prazo decorrido - ANALISAR' : '(SG) Verificar pendência de cumprimentos'}" name="(SG) Há expediente com prazo pendente de manifestação?">
+        <transition to="(SG) Prazo decorrido - ANALISAR" name="(SG) Prazo decorrido - ANALISAR"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
+    </decision>
+    <task-node end-tasks="true" name="(SG) Prazo decorrido - ANALISAR">
+        <task name="(SG) Prazo decorrido - ANALISAR" swimlane="Secretaria">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: aviso1
+   Label: Expedientes com prazo decorrido. Clique na próxima ação abaixo para prosseguir.
+   Escrita: Sim
+   Obrig.: Não
+   Tipo: Aviso
+
+2. Variável: movimentacaoLote
+   Label:
+   Escrita: Sim
+   Obrig.: Não
+   Tipo: Habilitar Movimentação em Lote]]></description>
+        <transition to="Nó de Desvio - (SG) Controle de prazo" name="Nó de Desvio - (SG) Controle de prazo">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Ainda há prazo em aberto?" name="(SG) Ainda há prazo em aberto?"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Sair da tarefa"/>
+        <transition to="(SG) Encaminhar para certificar decurso de prazo" name="Certificar decurso de prazo"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <process-state name="(SG) Encaminhar para certificar decurso de prazo">
+        <sub-process name="(SG) Expedição de documentos" binding="late"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:expdoc:certidao_decurso_prazo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:expdoc:alvara')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:expdoc:certidao_transito_julgado')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:expdoc:certidao_decurso_prazo', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:expdoc:certidao_transito_julgado', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:expdoc:alvara', false)}"/>
+        </event>
+    </process-state>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de prazo">
+        <task name="Nó de Desvio - (SG) Controle de prazo" swimlane="Nó de Desvio - (SG) Controle de prazo"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(SG) Prazo - AGUARDAR" name="(SG) Prazo - AGUARDAR"/>
+        <transition to="(SG) Prazo decorrido - ANALISAR" name="(SG) Prazo decorrido - ANALISAR"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>

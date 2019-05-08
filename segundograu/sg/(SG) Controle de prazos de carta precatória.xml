@@ -13,7 +13,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -21,13 +21,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Existe expediente do tipo carta pendente de ciência?" name="(SG) Existe expediente do tipo carta pendente de ciência?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento in (94,203,204) AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa de registrar AR?' : '(SG) Separação em carta com ou sem prazo'}" name="(SG) Existe expediente do tipo carta pendente de ciência?">
-        <transition to="(SG) Separação em carta com ou sem prazo" name="(SG) Separação em carta com ou sem prazo"/>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento in (94,203,204) AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa de registrar AR?' : '(SG) Encaminhar para controle de prazo'}" name="(SG) Existe expediente do tipo carta pendente de ciência?">
         <transition to="(SG) Existe registro do processo na tarefa de registrar AR?" name="(SG) Existe registro do processo na tarefa de registrar AR?"/>
+        <transition to="(SG) Encaminhar para controle de prazo" name="(SG) Encaminhar para controle de prazo"/>
     </decision>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Separação em carta com ou sem prazo' : '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR'}" name="(SG) Existe registro do processo na tarefa de registrar AR?">
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Encaminhar para controle de prazo' : '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR'}" name="(SG) Existe registro do processo na tarefa de registrar AR?">
         <transition to="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR" name="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR"/>
-        <transition to="(SG) Separação em carta com ou sem prazo" name="(SG) Separação em carta com ou sem prazo"/>
+        <transition to="(SG) Encaminhar para controle de prazo" name="(SG) Encaminhar para controle de prazo"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR">
         <task name="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR" swimlane="Secretaria">
@@ -60,7 +60,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Há registros pendentes de confirmação de recebimento?" name="Todos os registros concluídos! Verificar existência de prazo"/>
-        <transition to="Término" name="Cancelar e sair da tarefa"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Cancelar e sair da tarefa"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:correios:registroCiencia')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
@@ -73,10 +73,18 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
         </event>
     </task-node>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento in (94,203,204) AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR' : '(SG) Separação em carta com ou sem prazo'}" name="(SG) Há registros pendentes de confirmação de recebimento?">
-        <transition to="(SG) Separação em carta com ou sem prazo" name="(SG) Separação em carta com ou sem prazo"/>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento in (94,203,204) AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR' : '(SG) Encaminhar para controle de prazo'}" name="(SG) Há registros pendentes de confirmação de recebimento?">
         <transition to="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR" name="(SG) Carta precatória, rogatória ou de ordem pendente de devolução do AR - REGISTRAR"/>
+        <transition to="(SG) Encaminhar para controle de prazo" name="(SG) Encaminhar para controle de prazo"/>
     </decision>
+    <process-state name="(SG) Encaminhar para controle de prazo">
+        <sub-process name="(SG) Controle de prazo" binding="late"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
+    </process-state>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <fork name="(SG) Separação em carta com ou sem prazo">
         <transition to="(SG) Existe prazo de expediente do tipo carta em aberto?" name="(SG) Existe prazo de expediente do tipo carta em aberto?"/>
         <transition to="(SG) Existe expediente do tipo carta sem prazo em aberto?" name="(SG) Existe expediente do tipo carta sem prazo em aberto?"/>
@@ -240,7 +248,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <join name="(SG) Junção em carta com ou sem prazo">
         <transition to="Término" name="Término"/>
     </join>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), 'sg:finalizarCumprimentosSec', true, false, true)}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de prazos de carta precatória">
         <task name="Nó de Desvio - (SG) Controle de prazos de carta precatória" swimlane="Nó de Desvio - (SG) Controle de prazos de carta precatória"/>
         <transition to="Término" name="Término"/>

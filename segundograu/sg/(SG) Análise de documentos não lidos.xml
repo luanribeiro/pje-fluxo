@@ -26,9 +26,9 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Foi juntado pelo Ministério Público?" name="(SG) Foi juntado pelo Ministério Público?"/>
         <transition to="Término" name="Término"/>
     </decision>
-    <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : '(SG) Foi juntado pela Defensoria?'}" name="(SG) Foi juntado pelo Ministério Público?">
-        <transition to="(SG) Foi juntado pela Defensoria?" name="(SG) Foi juntado pela Defensoria?"/>
+    <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pelo Ministério Público?">
         <transition to="(SG) Documentos não lidos [Ministério Público] - ANALISAR" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR"/>
+        <transition to="(SG) Documentos não lidos - ANALISAR" name="(SG) Documentos não lidos - ANALISAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR">
         <task name="(SG) Documentos não lidos [Ministério Público] - ANALISAR" swimlane="Secretaria">
@@ -50,16 +50,16 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame]]></description>
-        <transition to="Término" name="Marcar documento como lido e finalizar a tarefa"/>
         <transition to="Nó de Desvio - (SG) Análise de documentos não lidos" name="Nó de Desvio - (SG) Análise de documentos não lidos">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Marcar documento como lido e finalizar a tarefa"/>
         <event type="task-end">
             <action expression="#{processoDocumentoTrfHome.inserirDocumentoLido(visualizarPeticaoAction.documentoPrincipal)}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Defensoria Pública') &gt; -1 ? '(SG) Documentos não lidos [Defensoria] - ANALISAR' : '(SG) Foi juntado pela Procuradoria?'}" name="(SG) Foi juntado pela Defensoria?">
@@ -86,16 +86,16 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame]]></description>
-        <transition to="Término" name="Marcar documento como lido e finalizar a tarefa"/>
         <transition to="Nó de Desvio - (SG) Análise de documentos não lidos" name="Nó de Desvio - (SG) Análise de documentos não lidos">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Marcar documento como lido e finalizar a tarefa"/>
         <event type="task-end">
             <action expression="#{processoDocumentoTrfHome.inserirDocumentoLido(visualizarPeticaoAction.documentoPrincipal)}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Procuradoria') &gt; -1 ? '(SG) Documentos não lidos [Procuradoria] - ANALISAR' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pela Procuradoria?">
@@ -125,13 +125,13 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="Nó de Desvio - (SG) Análise de documentos não lidos" name="Nó de Desvio - (SG) Análise de documentos não lidos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Marcar documento como lido e finalizar a tarefa"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Marcar documento como lido e finalizar a tarefa"/>
         <event type="task-end">
             <action expression="#{processoDocumentoTrfHome.inserirDocumentoLido(visualizarPeticaoAction.documentoPrincipal)}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Documentos não lidos - ANALISAR">
@@ -157,15 +157,19 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="Nó de Desvio - (SG) Análise de documentos não lidos" name="Nó de Desvio - (SG) Análise de documentos não lidos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Marcar documento como lido e finalizar a tarefa"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="Marcar documento como lido e finalizar a tarefa"/>
         <event type="task-end">
             <action expression="#{processoDocumentoTrfHome.inserirDocumentoLido(visualizarPeticaoAction.documentoPrincipal)}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
     </task-node>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Análise de documentos não lidos">
         <task name="Nó de Desvio - (SG) Análise de documentos não lidos" swimlane="Nó de Desvio - (SG) Análise de documentos não lidos"/>
@@ -176,10 +180,37 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Documentos não lidos [Procuradoria] - ANALISAR" name="(SG) Documentos não lidos [Procuradoria] - ANALISAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -188,40 +219,13 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event> 
 </process-definition>

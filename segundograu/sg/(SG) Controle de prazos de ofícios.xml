@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Controle de prazos de ofícios">
-    <description><![CDATA[Código do fluxo: SG_CONTPRAZOS_OFI
+    <description><![CDATA[Código do fluxo: SG_CONTPRAZOS_OFI.
 
 Descrição: Gestão de recebimento/prazos de ofícios.
 
@@ -13,7 +13,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -25,13 +25,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) É correios?" name="(SG) É correios?"/>
         <transition to="(SG) É mandado?" name="(SG) É mandado?"/>
     </fork>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa de aguardar AR?' : '(SG) Separação em ofício com ou sem prazo'}" name="(SG) É correios?">
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="(SG) Separação em ofício com ou sem prazo"/>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa de aguardar AR?' : '(SG) Encaminhar para controle de prazo?'}" name="(SG) É correios?">
         <transition to="(SG) Existe registro do processo na tarefa de aguardar AR?" name="(SG) Existe registro do processo na tarefa de aguardar AR?"/>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="(SG) Encaminhar para controle de prazo?"/>
     </decision>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Separação em ofício com ou sem prazo' : '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR'}" name="(SG) Existe registro do processo na tarefa de aguardar AR?">
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="(SG) Separação em ofício com ou sem prazo"/>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Encaminhar para controle de prazo?' : '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR'}" name="(SG) Existe registro do processo na tarefa de aguardar AR?">
         <transition to="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR" name="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR"/>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="(SG) Encaminhar para controle de prazo?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Ofício pendente de devolução do AR - AGUARDAR">
         <task name="(SG) Ofício pendente de devolução do AR - AGUARDAR" swimlane="Secretaria">
@@ -58,14 +58,15 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </transition>
         <transition to="(SG) Ofício pendente de devolução do AR - REGISTRAR" name="Registrar o recebimento"/>
         <transition to="(SG) Junção em controle de prazos de ofícios" name="Cancelar e sair da tarefa"/>
-        <event type="task-assign">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="(SG) Encaminhar para controle de prazo?"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:correios:registroCiencia')}"/>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:correios:registroCiencia', false)}"/>
         </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:correios:registroCiencia')}"/>
+        <event type="task-assign">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Ofício pendente de devolução do AR - REGISTRAR">
@@ -84,16 +85,16 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="Nó de Desvio - (SG) Controle de prazos de ofícios" name="Nó de Desvio - (SG) Controle de prazos de ofícios">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="Verificar existência de prazo"/>
         <transition to="(SG) Ofício pendente de devolução do AR - AGUARDAR" name="Retornar para aguardar devolução do AR"/>
         <transition to="(SG) Junção em controle de prazos de ofícios" name="Cancelar e sair da tarefa"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:correios:edicaoNumeroAR', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verificar existência de prazo')}"/>
-        </event>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="Verificar existência de prazo"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:correios:edicaoNumeroAR')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:correios:edicaoNumeroAR', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verificar existência de prazo')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR">
@@ -128,27 +129,27 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </transition>
         <transition to="(SG) Há registros pendentes de confirmação de recebimento?" name="Todos os registros concluídos! Verificar existência de prazo"/>
         <transition to="(SG) Junção em controle de prazos de ofícios" name="Cancelar e sair da tarefa"/>
-        <event type="task-assign">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verificar existência de prazo')}"/>
         </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+        <event type="task-assign">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
         </event>
     </task-node>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR' : '(SG) Separação em ofício com ou sem prazo'}" name="(SG) Há registros pendentes de confirmação de recebimento?">
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente = 'C' AND ppe.dtCienciaParte IS NULL AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Ofício pendente de confirmação do recebimento - REGISTRAR' : '(SG) Encaminhar para controle de prazo?'}" name="(SG) Há registros pendentes de confirmação de recebimento?">
         <transition to="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR" name="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR"/>
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="(SG) Separação em ofício com ou sem prazo"/>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="(SG) Encaminhar para controle de prazo?"/>
     </decision>
     <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente = 'M' AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa de aguardar OJ?' : '(SG) Junção em controle de prazos de ofícios'}" name="(SG) É mandado?">
         <transition to="(SG) Junção em controle de prazos de ofícios" name="(SG) Junção em controle de prazos de ofícios"/>
         <transition to="(SG) Existe registro do processo na tarefa de aguardar OJ?" name="(SG) Existe registro do processo na tarefa de aguardar OJ?"/>
     </decision>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Separação em ofício com ou sem prazo' : '(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR'}" name="(SG) Existe registro do processo na tarefa de aguardar OJ?">
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Encaminhar para controle de prazo?' : '(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR'}" name="(SG) Existe registro do processo na tarefa de aguardar OJ?">
         <transition to="(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR" name="(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR"/>
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="(SG) Separação em ofício com ou sem prazo"/>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="(SG) Encaminhar para controle de prazo?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR">
         <task name="(SG) Ofício pendente de cumprimento pelo OJ - AGUARDAR" swimlane="Secretaria">
@@ -174,14 +175,22 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="Nó de Desvio - (SG) Controle de prazos de ofícios" name="Nó de Desvio - (SG) Controle de prazos de ofícios">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Separação em ofício com ou sem prazo" name="Verificar existência de prazo"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Encaminhar para controle de prazo?" name="Verificar existência de prazo"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
     </task-node>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND ppe.dtCienciaParte IS NOT NULL AND ppe.fechado = false AND ppe.tipoPrazo &lt;&gt; 'S'&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Encaminhar para controle de prazo' : '(SG) Junção em controle de prazos de ofícios'}" name="(SG) Encaminhar para controle de prazo?">
+        <transition to="(SG) Encaminhar para controle de prazo" name="(SG) Encaminhar para controle de prazo"/>
+        <transition to="(SG) Junção em controle de prazos de ofícios" name="(SG) Junção em controle de prazos de ofícios"/>
+    </decision>
+    <process-state name="(SG) Encaminhar para controle de prazo">
+        <sub-process name="(SG) Controle de prazo" binding="late"/>
+        <transition to="(SG) Junção em controle de prazos de ofícios" name="(SG) Junção em controle de prazos de ofícios"/>
+    </process-state>
     <fork name="(SG) Separação em ofício com ou sem prazo">
         <transition to="(SG) Existe prazo de ofício em aberto?" name="(SG) Existe prazo de ofício em aberto?"/>
         <transition to="(SG) Existe ofício sem prazo?" name="(SG) Existe ofício sem prazo?"/>
@@ -221,17 +230,17 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Ainda existe prazo de ofício em aberto?" name="Verificar existência de prazo">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verificar existência de prazo')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', true)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaCiencia')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verificar existência de prazo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
         </event>
     </task-node>
     <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente IN ('E','C','M') AND ppe.fechado = false AND ppe.tipoPrazo &lt;&gt; 'S'&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Ofício com prazo em curso - AGUARDAR' : '(SG) Ofício com prazo decorrido - ANALISAR'}" name="(SG) Ainda existe prazo de ofício em aberto?">
@@ -262,11 +271,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Junção em ofício com ou sem prazo" name="Cancelar e sair da tarefa"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente IN ('E','C', 'M') AND ppe.dtCienciaParte IS NOT NULL AND ppe.fechado = false AND ppe.tipoPrazo = 'S'&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Existe registro do processo na tarefa sem prazo?' : '(SG) Junção em ofício com ou sem prazo'}" name="(SG) Existe ofício sem prazo?">
@@ -304,17 +313,17 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Existe ofício sem prazo ainda aberto?" name="(SG) Existe ofício sem prazo ainda aberto?">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Existe ofício sem prazo ainda aberto?')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', true)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaCiencia')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Existe ofício sem prazo ainda aberto?')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
         </event>
     </task-node>
     <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 34 AND pe.meioExpedicaoExpediente IN ('E','C','M') AND ppe.fechado = false AND ppe.tipoPrazo = 'S'&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Ofício sem prazo e fechado - ANALISAR' : '(SG) Ofício sem prazo pendente de resposta - AGUARDAR'}" name="(SG) Existe ofício sem prazo ainda aberto?">
@@ -353,11 +362,15 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Apagar variáveis do fluxo" name="(SG) Apagar variáveis do fluxo"/>
     </join>
     <node name="(SG) Apagar variáveis do fluxo">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('comunicacaoProcessualAction:idsExpedientes')}"/>
         </event>
     </node>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de prazos de ofícios">
         <task name="Nó de Desvio - (SG) Controle de prazos de ofícios" swimlane="Nó de Desvio - (SG) Controle de prazos de ofícios"/>
@@ -372,10 +385,37 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR" name="(SG) Ofício pendente de confirmação do recebimento - REGISTRAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -384,40 +424,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 

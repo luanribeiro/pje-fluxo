@@ -58,9 +58,6 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
 1. Tipo de evento: Sair tarefa
    Agrupamento eventos: Decurso de prazo
    Condição para lançamento temporário: #{true}]]></description>
-        <transition to="Término" name="Término">
-            <condition expression="#{true}"/>
-        </transition>
         <transition to="Nó de Desvio - (SG) Expedição de documentos" name="Nó de Desvio - (SG) Expedição de documentos">
             <condition expression="#{true}"/>
         </transition>
@@ -110,13 +107,13 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Assinatura em Lote]]></description>
-        <transition to="Término" name="Término">
-            <condition expression="#{true}"/>
-        </transition>
         <transition to="Nó de Desvio - (SG) Expedição de documentos" name="Nó de Desvio - (SG) Expedição de documentos">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Certidão de decurso de prazo - EXPEDIR" name="Retornar para minuta de certidão de decurso de prazo"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos">
+            <condition expression="#{true}"/>
+        </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
@@ -124,11 +121,11 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <event type="task-create">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','167')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Verificar pendência de cumprimentos')}"/>
         </event>
     </task-node>
     <node name="(SG) Apagar minuta não assinada de decurso de prazo">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_certidao_decurso_prazo')}"/>
         </event>
@@ -215,10 +212,10 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="Nó de Desvio - (SG) Expedição de documentos" name="Nó de Desvio - (SG) Expedição de documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Término">
+        <transition to="(SG) Certidão de trânsito em julgado - EXPEDIR" name="Retornar para minuta de certidão de trânsito em julgado"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Certidão de trânsito em julgado - EXPEDIR" name="Retornar para minuta de certidão de trânsito em julgado"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
@@ -226,18 +223,18 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <event type="task-create">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '70')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Verificar pendência de cumprimentos')}"/>
         </event>
     </task-node>
     <node name="(SG) Apagar minuta não assinada de trânsito em julgado">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_certidao_transito_julgado')}"/>
         </event>
     </node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:expdoc:alvara') == true ? '(SG) Alvará - EXPEDIR' : 'Término'}" name="(SG) É alvará?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:expdoc:alvara') == true ? '(SG) Alvará - EXPEDIR' : '(SG) Verificar pendência de cumprimentos'}" name="(SG) É alvará?">
         <transition to="(SG) Alvará - EXPEDIR" name="(SG) Alvará - EXPEDIR"/>
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Alvará - EXPEDIR">
         <task name="(SG) Alvará - EXPEDIR" swimlane="Secretaria">
@@ -326,17 +323,21 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <node name="(SG) Apagar minuta não assinada de alvará">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_alvara')}"/>
         </event>
     </node>
     <node name="(SG) Lançar movimento de expedição de alvará">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(73).lancarMovimento()}"/>
         </event>
     </node>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <end-state name="Término">
         <event type="node-enter">
             <action expression="#{org.jboss.seam.bpm.processInstance.contextInstance.deleteVariable('condicaoLancamentoMovimentosTemporario')}"/>

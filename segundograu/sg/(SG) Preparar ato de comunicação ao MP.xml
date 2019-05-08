@@ -123,7 +123,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
         </event>
     </process-state>
     <node name="(SG) Apagar variáveis do fluxo">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="#{empty tramitacaoProcessualService.recuperaVariavel('atoProferidoOriginal') ? '' : tramitacaoProcessualService.gravaVariavel('pje:atoProferido', tramitacaoProcessualService.recuperaVariavel('atoProferidoOriginal'))}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('atoProferidoOriginal')}"/>
@@ -131,6 +131,10 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
             <action expression="#{tramitacaoProcessualService.apagaVariavel('comboDocumento')}"/>
         </event>
     </node>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato de comunicação ao MP">
         <task name="Nó de Desvio - (SG) Preparar ato de comunicação ao MP" swimlane="Secretaria"/>

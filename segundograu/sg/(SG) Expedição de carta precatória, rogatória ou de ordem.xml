@@ -179,7 +179,6 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <node name="(SG) Lançar movimento de expedição de carta">
-        <transition to="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR" name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR"/>
         <transition to="(SG) Existe registro do processo na tarefa de encaminhar carta?" name="(SG) Existe registro do processo na tarefa de encaminhar carta?"/>
         <event type="node-enter">
             <action name="upd" expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('sg:exp_carta:idProcessoDocumento')).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 94 ? atoComunicacaoService.intimarDestinatarioCorreios(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, parametroUtil.getParametro('pje:tjrn:fluxo:destinatarioCartaPrec'), tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta') == 0 ? 'S' : 'D', tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta') == 0 ? null : tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta'), tramitacaoProcessualService.recuperaVariavel('sg:exp_carta:idProcessoDocumento'), 76) : ''}"/>
@@ -187,9 +186,9 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action name="upd" expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('sg:exp_carta:idProcessoDocumento')).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 203 ? atoComunicacaoService.intimarDestinatarioCorreios(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, parametroUtil.getParametro('pje:tjrn:fluxo:destinatarioCartaOrdem'), tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta') == 0 ? 'S' : 'D', tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta') == 0 ? null : tramitacaoProcessualService.recuperaVariavel('prazoExpedienteCarta'), tramitacaoProcessualService.recuperaVariavel('sg:exp_carta:idProcessoDocumento'), 75) : ''}"/>
         </event>
     </node>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? 'Término' : '(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR'}" name="(SG) Existe registro do processo na tarefa de encaminhar carta?">
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa = '(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR' AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Verificar pendência de cumprimentos' : '(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR'}" name="(SG) Existe registro do processo na tarefa de encaminhar carta?">
         <transition to="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR" name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR"/>
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR">
         <task name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR" swimlane="Secretaria">
@@ -230,14 +229,18 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </task-node>
     <process-state name="(SG) Controle de prazos de cartas">
         <sub-process name="(SG) Controle de prazos de carta precatória" binding="late"/>
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
     </process-state>
     <node name="(SG) Apagar minuta não assinada de carta">
-        <transition to="Término" name="Término"/>
+        <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('expedir_carta')}"/>
         </event>
     </node>
+    <process-state name="(SG) Verificar pendência de cumprimentos">
+        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem">
         <task name="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem" swimlane="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem"/>

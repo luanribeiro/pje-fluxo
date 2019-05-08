@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo básico geral">
-    <description><![CDATA[Código do fluxo: SG_FBG.
+    <description><![CDATA[Código do fluxo: SG_FBG
 .
 Descrição: Fluxo básico geral de entrada dos processos.
 
@@ -294,11 +294,202 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </task-node>
     <process-state name="(SG) Lançar fluxos">
         <sub-process name="(SG) Lançador de fluxo" binding="late"/>
-        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+        <transition to="(SG) Encaminhar para aguardar cumprimentos?" name="(SG) Encaminhar para aguardar cumprimentos?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:aviso_secretaria_analisar', 'Processo enviado com sucesso para as tarefas selecionadas.')}"/>
         </event>
     </process-state>
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa not in ('(SG) Secretaria - ANALISAR','(SG) Secretaria - AGUARDAR','(SG) Voto [não relator] - VOTAR','(SG) Sessão de gamento [outros julgadores] - AGUARDAR','(SG) Voto [não relator] - MINUTAR','(SG) Voto [não relator] - CONFIRMAR','(SG) Voto [não relator] - VALIDAR','(SG) Voto [não relator] - ASSINAR') AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Secretaria - AGUARDAR' : '(SG) Secretaria - ANALISAR'}" name="(SG) Encaminhar para aguardar cumprimentos?">
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+        <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
+    </decision>
+    <task-node end-tasks="true" name="(SG) Secretaria - AGUARDAR">
+        <task name="(SG) Secretaria - AGUARDAR" swimlane="Secretaria">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+                <variable name="sg_fbg_apensar_desapensar" mapped-name="sim_nao:sg_fbg_apensar_desapensar" access="read,write"/>
+                <variable name="sg_fbg_certificar_decurso_prazo" mapped-name="sim_nao:sg_fbg_certificar_decurso_prazo" access="read,write"/>
+                <variable name="sg_fbg_certificar_transito_julgado" mapped-name="sim_nao:sg_fbg_certificar_transito_julgado" access="read,write"/>
+                <variable name="sg_fbg_controlar_retorno_expediente" mapped-name="sim_nao:sg_fbg_controlar_retorno_expediente" access="read,write"/>
+                <variable name="sg_fbg_encerrar_expediente" mapped-name="sim_nao:sg_fbg_encerrar_expediente" access="read,write"/>
+                <variable name="sg_fbg_expedir_alvara" mapped-name="sim_nao:sg_fbg_expedir_alvara" access="read,write"/>
+                <variable name="sg_fbg_expedir_carta" mapped-name="sim_nao:sg_fbg_expedir_carta" access="read,write"/>
+                <variable name="sg_fbg_expedir_mandado" mapped-name="sim_nao:sg_fbg_expedir_mandado" access="read,write"/>
+                <variable name="sg_fbg_expedir_oficio" mapped-name="sim_nao:sg_fbg_expedir_oficio" access="read,write"/>
+                <variable name="sg_fbg_expedir_outros_documentos" mapped-name="sim_nao:sg_fbg_expedir_outros_documentos" access="read,write"/>
+                <variable name="sg_fbg_intimar_citar" mapped-name="sim_nao:sg_fbg_intimar_citar" access="read,write"/>
+                <variable name="sg_fbg_intimar_citar_estado" mapped-name="sim_nao:sg_fbg_intimar_citar_estado" access="read,write"/>
+                <variable name="sg_fbg_intimar_citar_mp" mapped-name="sim_nao:sg_fbg_intimar_citar_mp" access="read,write"/>
+                <variable name="sg_fbg_retificar_tipo_documento" mapped-name="sim_nao:sg_fbg_retificar_tipo_documento" access="read,write"/>
+                <variable name="sg_fbg_publicar_dje" mapped-name="sim_nao:sg_fbg_publicar_dje" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: Processo_Fluxo_visualizarDecisao
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Frame
+
+2. Variável: aviso1
+   Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Aviso
+
+3. Variável: sg_fbg_apensar_desapensar
+   Label: Apensar / desapensar
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+4. Variável: sg_fbg_certificar_decurso_prazo
+   Label: Certificar decurso de prazo
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+5. Variável: sg_fbg_certificar_transito_julgado
+   Label: Certificar trânsito em julgado
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+6. Variável: sg_fbg_encerrar_expediente
+   Label: Encerrar expediente manualmente
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+7. Variável: sg_fbg_expedir_alvara
+   Label: Expedir alvará
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+8. Variável: sg_fbg_expedir_carta
+   Label: Expedir carta de ordem, precatória ou rogatória
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+9. Variável: sg_fbg_expedir_mandado
+   Label: Expedir mandado
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+10. Variável: sg_fbg_expedir_oficio
+   Label: Expedir ofício
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+11. Variável: sg_fbg_expedir_outros_documentos
+   Label: Expedir outros documentos
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+12. Variável: sg_fbg_intimar_citar
+   Label: Intimar ou citar via sistema, correios ou edital
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+13. Variável: sg_fbg_intimar_citar_estado
+   Label: Intimar ou citar Estado
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+14. Variável: sg_fbg_intimar_citar_mp
+   Label: Intimar ou citar Ministério Público
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+15. Variável: sg_fbg_retificar_tipo_documento
+   Label: Retificar tipo de documento
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox
+
+16. Variável: sg_fbg_publicar_dje
+   Label: Publicar no Diário da Justiça Eletrônico
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Checkbox]]></description>
+        <transition to="(SG) Secretaria - ANALISAR" name="Encaminhar para (SG) Secretaria - ANALISAR"/>
+        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Lançar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s)"/>
+        <transition to="(SG) Encaminhar para aguardar cumprimentos?" name="(SG) Encaminhar para aguardar cumprimentos?">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_certificar_decurso_prazo') == true ? '{sg_fbg_certificar_decurso_prazo}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_certificar_transito_julgado') == true ? '{sg_fbg_certificar_transito_julgado}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_encerrar_expediente') == true ? '{sg_fbg_encerrar_expediente}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_expedir_alvara') == true ? '{sg_fbg_expedir_alvara}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_expedir_carta') == true ? '{sg_fbg_expedir_carta}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_expedir_mandado') == true ? '{sg_fbg_expedir_mandado}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_expedir_oficio') == true ? '{sg_fbg_expedir_oficio}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_expedir_outros_documentos') == true ? '{sg_fbg_expedir_outros_documentos}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_intimar_citar') == true ? '{sg_fbg_intimar_citar}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_intimar_citar_estado') == true ? '{sg_fbg_intimar_citar_estado}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_intimar_citar_mp') == true ? '{sg_fbg_intimar_citar_mp}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_retificar_tipo_documento') == true ? '{sg_fbg_retificar_tipo_documento}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_publicar_dje') == true ? '{sg_fbg_publicar_dje}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_controlar_retorno_expediente') == true ? '{sg_fbg_controlar_retorno_expediente}' : ''))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_certificar_decurso_prazo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_certificar_transito_julgado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_intimar_citar')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_intimar_citar_estado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_intimar_citar_mp')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_expedir_carta')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_expedir_mandado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_expedir_alvara')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_expedir_oficio')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_encerrar_expediente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_retificar_tipo_documento')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_expedir_outros_documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_publicar_dje')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:sg_fbg_controlar_retorno_expediente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sg:finalizarCumprimentosSec')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Encaminhar para aguardar cumprimentos?')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('sg:finalizarCumprimentosSec', 'true')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_apensar_desapensar')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_certificar_decurso_prazo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_certificar_transito_julgado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_intimar_citar')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_intimar_citar_estado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_intimar_citar_mp')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_expedir_carta')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_expedir_mandado')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_expedir_alvara')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_expedir_oficio')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_encerrar_expediente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_retificar_tipo_documento')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_expedir_outros_documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_publicar_dje')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:fbg:aviso_secretaria_analisar')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_controlar_retorno_expediente')}"/>
+        </event>
+    </task-node>
     <node name="(SG) Gravar variavel fluxo unico - Suspender o processo">
         <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
         <event type="node-enter">
@@ -646,6 +837,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <transition to="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR"/>
+        <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
@@ -695,5 +887,6 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </event>
     <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event> 
+    </event>  
+    <!-- ACTIONS --> 
 </process-definition>
