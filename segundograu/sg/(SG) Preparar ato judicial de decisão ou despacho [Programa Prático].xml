@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+    <description><![CDATA[.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Assessoria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5899,600:5898,600:5197,600:5907,599:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <transition to="(SG) Deslocar para o órgão do Programa Prático" name="(SG) Deslocar para o órgão do Programa Prático"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="(SG) Deslocar para o órgão do Programa Prático">
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 74, 143, 21)}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" swimlane="Assessoria">
+            <controller>
+                <variable name="minuta_desp_dec_prog_prat" mapped-name="textEditCombo:minuta_desp_dec_prog_prat" access="read,write"/>
+                <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: minuta_desp_dec_prog_prat
+   Label: Minuta em elaboração
+   Escrita: Sim
+   Obrig. Sim
+   Tipo: Editor
+
+2. Variável: minutarLote
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Habilitar Minutar em Lote]]></description>
+        <transition to="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Deslocar para o órgão de origem" name="Encaminhar para confirmação"/>
+        <transition to="(SG) Gravar variável de cancelamento de conclusão" name="Cancelar tarefa e encaminhar para voto, relatório e ementa"/>
+        <event type="task-start">
+            <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+        </event>
+        <event type="task-end">
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
+            <action expression="#{not empty processoHome.idProcessoDocumento ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('TipoDocumentoTipoProcessoDocumento')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar tarefa e encaminhar para voto, relatório e ementa')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio','true')}"/>
+        </event>
+    </task-node>
+    <node name="(SG) Deslocar para o órgão de origem">
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(processInstance.contextInstance.getVariable('processo'))}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" swimlane="Assessoria">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: Processo_Fluxo_revisarMinuta
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Frame
+
+2. Variável: movimentacaoLote
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Habilitar Movimentação em Lote]]></description>
+        <transition to="(SG) Deslocar para o órgão do Programa Prático" name="Retornar para minuta"/>
+        <transition to="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR" name="Encaminhar para assinatura"/>
+        <transition to="(SG) Gravar variável de cancelamento de conclusão" name="Cancelar tarefa e encaminhar para voto, relatório e ementa"/>
+        <transition to="(SG) Enviar autos à secretaria" name="(SG) Enviar autos à secretaria">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Enviar autos à secretaria')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR" swimlane="Assessoria">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+                <variable name="assinaturaLote" mapped-name="assinarLote:assinaturaLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: Processo_Fluxo_revisarMinuta
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Frame
+
+2. Variável: movimentacaoLote
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Habilitar Movimentação em Lote
+
+3. Variável: assinaturaLote
+   Label: 
+   Escrita: Sim
+   Obrig. Não
+   Tipo: Habilitar Assinatura em Lote]]></description>
+        <transition to="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Enviar autos à secretaria" name="(SG) Enviar autos à secretaria">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" name="Retornar para revisão da minuta"/>
+        <transition to="(SG) Deslocar para o órgão do Programa Prático" name="Retornar para elaboração da minuta"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Enviar autos à secretaria')}"/>
+            <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
+        </event>
+    </task-node>
+    <process-state name="(SG) Enviar autos à secretaria">
+        <sub-process name="(SG) Autos recebidos do gabinete" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:progprat:conclusao_cancelada', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:progprat:dec_col_cancelada', true)}"/>
+        </event>
+    </process-state>
+    <node name="(SG) Gravar variável de cancelamento de conclusão">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:progprat:conclusao_cancelada', true)}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR"/>
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR"/>
+        <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>  
+    <!-- ACTIONS --> 
+</process-definition>

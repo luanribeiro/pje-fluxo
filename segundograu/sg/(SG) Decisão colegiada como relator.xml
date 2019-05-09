@@ -91,6 +91,9 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Sinalizar manualmente o julgamento" name="Encaminhar manualmente para preparação do acórdão">
             <condition expression="#{sessaoPautaProcessoTrfManager.isProcessoJulgadoUltimaSessao(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')))}"/>
         </transition>
+        <transition to="(SG) Encaminhar para o programa prático" name="Encaminhar para o programa prático">
+            <condition expression="#{parametroUtil.getParametro('pje:tjrn:idOjProgPratico').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().getOrgaoJulgador().getIdOrgaoJulgador()).concat('_'))}"/>
+        </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:votacaoColegiado:controlaLiberacao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:deccolrel:decisaoColegiadaVazia')}"/>
@@ -98,9 +101,22 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:controlaLiberacao', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Alterar escolha do tipo de conclusão')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Alterar escolha do tipo de conclusão,Encaminhar para o programa prático')}"/>
         </event>
     </task-node>
+    <process-state name="(SG) Encaminhar para o programa prático">
+        <sub-process name="(SG) Decisão colegiada como relator [Programa Prático]" binding="late"/>
+        <transition to="(SG) Retornar para minuta de voto, relatório e ementa pelo gab. de origem" name="(SG) Retornar para minuta de voto, relatório e ementa pelo gab. de origem"/>
+    </process-state>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:progprat:conclusao_cancelada') == false ? '(SG) Apagar variáveis do fluxo' : (tramitacaoProcessualService.recuperaVariavel('sg:progprat:dec_col_cancelada') == true ? '(SG) Voto, relatório e ementa - MINUTAR' : '(SG) Voto, relatório e ementa - VALIDAR')}" name="(SG) Retornar para minuta de voto, relatório e ementa pelo gab. de origem">
+        <transition to="(SG) Voto, relatório e ementa - MINUTAR" name="(SG) Voto, relatório e ementa - MINUTAR"/>
+        <transition to="(SG) Voto, relatório e ementa - VALIDAR" name="(SG) Voto, relatório e ementa - VALIDAR"/>
+        <transition to="(SG) Apagar variáveis do fluxo" name="(SG) Apagar variáveis do fluxo"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:progprat:conclusao_cancelada')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:progprat:dec_col_cancelada')}"/>
+        </event>
+    </decision>
     <decision expression="#{(entityManager.createQuery(&quot;SELECT COUNT(DISTINCT pd.tipoProcessoDocumento.idTipoProcessoDocumento) FROM ProcessoDocumento pd WHERE NOT EXISTS (SELECT DISTINCT pd.tipoProcessoDocumento.idTipoProcessoDocumento FROM ProcessoDocumentoBinPessoaAssinatura pdba WHERE pdba.processoDocumentoBin.idProcessoDocumentoBin = pd.processoDocumentoBin.idProcessoDocumentoBin) AND pd.processo = :processo AND pd.ativo=true AND pd.tipoProcessoDocumento.idTipoProcessoDocumento IN (77,73,72)&quot;).setParameter(&quot;processo&quot;, tramitacaoProcessualService.recuperaProcesso()).getSingleResult() == 3 ? (tramitacaoProcessualService.recuperaVariavel('sg:deccolrel:enviarMagistrado') == true ? '(SG) Voto, relatório e ementa - VALIDAR' : '(SG) Voto, relatório e ementa - CONFIRMAR') : '(SG) Voto, relatório e ementa - MINUTAR')}" name="(SG) Voto, relatório ou ementa vazio?">
         <transition to="(SG) Voto, relatório e ementa - MINUTAR" name="(SG) Voto, relatório e ementa - MINUTAR">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:deccolrel:decisaoColegiadaVazia', true)}"/>
@@ -608,7 +624,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
     </task-node>
-    <decision expression="#{ ( tramitacaoProcessualService.recuperaVariavel('sg:acordaorevisado') == true and not empty tramitacaoProcessualService.recuperaVariavel('MovimentosLancadosTemporariamente') ) ? '(SG) Lançar movimentação do acórdão' : '(SG) Acórdão aguardando movimento de julgamento - LANÇAR'}" name="(SG) Acórdão revisado?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:acordaorevisado') == true ? '(SG) Lançar movimentação do acórdão' : '(SG) Acórdão aguardando movimento de julgamento - LANÇAR'}" name="(SG) Acórdão revisado?">
         <transition to="(SG) Lançar movimentação do acórdão" name="(SG) Lançar movimentação do acórdão"/>
         <transition to="(SG) Acórdão aguardando movimento de julgamento - LANÇAR" name="(SG) Acórdão aguardando movimento de julgamento - LANÇAR"/>
     </decision>
