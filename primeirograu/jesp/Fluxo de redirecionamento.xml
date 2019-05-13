@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Fluxo de redirecionamento">
-    <description><![CDATA[Fluxo de redirecionamento com base na competência para controle de conflito de competência...]]></description>  
+    <description><![CDATA[Fluxo de redirecionamento com base na competência para controle de conflito de competência]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - Fluxo de redirecionamento">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
@@ -23,13 +23,16 @@
         <sub-process name="(SAJ) Saj migracao" binding="late"/>
         <transition to="Encaminhar para analise da secretaria" name="Encaminhar para analise da secretaria"/>
     </process-state>
-    <decision expression="#{ not empty contexts.sessionContext.get('migracao') and contexts.sessionContext.get('migracao').contains('PROJUDI') and parametroUtil.getParametro('pje:tjrn:ip3:migracao:ativo').equals('true') and tramitacaoProcessualService.recuperaProcesso().importadoSistemaLegado ? 'Entrar no projudi migração' : 'É digitalização?' }" name="É migração?">
+    <decision expression="#{ not empty contexts.sessionContext.get('migracao') and contexts.sessionContext.get('migracao').contains('PROJUDI') and parametroUtil.getParametro('pje:tjrn:ip3:migracao:ativo').equals('true') and tramitacaoProcessualService.recuperaProcesso().importadoSistemaLegado ? 'Entrar no projudi migração' : '(VCiv) Deslocar secretaria unificada' }" name="É migração?">
         <transition to="Entrar no projudi migração" name="Entrar no projudi migração"/>
-        <transition to="É digitalização?" name="É digitalização?"/>
+        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
     </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().importadoSistemaLegado == true ? 'Entrar no Processos digitalizados' : '(VCiv) Prevenção'}" name="É digitalização?">
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().importadoSistemaLegado == true ? 'Entrar no Processos digitalizados' : 'É competência de Fazenda?'}" name="É digitalização?">
         <transition to="Entrar no Processos digitalizados" name="Entrar no Processos digitalizados"/>
-        <transition to="(VCiv) Prevenção" name="(VCiv) Prevenção"/>
+        <transition to="(VCiv) Prevenção" name="(VCiv) Prevenção">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="É competência de Fazenda?" name="É competência de Fazenda?"/>
     </decision>
     <process-state name="Entrar no Processos digitalizados">
         <sub-process name="(VCiv) Processos digitalizados" binding="late"/>
@@ -143,11 +146,11 @@
     </task-node>
     <process-state name="(VCiv) Prevenção">
         <sub-process name="(VCiv) Prevenção" binding="late"/>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+        <transition to="É competência de Fazenda?" name="É competência de Fazenda?"/>
     </process-state>
     <process-state name="(VCiv) Deslocar secretaria unificada">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="É competência de Fazenda?" name="É competência de Fazenda?"/>
+        <transition to="É digitalização?" name="É digitalização?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
