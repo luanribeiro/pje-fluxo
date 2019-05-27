@@ -113,7 +113,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de despacho genérico ...
         <transition to="Término" name="Término"/>
     </task-node>
     <process-state name="(EF) Encaminhar para despachados">
-        <sub-process name="(EF) Despachos - Genérica - Execução Fiscal" binding="late"/>
+        <sub-process name="(EF) Autos recebidos do gabinete - Genérico" binding="late"/>
         <transition to="Término" name="Término"/>
     </process-state>
     <node name="(EF) Selecionar outro tipo de conclusão">
