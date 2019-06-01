@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Arquivamento"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de arquivamento"> 
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (RPP) Arquivamento">
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de arquivamento">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
@@ -16,7 +16,7 @@
     <!-- NODES -->
     <task-node end-tasks="true" name="(RPP) Arquivo - CONFIRMAR">
         <task name="(RPP) Arquivo - CONFIRMAR" swimlane="Secretaria"/>
-        <transition to="Nó de Desvio - (RPP) Arquivamento" name="Nó de Desvio - (RPP) Arquivamento">
+        <transition to="Nó de Desvio - (RPP) Fluxo de arquivamento" name="Nó de Desvio - (RPP) Fluxo de arquivamento">
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
@@ -32,7 +32,7 @@
     </node>
     <task-node end-tasks="true" name="(RPP) ~Arquivo definitivo">
         <task name="(RPP) ~Arquivo definitivo" swimlane="Secretaria"/>
-        <transition to="Nó de Desvio - (RPP) Arquivamento" name="Nó de Desvio - (RPP) Arquivamento">
+        <transition to="Nó de Desvio - (RPP) Fluxo de arquivamento" name="Nó de Desvio - (RPP) Fluxo de arquivamento">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Subfluxo Preparar ato judicial de decisão sobre reativação" name="Enviar conclusos para decisão sobre reativação"/>
@@ -54,8 +54,8 @@
         </event>
     </node>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Arquivamento">
-        <task name="Nó de Desvio - (RPP) Arquivamento" swimlane="Nó de Desvio - (RPP) Arquivamento"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de arquivamento">
+        <task name="Nó de Desvio - (RPP) Fluxo de arquivamento" swimlane="Nó de Desvio - (RPP) Fluxo de arquivamento"/>
         <transition to="Término" name="Término"/>
         <transition to="(RPP) Arquivo - CONFIRMAR" name="(RPP) Arquivo - CONFIRMAR"/>
         <transition to="(RPP) ~Arquivo definitivo" name="(RPP) ~Arquivo definitivo"/>

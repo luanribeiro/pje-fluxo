@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Controle de audiência">
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de controle de audiência">
     <description><![CDATA[Código do fluxo: CPP_CONT_AUD
 
 Descrição: Fluxo destinado ao controle de audiências.
@@ -8,7 +8,7 @@ Descrição: Fluxo destinado ao controle de audiências.
 Raia        Localização              Papel
 Secretaria  Secretaria               Chefe de Secretaria]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (RPP) Controle de audiência">
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
@@ -44,7 +44,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote]]></description>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Audiência - REALIZAR" name="Realizar audiência">
@@ -73,7 +73,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
    Obrig.: Não
    Tipo: Aviso]]></description>
         <transition to="(RPP) Audiência - DESIGNAR" name="Designar audiência"/>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Audiência - REALIZAR" name="Realizar audiência">
@@ -114,7 +114,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="(RPP) Audiência - DESIGNAR" name="Designar audiência"/>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Audiência - AGUARDAR" name="Aguardar audiência">
@@ -159,7 +159,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="(RPP) Audiência - CONTROLAR" name="Encaminhar para controle de audiência"/>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Audiência - CANCELAR" name="Cancelar audiência">
@@ -193,7 +193,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="(RPP) Audiência - CONTROLAR" name="Encaminhar para controle de audiência"/>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
@@ -215,13 +215,13 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
             </controller>
         </task>
         <transition to="(RPP) Audiência - DESIGNAR" name="Designar audiência"/>
-        <transition to="Nó de Desvio - (RPP) Controle de audiência" name="Nó de Desvio - (RPP) Controle de audiência">
+        <transition to="Nó de Desvio - (RPP) Fluxo de controle de audiência" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Controle de audiência">
-        <task name="Nó de Desvio - (RPP) Controle de audiência" swimlane="Nó de Desvio - (RPP) Controle de audiência"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de controle de audiência">
+        <task name="Nó de Desvio - (RPP) Fluxo de controle de audiência" swimlane="Nó de Desvio - (RPP) Fluxo de controle de audiência"/>
         <transition to="Término" name="Término"/>
         <transition to="(RPP) Audiência - DESIGNAR" name="(RPP) Audiência - DESIGNAR"/>
         <transition to="(RPP) Audiência - CONTROLAR" name="(RPP) Audiência - CONTROLAR"/>
