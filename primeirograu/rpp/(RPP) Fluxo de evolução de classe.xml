@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(CPP) Autos recebidos do gabinete [decisão sobre reativação]"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de evolução de classe"> 
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de evolução de classe">
+        <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR" name="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR"/>
+        <task name="Tarefa inicial"/>
+        <transition to="(RPP) Evolução de classe - EFETUAR" name="(RPP) Evolução de classe - EFETUAR"/>
     </start-state>  
     <!-- NODES -->
-    <task-node end-tasks="true" name="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR">
-        <task name="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR" swimlane="Secretaria">
+    <task-node end-tasks="true" name="(RPP) Evolução de classe - EFETUAR">
+        <task name="(RPP) Evolução de classe - EFETUAR" swimlane="Secretaria">
             <controller>
-                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="Processo_Fluxo_abaEvolucaoClasse" mapped-name="frame:Processo_Fluxo_abaEvolucaoClasse" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]" name="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]">
+        <transition to="Nó de Desvio - (RPP) Fluxo de evolução de classe" name="Nó de Desvio - (RPP) Fluxo de evolução de classe">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(CPP) Sinalizar reativação" name="Reativar processo"/>
-        <transition to="(CPP) Sinalizar manter arquivado" name="Manter processo arquivado"/>
+        <transition to="(RPP) Sinalizar cancelamento da evolução de classe" name="Cancelar evolução de classe"/>
+        <transition to="Término" name="Término">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar evolução de classe')}"/>
+        </event>
     </task-node>
-    <node name="(CPP) Sinalizar reativação">
+    <node name="(RPP) Sinalizar cancelamento da evolução de classe">
         <transition to="Término" name="Término"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', 'Reativar')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', 'cancelarEvolucaoClasse')}"/>
         </event>
     </node>
-    <node name="(CPP) Sinalizar manter arquivado">
-        <transition to="Término" name="Término"/>
+    <end-state name="Término">
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', 'manterArquivado')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', 'evolucaoClasseConfirmada')}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:cpp:sinalizacao') == 'evolucaoClasseConfirmada' ? preencherMovimento.deCodigo(10966).comComplementoDeCodigo(31).doTipoDinamico().preencherComObjeto(processoTrfHome.getClasseJudicialAnterior()).comComplementoDeCodigo(32).doTipoDinamico().preencherComObjeto(processoHistoricoClasseHome.instance.getClasseJudicialAtual()).lancarMovimento() : ''}"/>
         </event>
-    </node>
-    <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]">
-        <task name="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]" swimlane="Nó de Desvio - (CPP) Autos recebidos do gabinete [decisão sobre reativação]"/>
+    </end-state>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de evolução de classe">
+        <task name="Nó de Desvio - (RPP) Fluxo de evolução de classe" swimlane="Nó de Desvio - (RPP) Fluxo de evolução de classe"/>
         <transition to="Término" name="Término"/>
-        <transition to="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR" name="(CPP) Autos recebidos do gabinete [decisão sobre reativação] - ANALISAR"/>
+        <transition to="(RPP) Evolução de classe - EFETUAR" name="(RPP) Evolução de classe - EFETUAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="node-enter">
@@ -92,5 +98,6 @@
     </event>
     <event type="timer">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event> 
+    </event>  
+    <!-- ACTIONS --> 
 </process-definition>
