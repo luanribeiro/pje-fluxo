@@ -158,7 +158,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     <node name="(SG) Lançar movimento de concluso">
         <transition to="(SG) Enviar autos ao gabinete" name="(SG) Enviar autos ao gabinete"/>
         <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(51).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(6).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(51).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(6).lancarMovimento()}"/>
         </event>
     </node>
     <process-state name="(SG) Enviar autos ao gabinete">
