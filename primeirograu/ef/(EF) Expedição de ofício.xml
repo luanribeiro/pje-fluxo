@@ -223,14 +223,14 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Ofício - EXPEDIR" name="Retornar para expedição">
-            <condition expression="#{empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and  revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and  revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <transition to="(EF) Ofício [magistrado] - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
         <transition to="(EF) Lançar movimento de expedição de ofício" name="(EF) Lançar movimento de expedição de ofício">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Lançar movimento de expedição de ofício" name="Documento já assinado.">
-            <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>

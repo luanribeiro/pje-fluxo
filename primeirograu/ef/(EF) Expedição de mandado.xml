@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de mandado">
-    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO.
+    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
 
 Descrição: Preparar mandado.
 
@@ -309,7 +309,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Mandado - EXPEDIR" name="Retornar para minuta de mandado">
-            <condition expression="#{empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and  revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and  revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <transition to="(EF) Mandado [magistrado] - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
         <transition to="(EF) Mandado pendente de escolha de central - SELECIONAR" name="(EF) Mandado pendente de escolha de central - SELECIONAR">
