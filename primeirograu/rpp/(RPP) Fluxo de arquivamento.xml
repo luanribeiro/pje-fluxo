@@ -35,10 +35,10 @@
         <transition to="Nó de Desvio - (RPP) Fluxo de arquivamento" name="Nó de Desvio - (RPP) Fluxo de arquivamento">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(RPP) Subfluxo Preparar ato judicial de decisão sobre reativação" name="Enviar conclusos para decisão sobre reativação"/>
+        <transition to="(RPP) Subfluxo de preparação de ato judicial de decisão sobre reativação" name="Enviar conclusos para decisão sobre reativação"/>
     </task-node>
-    <process-state name="(RPP) Subfluxo Preparar ato judicial de decisão sobre reativação">
-        <sub-process name="(RPP) Preparar ato judicial de decisão sobre reativação" binding="late"/>
+    <process-state name="(RPP) Subfluxo de preparação de ato judicial de decisão sobre reativação">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" binding="late"/>
         <transition to="(RPP) Sinalizou que vai reativar?" name="(RPP) Sinalizou que vai reativar?"/>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:cpp:sinalizacao') == 'manterArquivado' ? '(RPP) ~Arquivo definitivo' : '(RPP) Lançar movimento de reativação'}" name="(RPP) Sinalizou que vai reativar?">

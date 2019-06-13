@@ -2,11 +2,11 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de realização de audiência"> 
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
-    </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">

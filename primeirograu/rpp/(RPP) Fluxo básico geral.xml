@@ -33,7 +33,7 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
         </event>
     </task-node>
     <decision expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso() ? '(RPP) Subfluxo Preparar carta convite' : '(RPP) Sinalizar designar audiência'}" name="(RPP) Existe audiência pendente?">
-        <transition to="(RPP) Subfluxo Preparar carta convite" name="(RPP) Subfluxo Preparar carta convite"/>
+        <transition to="(RPP) Subfluxo de preparação de carta convite" name="(RPP) Subfluxo Preparação de carta convite"/>
         <transition to="(RPP) Sinalizar designar audiência" name="(RPP) Sinalizar designar audiência"/>
     </decision>
     <node name="(RPP) Sinalizar designar audiência">
@@ -43,15 +43,15 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
         </event>
     </node>
     <process-state name="(RPP) Subfluxo Controle de audência">
-        <sub-process name="(RPP) Controle de audiência" binding="late"/>
+        <sub-process name="(RPP) Fluxo de controle de audiência" binding="late"/>
         <transition to="(RPP) Evolução de classe foi realizada?" name="(RPP) Evolução de classe foi realizada?"/>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:cpp:sinalizacao') == 'evolucaoClasseConfirmada' ? 'Término' : '(RPP) Secretaria - ANALISAR'}" name="(RPP) Evolução de classe foi realizada?">
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
         <transition to="Término" name="Término"/>
     </decision>
-    <process-state name="(RPP) Subfluxo Preparar carta convite">
-        <sub-process name="(RPP) Preparar carta convite" binding="late"/>
+    <process-state name="(RPP) Subfluxo de preparação de carta convite">
+        <sub-process name="(RPP) Fluxo de preparação de carta convite" binding="late"/>
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
     </process-state>
     <task-node end-tasks="true" name="(RPP) Secretaria - ANALISAR">
@@ -61,7 +61,7 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
             </controller>
         </task>
         <transition to="(RPP) Subfluxo Controle de audência" name="Controlar audiência"/>
-        <transition to="(RPP) Subfluxo Preparar carta convite" name="Preparar carta convite"/>
+        <transition to="(RPP) Subfluxo de preparação de carta convite" name="Preparar carta convite"/>
         <transition to="Nó de Desvio - (RPP) Fluxo básico geral" name="Nó de Desvio - (RPP) Fluxo básico geral">
             <condition expression="#{true}"/>
         </transition>
@@ -72,7 +72,7 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
         </event>
     </task-node>
     <process-state name="(RPP) Subfluxo Arquivamento">
-        <sub-process name="(RPP) Arquivamento" binding="late"/>
+        <sub-process name="(RPP) Fluxo de arquivamento" binding="late"/>
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
     </process-state>
     <process-state name="(RPP) Fluxo de evolução de classe">

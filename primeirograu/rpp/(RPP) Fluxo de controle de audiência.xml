@@ -86,7 +86,7 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
         <transition to="(RPP) Audiência - CANCELAR" name="Cancelar audiência">
             <condition expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso()}"/>
         </transition>
-        <transition to="(RPP) Subfluxo Preparar carta convite" name="Elaborar carta convite">
+        <transition to="(RPP) Subfluxo de preparação de carta convite" name="Elaborar carta convite">
             <condition expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso()}"/>
         </transition>
         <event type="task-create">
@@ -200,12 +200,12 @@ Secretaria  Secretaria               Chefe de Secretaria]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
-    <decision expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso() ? '(RPP) Subfluxo Preparar carta convite' : '(RPP) Audiência [mensagem de erro] - ANALISAR'}" name="(RPP) Existe audiência designada?">
-        <transition to="(RPP) Subfluxo Preparar carta convite" name="(RPP) Subfluxo Preparar carta convite"/>
+    <decision expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso() ? '(RPP) Subfluxo de preparação de carta convite' : '(RPP) Audiência [mensagem de erro] - ANALISAR'}" name="(RPP) Existe audiência designada?">
+        <transition to="(RPP) Subfluxo de preparação de carta convite" name="(RPP) Subfluxo de preparação de carta convite"/>
         <transition to="(RPP) Audiência [mensagem de erro] - ANALISAR" name="(RPP) Audiência [mensagem de erro] - ANALISAR"/>
     </decision>
-    <process-state name="(RPP) Subfluxo Preparar carta convite">
-        <sub-process name="(RPP) Preparar carta convite" binding="late"/>
+    <process-state name="(RPP) Subfluxo de preparação de carta convite">
+        <sub-process name="(RPP) Fluxo de preparação de carta convite" binding="late"/>
         <transition to="(RPP) Audiência - AGUARDAR" name="(RPP) Audiência - AGUARDAR"/>
     </process-state>
     <task-node end-tasks="true" name="(RPP) Audiência [mensagem de erro] - ANALISAR">

@@ -35,7 +35,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Conclusos para decisão sobre reativação - ASSINAR" name="Encaminhar para assinatura"/>
-        <transition to="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
@@ -65,7 +65,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(RPP) Conclusos para decisão sobre reativação - MINUTAR" name="Retornar para minutar"/>
-        <transition to="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
@@ -75,8 +75,8 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
         </event>
     </task-node>
-    <process-state name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
-        <sub-process name="(RPP) Autos recebidos do gabinete [decisão sobre reativação]" binding="late"/>
+    <process-state name="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]">
+        <sub-process name="(RPP) Fluxo de autos recebidos do gabinete [decisão sobre reativação]" binding="late"/>
         <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
     </process-state>
     <node name="(RPP) Apagar variáveis do fluxo">
