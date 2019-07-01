@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Fluxo básico de conhecimento">
-    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum...............
+    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum............
 Aguardar Perícia / Laudo Técnico / Outros]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
@@ -185,6 +185,10 @@ Aguardar Perícia / Laudo Técnico / Outros]]></description>
         <transition to="(VCiv) Penhora eletrônica - Poti" name="18 - Enviar à Penhora eletrônica - Poti"/>
         <transition to=" (VCiv) Encaminhar para novo fluxo de Execução Fiscal" name="19 - Encaminhar para novo fluxo de Execução Fiscal">
             <condition expression="#{(parametroUtil.getParametro('pje:tjrn:fluxo:ef:ojs:ids').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) &amp;&amp; processoTrfHome.possuiClasse(23)}"/>
+        </transition>
+        <transition to="(VCiv) Conclusão para decisão de urgência inicial" name="07 - Enviar concluso para decisão de urgência inicial"/>
+        <transition to="(VCiv) Conclusão para despacho inicial" name="15 - Enviar concluso para despacho inicial">
+            <condition expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsJuizados').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')))}"/>
         </transition>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:vciv_fbc_aguardar_laudo_tecnico')}"/>
@@ -936,6 +940,9 @@ Aguardar Perícia / Laudo Técnico / Outros]]></description>
         </transition>
         <transition to="(VCiv) Análise da secretaria" name="Encaminhar para análise da secretaria"/>
         <transition to="(VCiv) Citar e(ou) intimar" name="Citar e(ou) intimar"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:docinsuficanalisada', true)}"/>
+        </event>
     </task-node>
     <process-state name="(VCiv) Penhora eletrônica - Poti">
         <sub-process name="(VCiv) Poti" binding="late"/>
