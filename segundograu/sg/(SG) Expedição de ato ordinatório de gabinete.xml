@@ -135,7 +135,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:conclusao_cancelada', false)}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao'))).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).lancarMovimento()}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:eaog:assinou_ato_ordinatorio', true)}"/>
         </event>
     </node>
