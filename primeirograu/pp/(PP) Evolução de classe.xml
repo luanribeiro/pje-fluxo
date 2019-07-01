@@ -63,7 +63,7 @@ Secretaria  Secretaria               Chefe de Secretaria
     </node>
     <end-state name="Término">
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:efetuada') == true ? preencherMovimento.deCodigo(10966).comComplementoDeCodigo(31).doTipoDinamico().preencherComObjeto(processoTrfHome.getClasseJudicialAnterior()).comComplementoDeCodigo(32).doTipoDinamico().preencherComObjeto(processoHistoricoClasseHome.instance.getClasseJudicialAtual()).lancarMovimento() : ''}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:efetuada') == true ? preencherMovimento.deCodigo(10966).comComplementoDeCodigo(26).doTipoDinamico().preencherComObjeto(processoTrfHome.getClasseJudicialAnterior()).comComplementoDeCodigo(27).doTipoDinamico().preencherComObjeto(processoHistoricoClasseHome.instance.getClasseJudicialAtual()).lancarMovimento() : ''}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pp:evolucao:efetuada')}"/>
         </event>
     </end-state>
