@@ -129,18 +129,30 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de citação" name="Nó de Desvio - (EF) Expedição de citação">
             <condition expression="#{true}"/>
@@ -186,24 +198,42 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de citação" name="Nó de Desvio - (EF) Expedição de citação">
             <condition expression="#{true}"/>
@@ -217,8 +247,9 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <transition to="(EF) Prazo de 60 dias" name="07 - Prazo para manifestação: 60 dias"/>
         <transition to="(EF) Prazo de 90 dias" name="08 - Prazo para manifestação: 90 dias"/>
         <transition to="(EF) Prazo de 120 dias" name="09 - Prazo para manifestação: 120 dias"/>
-        <transition to="(EF) Apagar minuta não assinada de citação" name="10 - Cancelar e sair da tarefa"/>
-        <transition to="(EF) Retornar para minuta" name="11 - Retornar para minuta de citação"/>
+        <transition to="(EF) Prazo de 365 dias" name="10 - Prazo para manifestação: 365 dias"/>
+        <transition to="(EF) Apagar minuta não assinada de citação" name="11 - Cancelar e sair da tarefa"/>
+        <transition to="(EF) Retornar para minuta" name="12 - Retornar para minuta de citação"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
@@ -280,6 +311,12 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:prazoManifestacao:citacao', 120)}"/>
         </event>
     </node>
+    <node name="(EF) Prazo de 365 dias">
+        <transition to="(EF) Meio já informado?" name="(EF) Meio já informado?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:prazoManifestacao:citacao', 365)}"/>
+        </event>
+    </node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('ef:meioExp:citacao') == null ? '(EF) Citação pendente de escolha do meio de expedição - SELECIONAR' : '(EF) Assinar?'}" name="(EF) Meio já informado?">
         <transition to="(EF) Citação pendente de escolha do meio de expedição - SELECIONAR" name="(EF) Citação pendente de escolha do meio de expedição - SELECIONAR"/>
         <transition to="(EF) Assinar?" name="(EF) Assinar?"/>
@@ -296,30 +333,54 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: aviso3
-   Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao')).concat(' dias.'))}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-4. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: aviso3
+
+   Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao')).concat(' dias.'))}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+4. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="(EF) Meio de expedição: Correios" name="Meio de expedição: Correios"/>
         <transition to="(EF) Meio de expedição: Sistema" name="Meio de expedição: Sistema"/>
@@ -381,48 +442,90 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: aviso3
-   Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao')).concat(' dias.'))}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-4. Variável: aviso4
-   Label: #{'Meio de expedição: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:citacao:texto')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-5. Variável: Processo_Fluxo_revisarMinuta
-   Label: Assinar minuta
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Frame
-
-6. Variável: MovimentarEmLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Habilitar Movimentação em Lote
-
-7. Variável: AssinaturaEmLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_cit:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:citacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: aviso3
+
+   Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:citacao')).concat(' dias.'))}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+4. Variável: aviso4
+
+   Label: #{'Meio de expedição: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:citacao:texto')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+5. Variável: Processo_Fluxo_revisarMinuta
+
+   Label: Assinar minuta
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Frame
+
+
+
+6. Variável: MovimentarEmLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Habilitar Movimentação em Lote
+
+
+
+7. Variável: AssinaturaEmLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Assinatura em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de citação" name="Nó de Desvio - (EF) Expedição de citação">
             <condition expression="#{true}"/>

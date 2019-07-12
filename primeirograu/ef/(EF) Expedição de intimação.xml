@@ -3,7 +3,7 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de intimação">
     <description><![CDATA[Código do fluxo: EF_EXP_INT.
 
-Descrição: Preparar intimação.
+Descrição: Preparar intimação...
 
 Raia        Localização     Papel
 Secretaria  Secretaria      Chefe de Secretaria
@@ -50,7 +50,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Intimação - EXPEDIR" name="01 - Novo documento"/>
-        <transition to="(EF) Documento do processo" name="02 - Documento do processo"/>
+        <transition to="(EF) Vericar Ato Proferido" name="02 - Documento do processo"/>
         <transition to="(EF) Preparar comunicação padrão" name="03 - Preparar comunicação (padrão)"/>
         <transition to="(EF) Apagar variáveis e minuta não assinada de intimação" name="04 - Cancelar e sair da tarefa"/>
         <event type="task-end">
@@ -217,24 +217,42 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de intimação" name="Nó de Desvio - (EF) Expedição de intimação">
             <condition expression="#{true}"/>
@@ -332,24 +350,42 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Movimentação em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de intimação" name="Nó de Desvio - (EF) Expedição de intimação">
             <condition expression="#{true}"/>
@@ -530,54 +566,102 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* Variáveis *
-
-1. Variável: aviso1
-   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-2. Variável: aviso2
-   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-3. Variável: aviso3
-   Label: #{tramitacaoProcessualService.recuperaVariavel('ef:prazoAtivo:intimacao:texto')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-4. Variável: aviso4
-   Label: #{tramitacaoProcessualService.recuperaVariavel('ef:prazoPassivo:intimacao:texto')}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-5. Variável: aviso5
-   Label: #{'Meio de expedição: '.concat('C'.equals(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:intimacao'))?'Correios.':('M'.equals(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:intimacao'))?'Central de Mandados.':'Sistema.'))}
-    Escrita: Sim
-    Obrig.: Não
-    Tipo: Aviso
-
-6. Variável: Processo_Fluxo_revisarMinuta
-   Label: Assinar minuta
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Frame
-
-7. Variável: MovimentarEmLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Habilitar Movimentação em Lote
-
-8. Variável: AssinaturaEmLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[* Variáveis *
+
+
+
+1. Variável: aviso1
+
+   Label: #{'Documento: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:exp_int:docProcesso')?'Último ato proferido':'Novo documento').concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: aviso2
+
+   Label: #{'Destinatários: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:intimacao')).concat('.')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+3. Variável: aviso3
+
+   Label: #{tramitacaoProcessualService.recuperaVariavel('ef:prazoAtivo:intimacao:texto')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+4. Variável: aviso4
+
+   Label: #{tramitacaoProcessualService.recuperaVariavel('ef:prazoPassivo:intimacao:texto')}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+5. Variável: aviso5
+
+   Label: #{'Meio de expedição: '.concat('C'.equals(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:intimacao'))?'Correios.':('M'.equals(tramitacaoProcessualService.recuperaVariavel('ef:meioExp:intimacao'))?'Central de Mandados.':'Sistema.'))}
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+6. Variável: Processo_Fluxo_revisarMinuta
+
+   Label: Assinar minuta
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Frame
+
+
+
+7. Variável: MovimentarEmLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Habilitar Movimentação em Lote
+
+
+
+8. Variável: AssinaturaEmLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Assinatura em Lote]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de intimação" name="Nó de Desvio - (EF) Expedição de intimação">
             <condition expression="#{true}"/>
@@ -719,6 +803,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ef:meioExp:intimacao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ef:exp_int:idProcessoDocumento')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ef:exp_int:docProcesso')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('combo_objetos:comboDocumento')}"/>
         </event>
     </node>
     <process-state name="(EF) Devolução à secretaria">
@@ -738,6 +823,50 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <transition to="(EF) Intimação pendente de documento - SELECIONAR" name="(EF) Intimação pendente de documento - SELECIONAR"/>
         <transition to="(EF) Intimação pendente de escolha de prazo do polo ativo - SELECIONAR" name="(EF) Intimação pendente de escolha de prazo do polo ativo - SELECIONAR"/>
         <transition to="(EF) Intimação pendente de escolha de prazo do polo passivo - SELECIONAR" name="(EF) Intimação pendente de escolha de prazo do polo passivo - SELECIONAR"/>
+        <transition to="(EF) Expediente de intimação pendente ato proferido - SELECIONAR" name="(EF) Expediente de intimação pendente ato proferido - SELECIONAR"/>
+    </task-node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:atoProferido') ? '(EF) Documento do processo' : '(EF) Expediente de intimação pendente ato proferido - SELECIONAR'}" name="(EF) Vericar Ato Proferido">
+        <transition to="(EF) Expediente de intimação pendente ato proferido - SELECIONAR" name="(EF) Expediente de intimação pendente ato proferido - SELECIONAR"/>
+        <transition to="(EF) Documento do processo" name="(EF) Documento do processo"/>
+    </decision>
+    <task-node end-tasks="true" name="(EF) Expediente de intimação pendente ato proferido - SELECIONAR">
+        <task name="(EF) Expediente de intimação pendente ato proferido - SELECIONAR" swimlane="Secretaria">
+            <controller>
+                <variable name="labelComboDocumento" mapped-name="textAlert:labelComboDocumento" access="read,write"/>
+                <variable name="comboDocumento" mapped-name="combo_objetos:comboDocumento" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[* Variáveis *
+
+1. Variável: labelComboDocumento
+
+   Label: Selecione o ato abaixo que deseja intimar
+
+    Escrita: Sim
+
+    Obrig.: Não
+
+    Tipo: Aviso
+
+
+
+2. Variável: comboDocumento
+
+   Label: #{ entityManager.createQuery(parametroUtil.getParametro("pje:tjrn:hql:atosGabinetePorProcesso")).setParameter("proc", tramitacaoProcessualService.recuperaProcesso()).getResultList() }
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Combo de objeto]]></description>
+        <transition to="(EF) Documento do processo" name="Prosseguir"/>
+        <transition to="Nó de Desvio - (EF) Expedição de intimação" name="Nó de Desvio - (EF) Expedição de intimação">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(EF) Intimação pendente de documento - SELECIONAR" name="Retornar para expedição"/>
+        <event type="task-end">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('pje:atoProferido', tramitacaoProcessualService.recuperaVariavelTarefa('combo_objetos:comboDocumento').idProcessoDocumento)}"/>
+        </event>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
