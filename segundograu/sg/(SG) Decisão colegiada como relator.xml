@@ -31,17 +31,16 @@ Magistrado  Assessoria Segundo Grau  Assessor
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
-        <transition to="(SG) Voto, relatório e ementa - MINUTAR" name="(SG) Voto, relatório e ementa - MINUTAR"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
+        <transition to="(SG) Encaminhar para o Programa Prático?" name="(SG) Encaminhar para o Programa Prático?"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Voto, relatório e ementa - MINUTAR">
-        <task name="(SG) Voto, relatório e ementa - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Voto, relatório e ementa - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="WEB-INF_xhtml_flx_votacaoColegiado" mapped-name="frame:WEB-INF_xhtml_flx_votacaoColegiado" access="read,write"/>
                 <variable name="aviso2" mapped-name="textAlert:aviso2" access="read,write"/>
-                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
@@ -104,6 +103,13 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Alterar escolha do tipo de conclusão,Encaminhar para o programa prático')}"/>
         </event>
     </task-node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:progprat:encam') == true ? '(SG) Encaminhar para o programa prático' : '(SG) Voto, relatório e ementa - MINUTAR'}" name="(SG) Encaminhar para o Programa Prático?">
+        <transition to="(SG) Voto, relatório e ementa - MINUTAR" name="(SG) Voto, relatório e ementa - MINUTAR"/>
+        <transition to="(SG) Encaminhar para o programa prático" name="(SG) Encaminhar para o programa prático"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:progprat:encam')}"/>
+        </event>
+    </decision>
     <process-state name="(SG) Encaminhar para o programa prático">
         <sub-process name="(SG) Decisão colegiada como relator [Programa Prático]" binding="late"/>
         <transition to="(SG) Retornar para minuta de voto, relatório e ementa pelo gab. de origem" name="(SG) Retornar para minuta de voto, relatório e ementa pelo gab. de origem"/>
@@ -132,7 +138,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </decision>
     <task-node end-tasks="true" name="(SG) Voto, relatório e ementa - CONFIRMAR">
-        <task name="(SG) Voto, relatório e ementa - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Voto, relatório e ementa - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoColegiado" mapped-name="frame:WEB-INF_xhtml_flx_votacaoColegiado" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -164,7 +170,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Voto, relatório e ementa - VALIDAR">
-        <task name="(SG) Voto, relatório e ementa - VALIDAR" swimlane="Magistrado">
+        <task name="(SG) Voto, relatório e ementa - VALIDAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoColegiado" mapped-name="frame:WEB-INF_xhtml_flx_votacaoColegiado" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -233,7 +239,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Voto, relatório e ementa - VALIDAR" name="(SG) Voto, relatório e ementa - VALIDAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Votação antecipada - AGUARDAR">
-        <task name="(SG) Votação antecipada - AGUARDAR" swimlane="Assessoria">
+        <task name="(SG) Votação antecipada - AGUARDAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoVogal" mapped-name="frame:WEB-INF_xhtml_flx_votacaoVogal" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -315,7 +321,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Sessão de julgamento - AGUARDAR">
-        <task name="(SG) Sessão de julgamento - AGUARDAR" swimlane="Assessoria">
+        <task name="(SG) Sessão de julgamento - AGUARDAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoVogal" mapped-name="frame:WEB-INF_xhtml_flx_votacaoVogal" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -403,7 +409,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Retirar aptidão para julgamento" name="retiradoJulgamento"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Retirado de pauta - ANALISAR">
-        <task name="(SG) Retirado de pauta - ANALISAR" swimlane="Magistrado">
+        <task name="(SG) Retirado de pauta - ANALISAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoVogal" mapped-name="frame:WEB-INF_xhtml_flx_votacaoVogal" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -448,7 +454,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Acórdão [Inteiro Teor] - CONFERIR" name="(SG) Acórdão [Inteiro Teor] - CONFERIR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Acórdão [Inteiro Teor] - CONFERIR">
-        <task name="(SG) Acórdão [Inteiro Teor] - CONFERIR" swimlane="Redação judiciária">
+        <task name="(SG) Acórdão [Inteiro Teor] - CONFERIR" swimlane="Redação judiciária" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read"/>
                 <variable name="aviso2" mapped-name="textAlert:aviso2" access="read"/>
@@ -525,7 +531,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Acórdão [Inteiro Teor] - REVISAR">
-        <task name="(SG) Acórdão [Inteiro Teor] - REVISAR" swimlane="Assessoria">
+        <task name="(SG) Acórdão [Inteiro Teor] - REVISAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_elaborarAcordao" mapped-name="frame:WEB-INF_xhtml_flx_elaborarAcordao" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -571,7 +577,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Acórdão [Inteiro Teor] - ASSINAR">
-        <task name="(SG) Acórdão [Inteiro Teor] - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Acórdão [Inteiro Teor] - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_elaborarAcordao" mapped-name="frame:WEB-INF_xhtml_flx_elaborarAcordao" access="read,write"/>
                 <variable name="assinaturaInteiroTeorLote" mapped-name="assinarInteiroTeorLote:assinaturaInteiroTeorLote" access="read,write"/>
@@ -633,12 +639,12 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <event type="node-enter">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))}"/>
-            <action expression="#{eventsHomologarMovimentosTree.setEventoBeanList(tramitacaoProcessualService.recuperaVariavel('MovimentosLancadosTemporariamente'))}"/>
+            <action expression="#{eventsHomologarMovimentosTree.setEventoBeanList(lancadorMovimentosService.getMovimentosTemporarios())}"/>
             <action expression="#{ eventsHomologarMovimentosTree.registraEventosSemFluxo(tramitacaoProcessualService.recuperaProcesso().processo, processoDocumentoManager.findById(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao'))) }"/>
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Acórdão aguardando movimento de julgamento - LANÇAR">
-        <task name="(SG) Acórdão aguardando movimento de julgamento - LANÇAR" swimlane="Assessoria">
+        <task name="(SG) Acórdão aguardando movimento de julgamento - LANÇAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
@@ -726,7 +732,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Decisão colegiada como relator">
-        <task name="Nó de Desvio - (SG) Decisão colegiada como relator" swimlane="Nó de Desvio - (SG) Decisão colegiada como relator"/>
+        <task name="Nó de Desvio - (SG) Decisão colegiada como relator" swimlane="Nó de Desvio - (SG) Decisão colegiada como relator" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Voto, relatório e ementa - MINUTAR" name="(SG) Voto, relatório e ementa - MINUTAR"/>
         <transition to="(SG) Voto, relatório e ementa - VALIDAR" name="(SG) Voto, relatório e ementa - VALIDAR"/>
