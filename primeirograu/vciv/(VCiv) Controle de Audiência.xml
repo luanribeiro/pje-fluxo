@@ -229,6 +229,7 @@
         <transition to="(VCiv) Deslocar OJ origem" name="Encaminhar para assinatura do magistrado com ato judicial"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('AgrupamentosLancadosTemporariamente','14')}"/>
         </event>
         <event type="node-leave">
             <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('aviso')}"/>
