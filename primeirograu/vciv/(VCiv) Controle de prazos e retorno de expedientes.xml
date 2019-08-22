@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de prazos e retorno de expedientes">
-    <description><![CDATA[Controla prazos e retorno de expedientes.
-
-(VCiv) Aguardando devolução do AR - avisoHaExpedientes - #{tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') != null ? tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') : ''}
-
+    <description><![CDATA[Controla prazos e retorno de expedientes.
+
+(VCiv) Aguardando devolução do AR - avisoHaExpedientes - #{tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') != null ? tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') : ''}
+
 (VCiv) Aguardando devolução do AR - WEB-INF_xhtml_flx_exped_controleCorreios - Inserir informação de AR....]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">

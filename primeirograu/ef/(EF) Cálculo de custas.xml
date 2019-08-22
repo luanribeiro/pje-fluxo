@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) CÃ¡lculo de custas">
-    <description><![CDATA[CÃ³digo do fluxo: EF_CALCULAR_CUSTAS
-DescriÃ§Ã£o:
-CÃ¡lculo de Custas.]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Cálculo de custas">
+    <description><![CDATA[Código do fluxo: EF_CALCULAR_CUSTAS
+Descrição:
+Cálculo de Custas.]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="NÃ³ de Desvio - (EF) CÃ¡lculo de custas">
+    <swimlane name="Nó de Desvio - (EF) Cálculo de custas">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="InÃ­cio">
+    <start-state name="Início">
         <task name="Tarefa inicial"/>
         <transition to="(EF) Calcular custas - JUNTAR" name="(EF) Calcular custas - JUNTAR"/>
     </start-state>  
@@ -23,11 +23,11 @@ CÃ¡lculo de Custas.]]></description>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[* VariÃ¡veis *
-1. VariÃ¡vel: aviso
-   Label: Para juntar o cÃ¡lculo das custas, clique no nÃºmero do processo e Anexar documentos.]]></description>
-        <transition to="TÃ©rmino" name="Finalizar tarefa"/>
-        <transition to="NÃ³ de Desvio - (EF) CÃ¡lculo de custas" name="NÃ³ de Desvio - (EF) CÃ¡lculo de custas">
+        <description><![CDATA[* Variáveis *
+1. Variável: aviso
+   Label: Para juntar o cálculo das custas, clique no número do processo e Anexar documentos.]]></description>
+        <transition to="Término" name="Finalizar tarefa"/>
+        <transition to="Nó de Desvio - (EF) Cálculo de custas" name="Nó de Desvio - (EF) Cálculo de custas">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-end">
@@ -37,10 +37,10 @@ CÃ¡lculo de Custas.]]></description>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', 'false')}"/>
         </event>
     </task-node>
-    <end-state name="TÃ©rmino"/>
-    <task-node end-tasks="true" name="NÃ³ de Desvio - (EF) CÃ¡lculo de custas">
-        <task name="NÃ³ de Desvio - (EF) CÃ¡lculo de custas" swimlane="NÃ³ de Desvio - (EF) CÃ¡lculo de custas"/>
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (EF) Cálculo de custas">
+        <task name="Nó de Desvio - (EF) Cálculo de custas" swimlane="Nó de Desvio - (EF) Cálculo de custas"/>
+        <transition to="Término" name="Término"/>
         <transition to="(EF) Calcular custas - JUNTAR" name="(EF) Calcular custas - JUNTAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->

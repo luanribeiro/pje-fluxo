@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PP) Autos recebidos da autuação">
-    <description><![CDATA[Código do fluxo: PP_AUT_REC_AUT
-
-Descrição: Fluxo destinado à análise de procedimentos prévios autuados no juizado do aeroporto.
-
-Raia        Localização              Papel
-Secretaria  Secretaria               Chefe de Secretaria
-            Gabinete                 Magistrado
+    <description><![CDATA[Código do fluxo: PP_AUT_REC_AUT
+
+Descrição: Fluxo destinado à análise de procedimentos prévios autuados no juizado do aeroporto.
+
+Raia        Localização              Papel
+Secretaria  Secretaria               Chefe de Secretaria
+            Gabinete                 Magistrado
             Assessoria               Assessor]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (PP) Autos recebidos da autuação">

@@ -387,7 +387,7 @@
    Tipo: Aviso
 
 5. Variável: ef_magistrado_dje
-   Label: #{pessoaMagistradoDAO.magistradoPorOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador, false)}
+   Label: #{pessoaMagistradoDAO.magistradoPorOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador)}
    Escrita: Sim
    Obrig.: Não
    Tipo: Combo de objetos

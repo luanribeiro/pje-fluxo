@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Retificação de tipo de documento">
-    <description><![CDATA[Código do fluxo: VCiv_RET_DOC
-
-Descrição: Fluxo destinado a retificação de tipos de documentos do processo. 
-
-Raia        Localização              Papel
-Secretaria  Secretaria   Chefe de Secretaria
+    <description><![CDATA[Código do fluxo: VCiv_RET_DOC
+
+Descrição: Fluxo destinado a retificação de tipos de documentos do processo. .
+
+Raia        Localização              Papel
+Secretaria  Secretaria   Chefe de Secretaria
 Secretaria  Secretaria   Servidor Geral]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Retificação de tipo de documento">

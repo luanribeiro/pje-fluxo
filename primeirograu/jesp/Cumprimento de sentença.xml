@@ -12,11 +12,11 @@
     <swimlane name="Assessoria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('7:1469,7:5197,5:1338,8:5852,8:5853')}"/>
     </swimlane>
-    <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,5:5186,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
-    </swimlane>
     <swimlane name="Conciliação">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,7:5886,8:5852,8:5853,6:1469,7:5197')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,5:5186,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">

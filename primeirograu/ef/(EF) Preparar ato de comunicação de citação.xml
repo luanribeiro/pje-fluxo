@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Preparar ato de comunicação de citação">
-    <description><![CDATA[Código do fluxo: EF_PAC_CIT
-
-Descrição: Preparar ato de comunicação do tipo citação..
-
-Raia        Localização              Papel
-Secretaria   Secretaria    Chefe de Secretaria
-Secretaria   Secretaria    Servidor de Secretaria
-Secretaria   Gabinete      Magistrado
-Secretaria   Corregedoria  Servidor Corregedoria
-Secretaria   Corregedoria  Magistrado Corregedor
-Magistrado   Secretaria    Chefe de Secretaria
-Magistrado   Secretaria    Servidor de Secretaria
-Magistrado   Gabinete      Magistrado
-Magistrado   Gabinete      Magistrado Gabinete
-Magistrado   Corregedoria  Servidor Corregedoria
+    <description><![CDATA[Código do fluxo: EF_PAC_CIT
+
+Descrição: Preparar ato de comunicação do tipo citação..
+
+Raia        Localização              Papel
+Secretaria   Secretaria    Chefe de Secretaria
+Secretaria   Secretaria    Servidor de Secretaria
+Secretaria   Gabinete      Magistrado
+Secretaria   Corregedoria  Servidor Corregedoria
+Secretaria   Corregedoria  Magistrado Corregedor
+Magistrado   Secretaria    Chefe de Secretaria
+Magistrado   Secretaria    Servidor de Secretaria
+Magistrado   Gabinete      Magistrado
+Magistrado   Gabinete      Magistrado Gabinete
+Magistrado   Corregedoria  Servidor Corregedoria
 Magistrado   Corregedoria  Magistrado Corregedor]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
@@ -153,7 +153,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
     <node name="(EF) Registrar movimento de expedição de citação">
         <transition to="(EF) É mandado?" name="(EF) É mandado?"/>
         <event type="node-enter">
-            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('E', 'processoExpedienteAtual','#{preencherMovimento.deCodigo(60).associarAoDocumento(processoExpedienteAtual.getProcessoDocumento()).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(80).lancarMovimento()}')}"/>
+            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('C', 'processoExpedienteAtual','#{preencherMovimento.deCodigo(60).associarAoDocumento(processoExpedienteAtual.getProcessoDocumento()).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(80).lancarMovimento()}')}"/>
         </event>
     </node>
     <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM ProcessoParteExpediente AS ppe JOIN ppe.processoExpediente AS pe WHERE ppe.processoJudicial.idProcessoTrf = :idProcessoTrf AND pe.tipoProcessoDocumento.idTipoProcessoDocumento = 65 AND pe.meioExpedicaoExpediente = 'M' AND ppe.fechado = false&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(EF) Existe mais de uma central de mandados?' : '(EF) Controle de prazo de citação após expedição'}" name="(EF) É mandado?">

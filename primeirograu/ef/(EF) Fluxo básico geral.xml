@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Fluxo bÃ¡sico geral">
-    <description><![CDATA[Fluxo bÃ¡sico de conhecimento para varas de execuÃ§Ã£o fiscal.
-
-Raia        LocalizaÃ§Ã£o    Papel
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Fluxo básico geral">
+    <description><![CDATA[Fluxo básico de conhecimento para varas de execução fiscal.
+Raia        Localização    Papel
 Secretaria  Secretaria     Chefe de Secretaria
-Secretaria  Gabinete       Magistrado
+Secretaria  Gabinete       Magistrado.
 Secretaria  Corregedoria   Servidor Corregedoria 
 Secretaria  Corregedoria   Magistrado Corregedor]]></description>  
     <!-- SWIMLANES -->
@@ -13,45 +12,45 @@ Secretaria  Corregedoria   Magistrado Corregedor]]></description>
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,5:5483,6:1469,8:5852,8:5853,6:5901,7:5197')}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="InÃ­cio">
+    <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(EF) Ã‰ de outro fluxo?" name="(EF) Ã‰ de outro fluxo?"/>
+        <transition to="(EF) É de outro fluxo?" name="(EF) É de outro fluxo?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('ef:fbg:fbc') || tramitacaoProcessualService.recuperaVariavel('ef:fbg:saj')? '(EF) Secretaria - ANALISAR' : '(EF) Ã‰ Embargos Ã  ExecuÃ§Ã£o Fiscal?'}" name="(EF) Ã‰ de outro fluxo?">
-        <transition to="(EF) Ã‰ Embargos Ã  ExecuÃ§Ã£o Fiscal?" name="(EF) Ã‰ Embargos Ã  ExecuÃ§Ã£o Fiscal?"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('ef:fbg:fbc') || tramitacaoProcessualService.recuperaVariavel('ef:fbg:saj')? '(EF) Secretaria - ANALISAR' : '(EF) É Embargos à Execução Fiscal?'}" name="(EF) É de outro fluxo?">
+        <transition to="(EF) É Embargos à Execução Fiscal?" name="(EF) É Embargos à Execução Fiscal?"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
-	</decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == '1118' ? '(EF) Tem pedido de urgÃªncia?' : '(EF) Preparar ato judicial de decisÃ£o inicial'}" name="(EF) Ã‰ Embargos Ã  ExecuÃ§Ã£o Fiscal?">
-        <transition to="(EF) Preparar ato judicial de decisÃ£o inicial" name="(EF) Preparar ato judicial de decisÃ£o inicial"/>
-        <transition to="(EF) Tem pedido de urgÃªncia?" name="(EF) Tem pedido de urgÃªncia?"/>
     </decision>
-    <decision expression="#{processoTrfHome.isEmPedidoUrgencia() ? '(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos - urgente' : '(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos'}" name="(EF) Tem pedido de urgÃªncia?">
-        <transition to="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos" name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos"/>
-        <transition to="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos - urgente" name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos - urgente"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == '1118' ? '(EF) Tem pedido de urgência?' : '(EF) Preparar ato judicial de decisão inicial'}" name="(EF) É Embargos à Execução Fiscal?">
+        <transition to="(EF) Preparar ato judicial de decisão inicial" name="(EF) Preparar ato judicial de decisão inicial"/>
+        <transition to="(EF) Tem pedido de urgência?" name="(EF) Tem pedido de urgência?"/>
     </decision>
-    <process-state name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos">
-        <sub-process name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos" binding="late"/>
-        <transition to="(EF) Preparar ato judicial de decisÃ£o inicial de embargos" name="(EF) Preparar ato judicial de decisÃ£o inicial de embargos"/>
+    <decision expression="#{processoTrfHome.isEmPedidoUrgencia() ? '(EF) Expedição de certidão de oposição de embargos - urgente' : '(EF) Expedição de certidão de oposição de embargos'}" name="(EF) Tem pedido de urgência?">
+        <transition to="(EF) Expedição de certidão de oposição de embargos" name="(EF) Expedição de certidão de oposição de embargos"/>
+        <transition to="(EF) Expedição de certidão de oposição de embargos - urgente" name="(EF) Expedição de certidão de oposição de embargos - urgente"/>
+    </decision>
+    <process-state name="(EF) Expedição de certidão de oposição de embargos">
+        <sub-process name="(EF) Expedição de certidão de oposição de embargos" binding="late"/>
+        <transition to="(EF) Preparar ato judicial de decisão inicial de embargos" name="(EF) Preparar ato judicial de decisão inicial de embargos"/>
     </process-state>
-    <process-state name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos - urgente">
-        <sub-process name="(EF) ExpediÃ§Ã£o de certidÃ£o de oposiÃ§Ã£o de embargos - urgente" binding="late"/>
-        <transition to="(EF) Preparar ato judicial de decisÃ£o inicial de embargos - urgente" name="(EF) Preparar ato judicial de decisÃ£o inicial - urgente"/>
+    <process-state name="(EF) Expedição de certidão de oposição de embargos - urgente">
+        <sub-process name="(EF) Expedição de certidão de oposição de embargos - urgente" binding="late"/>
+        <transition to="(EF) Preparar ato judicial de decisão inicial de embargos - urgente" name="(EF) Preparar ato judicial de decisão inicial - urgente"/>
     </process-state>
-    <process-state name="(EF) Preparar ato judicial de decisÃ£o inicial">
-        <sub-process name="(EF) Preparar ato judicial de decisÃ£o inicial" binding="late"/>
-        <transition to="(EF) Autos recebidos do gabinete - decisÃ£o inicial" name="(EF) Autos recebidos do gabinete - decisÃ£o inicial"/>
+    <process-state name="(EF) Preparar ato judicial de decisão inicial">
+        <sub-process name="(EF) Preparar ato judicial de decisão inicial" binding="late"/>
+        <transition to="(EF) Autos recebidos do gabinete - decisão inicial" name="(EF) Autos recebidos do gabinete - decisão inicial"/>
     </process-state>
-    <process-state name="(EF) Preparar ato judicial de decisÃ£o inicial de embargos - urgente">
-        <sub-process name="(EF) Preparar ato judicial de decisÃ£o inicial de embargos - urgente" binding="late"/>
-        <transition to="(EF) Preparar ato de comunicaÃ§Ã£o - intimaÃ§Ã£o" name="(EF) Preparar ato de comunicaÃ§Ã£o - intimaÃ§Ã£o"/>
+    <process-state name="(EF) Preparar ato judicial de decisão inicial de embargos - urgente">
+        <sub-process name="(EF) Preparar ato judicial de decisão inicial de embargos - urgente" binding="late"/>
+        <transition to="(EF) Preparar ato de comunicação - intimação" name="(EF) Preparar ato de comunicação - intimação"/>
     </process-state>
-    <process-state name="(EF) Preparar ato de comunicaÃ§Ã£o - intimaÃ§Ã£o">
-        <sub-process name="(EF) ExpediÃ§Ã£o de intimaÃ§Ã£o" binding="late"/>
+    <process-state name="(EF) Preparar ato de comunicação - intimação">
+        <sub-process name="(EF) Expedição de intimação" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(EF) Autos recebidos do gabinete - decisÃ£o inicial">
-        <sub-process name="(EF) Autos recebidos do gabinete - decisÃ£o inicial" binding="late"/>
+    <process-state name="(EF) Autos recebidos do gabinete - decisão inicial">
+        <sub-process name="(EF) Autos recebidos do gabinete - decisão inicial" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
     <task-node end-tasks="true" name="(EF) Secretaria - ANALISAR">
@@ -84,181 +83,153 @@ Secretaria  Corregedoria   Magistrado Corregedor]]></description>
                 <variable name="ef_fbg_renajud_consultar" mapped-name="sim_nao:ef_fbg_renajud_consultar" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*VariÃ¡veis*
-
-1. VariÃ¡vel: aviso1
+        <description><![CDATA[*Variáveis*
+1. Variável: aviso1
    Label: #{tramitacaoProcessualService.recuperaVariavel('ef:fbg:aviso_secretaria_analisar') ? '' : tramitacaoProcessualService.recuperaVariavel('ef:fbg:aviso_secretaria_analisar')}
    Escrita: Sim
-   Obrig.: NÃ£o
-
-2. VariÃ¡vel: Processo_Fluxo_visualizarDecisao
-   Label: Ãšltima conclusÃ£o judicial
+   Obrig.: Não
+2. Variável: Processo_Fluxo_visualizarDecisao
+   Label: Última conclusão judicial
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Frame
-
-3. VariÃ¡vel: MovimentarEmLote
+3. Variável: MovimentarEmLote
    Label: 
    Escrita: Sim
-   Obrig.: NÃ£o
-   Tipo: Habilitar MovimentaÃ§Ã£o em Lote
-
-4. VariÃ¡vel: aviso2
-   Label: Marque a(s) opÃ§Ã£o(Ãµes) de cumprimento abaixo, em seguida, clique em "PrÃ³xima aÃ§Ã£o: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opÃ§Ãµes de cumprimento desmarcadas e escolha a "PrÃ³xima aÃ§Ã£o" desejada.
+   Obrig.: Não
+   Tipo: Habilitar Movimentação em Lote
+4. Variável: aviso2
+   Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
    Escrita: Sim
-   Obrig.: NÃ£o
-
+   Obrig.: Não
 /** 
-
-ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A PRINCÃPIO, FOI DESENVOLVIDO PARA CONTEMPLAR AS DUAS CLASSES, E DEPOIS FOI DIRECIONADO APENAS PARA A CLASSE "EXECUÃ‡ÃƒO FISCAL", ENTÃƒO ELA Ã‰ MANTIDA AQUI, CASO MUDEM DE IDEIA NOVAMENTE. 
-
-5. VariÃ¡vel: ef_fbg_aguardar_laudo_tecnico
-   Label: Aguardar PerÃ­cia / Laudo TÃ©cnico / Outros
+ESTA VARIÁVEL É APENAS PARA A CLASSE "EMBARGOS À EXECUÇÃO". COMO O FLUXO, A PRINCÍPIO, FOI DESENVOLVIDO PARA CONTEMPLAR AS DUAS CLASSES, E DEPOIS FOI DIRECIONADO APENAS PARA A CLASSE "EXECUÇÃO FISCAL", ENTÃO ELA É MANTIDA AQUI, CASO MUDEM DE IDEIA NOVAMENTE. 
+5. Variável: ef_fbg_aguardar_laudo_tecnico
+   Label: Aguardar Perícia / Laudo Técnico / Outros
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
 **/
-
-6. VariÃ¡vel: ef_fbg_alterar_tipo_documento
+6. Variável: ef_fbg_alterar_tipo_documento
    Label: Alterar tipo de documento
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-7. VariÃ¡vel: ef_fbg_bacenjud_minutar
+7. Variável: ef_fbg_bacenjud_minutar
    Label: Bacen Jud - Minutar bloqueio ou desbloqueio
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-8. VariÃ¡vel: ef_fbg_calcular_custas
+8. Variável: ef_fbg_calcular_custas
    Label: Calcular custas
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-9. VariÃ¡vel: ef_fbg_serasajud_solicitar
+9. Variável: ef_fbg_serasajud_solicitar
    Label: SerasaJUD - Solicitar
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-10. VariÃ¡vel: ef_fbg_certificar_decurso
+10. Variável: ef_fbg_certificar_decurso
    Label: Certificar decurso
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-11. VariÃ¡vel: ef_fbg_certificar_transito
-   Label: Certificar trÃ¢nsito em julgado
+11. Variável: ef_fbg_certificar_transito
+   Label: Certificar trânsito em julgado
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Checkbox
-
-12. VariÃ¡vel: ef_fbg_citar
+12. Variável: ef_fbg_citar
     Label: Citar via Sistema/Correios/Edital
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-13. VariÃ¡vel: ef_fbg_intimar
+13. Variável: ef_fbg_intimar
     Label: Intimar via Sistema/Correios/Edital
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-14. VariÃ¡vel: ef_fbg_controlar_audiencia
-    Label: Controlar audiÃªncia
+14. Variável: ef_fbg_controlar_audiencia
+    Label: Controlar audiência
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-15. VariÃ¡vel: ef_fbg_controlar_retorno_expediente
+15. Variável: ef_fbg_controlar_retorno_expediente
     Label: Controlar retorno de expedientes
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-16. VariÃ¡vel: ef_fbg_encaminhar_cejusc
+16. Variável: ef_fbg_encaminhar_cejusc
     Label: Encaminhar para o CEJUSC
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-17. VariÃ¡vel: ef_fbg_encerrar_prazo
+17. Variável: ef_fbg_encerrar_prazo
     Label: Encerrar prazo
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-18. VariÃ¡vel: ef_fbg_expedir_alvaras
-    Label: Expedir alvarÃ¡(s)
+18. Variável: ef_fbg_expedir_alvaras
+    Label: Expedir alvará(s)
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-19. VariÃ¡vel: ef_fbg_expedir_carta
-    Label: Expedir carta de ordem, precatÃ³ria ou rogatÃ³ria
+19. Variável: ef_fbg_expedir_carta
+    Label: Expedir carta de ordem, precatória ou rogatória
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-20. VariÃ¡vel: ef_fbg_expedir_mandado
+20. Variável: ef_fbg_expedir_mandado
     Label: Expedir mandado
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-21. VariÃ¡vel: ef_fbg_expedir_oficio
-    Label: Expedir ofÃ­cio
+21. Variável: ef_fbg_expedir_oficio
+    Label: Expedir ofício
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-22. VariÃ¡vel: ef_fbg_expedir_outros_documentos
+22. Variável: ef_fbg_expedir_outros_documentos
     Label: Expedir outros documentos
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-23. VariÃ¡vel: ef_fbg_expedir_precatorio_rpv
-    Label: Expedir PrecatÃ³rio e(ou) RPV
+23. Variável: ef_fbg_expedir_precatorio_rpv
+    Label: Expedir Precatório e(ou) RPV
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-24. VariÃ¡vel: ef_fbg_infojud_infoseg_consultar
+24. Variável: ef_fbg_infojud_infoseg_consultar
     Label: Infojud / Infoseg / TRE - Consultar
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-25. VariÃ¡vel: ef_fbg_publicar_dje
+25. Variável: ef_fbg_publicar_dje
     Label: Publicar no DJE
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox
-
-26. VariÃ¡vel: ef_fbg_renajud_consultar
+26. Variável: ef_fbg_renajud_consultar
     Label: Renajud - Consultar
     Escrita: Sim
-    Obrig.: NÃ£o
+    Obrig.: Não
     Tipo: Checkbox]]></description>
-        <transition to="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral">
+        <transition to="Nó de Desvio - (EF) Fluxo básico geral" name="Nó de Desvio - (EF) Fluxo básico geral">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(EF) LanÃ§ar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s) "/>
+        <transition to="(EF) Lançar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s) "/>
         <transition to="(EF) Gravar variavel fluxo unico - Redistribuir processo" name="02 - Redistribuir processo"/>
         <transition to="(EF) Gravar variavel fluxo unico - Arquivar processo" name="03 - Arquivar processo"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Cancelar distribuiÃ§Ã£o" name="04 - Cancelar distribuiÃ§Ã£o"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Cancelar distribuição" name="04 - Cancelar distribuição"/>
         <transition to="(EF) Gravar variavel fluxo unico - Suspender processo" name="05 - Suspender processo"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Encaminhar para instÃ¢ncia superior" name="06 - Encaminhar para instÃ¢ncia superior"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o" name="07 - Enviar concluso para decisÃ£o"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o de urgÃªncia" name="08 - Enviar concluso para decisÃ£o de urgÃªncia"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Encaminhar para instância superior" name="06 - Encaminhar para instância superior"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para decisão" name="07 - Enviar concluso para decisão"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para decisão de urgência" name="08 - Enviar concluso para decisão de urgência"/>
         <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para despacho" name="09 - Enviar concluso para despacho"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para sentenÃ§a" name="10 - Enviar concluso para sentenÃ§a"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Enviar Ã  Contadoria Judicial - COJUD" name="11 - Enviar Ã  Contadoria Judicial - COJUD"/>
-        <transition to="(EF) Gravar variavel fluxo unico - Enviar Ã  Penhora eletrÃ´nica - Poti" name="12 - Enviar Ã  Penhora eletrÃ´nica - Poti"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Enviar concluso para sentença" name="10 - Enviar concluso para sentença"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Enviar à Contadoria Judicial - COJUD" name="11 - Enviar à Contadoria Judicial - COJUD"/>
+        <transition to="(EF) Gravar variavel fluxo unico - Enviar à Penhora eletrônica - Poti" name="12 - Enviar à Penhora eletrônica - Poti"/>
         <transition to="(EF) Gravar variavel fluxo unico - Intimar advogados automaticamente" name="13 - Intimar advogados (automaticamente)"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:opcoesCumprimento', '')}"/>
@@ -338,7 +309,7 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
         </event>
     </task-node>
     <process-state name="(EF) Autos recebidos da secretaria">
-        <sub-process name="(EF) Autos recebidos da secretaria - ExecuÃ§Ã£o Fiscal" binding="late"/>
+        <sub-process name="(EF) Autos recebidos da secretaria - Execução Fiscal" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:ef:despacho')}"/>
@@ -347,12 +318,12 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:ef:sentenca')}"/>
         </event>
     </process-state>
-    <process-state name="(EF) Preparar ato judicial de decisÃ£o inicial de embargos">
-        <sub-process name="(EF) Preparar ato judicial de decisÃ£o inicial de embargos" binding="late"/>
-        <transition to="(EF) Autos recebidos do gabinete - decisÃ£o inicial" name="(EF) Autos recebidos do gabinete - decisÃ£o inicial"/>
+    <process-state name="(EF) Preparar ato judicial de decisão inicial de embargos">
+        <sub-process name="(EF) Preparar ato judicial de decisão inicial de embargos" binding="late"/>
+        <transition to="(EF) Autos recebidos do gabinete - decisão inicial" name="(EF) Autos recebidos do gabinete - decisão inicial"/>
     </process-state>
-    <process-state name="(EF) LanÃ§ar fluxos">
-        <sub-process name="(EF) LanÃ§ador de fluxo" binding="late"/>
+    <process-state name="(EF) Lançar fluxos">
+        <sub-process name="(EF) Lançador de fluxo" binding="late"/>
         <transition to="(EF) Secretaria aguardando cumprimento - AGUARDAR" name="(EF) Secretaria aguardando cumprimento - AGUARDAR"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:aviso_secretaria_analisar', 'Processo enviado com sucesso para as tarefas selecionadas.')}"/>
@@ -364,15 +335,14 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*VariÃ¡veis*
-
-1. VariÃ¡vel: aviso1
-   Label: O processo encontra-se pendente de cumprimento em tarefas paralelas. Para dar continuidade, serÃ¡ necessÃ¡rio cumprir todas as tarefas pendentes e, sÃ³ assim, retornar para "(EF) Secretaria - ANALISAR".
+        <description><![CDATA[*Variáveis*
+1. Variável: aviso1
+   Label: O processo encontra-se pendente de cumprimento em tarefas paralelas. Para dar continuidade, será necessário cumprir todas as tarefas pendentes e, só assim, retornar para "(EF) Secretaria - ANALISAR".
    Escrita: Sim
-   Obrig.: NÃ£o
+   Obrig.: Não
    Tipo: Aviso]]></description>
         <transition to="(EF) Secretaria - ANALISAR" name="Retornar para &quot;(EF) Secretaria - ANALISAR&quot;"/>
-        <transition to="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral">
+        <transition to="Nó de Desvio - (EF) Fluxo básico geral" name="Nó de Desvio - (EF) Fluxo básico geral">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR">
@@ -388,44 +358,44 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
         </event>
     </task-node>
     <node name="(EF) Gravar variavel fluxo unico - Redistribuir processo">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) RedistribuiÃ§Ã£o de processo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Redistribuição de processo')}"/>
         </event>
     </node>
     <node name="(EF) Gravar variavel fluxo unico - Arquivar processo">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Arquivamento de processo')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Cancelar distribuiÃ§Ã£o">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Cancelar distribuição">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Cancelamento de distribuiÃ§Ã£o')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Cancelamento de distribuição')}"/>
         </event>
     </node>
     <node name="(EF) Gravar variavel fluxo unico - Suspender processo">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) SuspensÃ£o de processo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Suspensão de processo')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Encaminhar para instÃ¢ncia superior">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Encaminhar para instância superior">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Encaminhamento para instÃ¢ncia superior')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Encaminhamento para instância superior')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para decisão">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:ef:decisao', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Autos recebidos da secretaria')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o de urgÃªncia">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para decisão de urgência">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:ef:decisao', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:ef:decisao_urgencia', 'true')}"/>
@@ -433,47 +403,47 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
         </event>
     </node>
     <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para despacho">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:ef:despacho', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Autos recebidos da secretaria')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para sentenÃ§a">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Enviar concluso para sentença">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:ef:sentenca', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Autos recebidos da secretaria')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Enviar Ã  Contadoria Judicial - COJUD">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Enviar à Contadoria Judicial - COJUD">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Dar cumprimento a ato judicial de central de calculos')}"/>
         </event>
     </node>
-    <node name="(EF) Gravar variavel fluxo unico - Enviar Ã  Penhora eletrÃ´nica - Poti">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+    <node name="(EF) Gravar variavel fluxo unico - Enviar à Penhora eletrônica - Poti">
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Penhora eletrÃ´nica - Poti')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Penhora eletrônica - Poti')}"/>
         </event>
     </node>
     <node name="(EF) Gravar variavel fluxo unico - Intimar advogados automaticamente">
-        <transition to="(EF) Pode ir para subfluxo Ãºnico?" name="(EF) Pode ir para subfluxo Ãºnico?"/>
+        <transition to="(EF) Pode ir para subfluxo único?" name="(EF) Pode ir para subfluxo único?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Intimar advogados automaticamente')}"/>
         </event>
     </node>
-    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa &lt;&gt; '(EF) Secretaria - ANALISAR' AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(EF) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('ef:paj:sub_fluxo_unico')}" name="(EF) Pode ir para subfluxo Ãºnico?">
+    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa &lt;&gt; '(EF) Secretaria - ANALISAR' AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(EF) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('ef:paj:sub_fluxo_unico')}" name="(EF) Pode ir para subfluxo único?">
         <transition to="(EF) Arquivamento de processo" name="(EF) Arquivamento de processo"/>
-        <transition to="(EF) Cancelamento de distribuiÃ§Ã£o" name="(EF) Cancelamento de distribuiÃ§Ã£o"/>
-        <transition to="(EF) Encaminhamento para instÃ¢ncia superior" name="(EF) Encaminhamento para instÃ¢ncia superior"/>
+        <transition to="(EF) Cancelamento de distribuição" name="(EF) Cancelamento de distribuição"/>
+        <transition to="(EF) Encaminhamento para instância superior" name="(EF) Encaminhamento para instância superior"/>
         <transition to="(EF) Dar cumprimento a ato judicial de central de calculos" name="(EF) Dar cumprimento a ato judicial de central de calculos"/>
         <transition to="(EF) Gravar mensagem nao pode entrar no fluxo" name="(EF) Gravar mensagem nao pode entrar no fluxo"/>
-        <transition to="(EF) Penhora eletrÃ´nica - Poti" name="(EF) Penhora eletrÃ´nica - Poti"/>
+        <transition to="(EF) Penhora eletrônica - Poti" name="(EF) Penhora eletrônica - Poti"/>
         <transition to="(EF) Autos recebidos da secretaria" name="(EF) Autos recebidos da secretaria"/>
-        <transition to="(EF) SuspensÃ£o de processo" name="(EF) SuspensÃ£o de processo"/>
-        <transition to="(EF) RedistribuiÃ§Ã£o de processo" name="(EF) RedistribuiÃ§Ã£o de processo"/>
+        <transition to="(EF) Suspensão de processo" name="(EF) Suspensão de processo"/>
+        <transition to="(EF) Redistribuição de processo" name="(EF) Redistribuição de processo"/>
         <transition to="(EF) Intimar advogados automaticamente" name="(EF) Intimar advogados automaticamente"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ef:paj:sub_fluxo_unico')}"/>
@@ -482,45 +452,45 @@ ESTA VARIÃVEL Ã‰ APENAS PARA A CLASSE "EMBARGOS Ã€ EXECUÃ‡ÃƒO". COMO O FLUXO, A
     <node name="(EF) Gravar mensagem nao pode entrar no fluxo">
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:aviso_secretaria_analisar', 'O processo nÃ£o pÃ´de ser movimentado pois hÃ¡ aÃ§Ãµes sendo efetuadas em outras tarefas. Para movimentÃ¡-lo, Ã© necessÃ¡rio finalizar os procedimentos nas demais caixas e deixÃ¡-lo, apenas, em &quot;(EF) Secretaria - ANALISAR&quot;.')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:aviso_secretaria_analisar', 'O processo não pôde ser movimentado pois há ações sendo efetuadas em outras tarefas. Para movimentá-lo, é necessário finalizar os procedimentos nas demais caixas e deixá-lo, apenas, em &quot;(EF) Secretaria - ANALISAR&quot;.')}"/>
         </event>
     </node>
-    <process-state name="(EF) RedistribuiÃ§Ã£o de processo">
-        <sub-process name="(EF) RedistribuiÃ§Ã£o" binding="late"/>
+    <process-state name="(EF) Redistribuição de processo">
+        <sub-process name="(EF) Redistribuição" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
     <process-state name="(EF) Arquivamento de processo">
         <sub-process name="(EF) Arquivamento" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(EF) Cancelamento de distribuiÃ§Ã£o">
-        <sub-process name="(EF) Cancelamento da distribuiÃ§Ã£o" binding="late"/>
+    <process-state name="(EF) Cancelamento de distribuição">
+        <sub-process name="(EF) Cancelamento da distribuição" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(EF) SuspensÃ£o de processo">
-        <sub-process name="(EF) Controle de suspensÃ£o" binding="late"/>
+    <process-state name="(EF) Suspensão de processo">
+        <sub-process name="(EF) Controle de suspensão" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(EF) Encaminhamento para instÃ¢ncia superior">
-        <sub-process name="(EF) Remessa Ã  instÃ¢ncia superior" binding="late"/>
+    <process-state name="(EF) Encaminhamento para instância superior">
+        <sub-process name="(EF) Remessa à instância superior" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
     <process-state name="(EF) Dar cumprimento a ato judicial de central de calculos">
-        <sub-process name="(EF) Cumprimento de decisÃ£o" binding="late"/>
+        <sub-process name="(EF) Cumprimento de decisão" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(EF) Penhora eletrÃ´nica - Poti">
+    <process-state name="(EF) Penhora eletrônica - Poti">
         <sub-process name="(EF) Poti" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
     <process-state name="(EF) Intimar advogados automaticamente">
-        <sub-process name="(EF) IntimaÃ§Ãµes eletrÃ´nicas" binding="late"/>
+        <sub-process name="(EF) Intimações eletrônicas" binding="late"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
-    <end-state name="TÃ©rmino"/>
-    <task-node end-tasks="true" name="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral">
-        <task name="NÃ³ de Desvio - (EF) Fluxo bÃ¡sico geral"/>
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (EF) Fluxo básico geral">
+        <task name="Nó de Desvio - (EF) Fluxo básico geral"/>
+        <transition to="Término" name="Término"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
         <transition to="(EF) Secretaria aguardando cumprimento - AGUARDAR" name="(EF) Secretaria aguardando cumprimento - AGUARDAR"/>
     </task-node>  

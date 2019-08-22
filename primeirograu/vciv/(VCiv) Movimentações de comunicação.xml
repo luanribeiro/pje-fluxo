@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Movimentações PAC">
-    <description><![CDATA[Fluxo responsável pelo controle de processos enviados para conciliação no VCiv...]]></description>  
+    <description><![CDATA[Fluxo responsável pelo controle de processos enviados para conciliação no VCiv....]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Movimentações PAC">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
@@ -79,12 +79,7 @@
         <transition to="Nó de Desvio - (VCiv) Movimentações PAC" name="Nó de Desvio - (VCiv) Movimentações PAC">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Junção preparação intimação" name="Cancelar e sair da tarefa/Informar conteúdo DJe">
-            <condition expression="#{!(processoTrfHome.possuiCompetencia(3) || processoTrfHome.possuiCompetencia(10))}"/>
-        </transition>
-        <transition to="(VCiv) Junção preparação intimação" name="Cancelar e sair da tarefa">
-            <condition expression="#{(processoTrfHome.possuiCompetencia(3) || processoTrfHome.possuiCompetencia(10))}"/>
-        </transition>
+        <transition to="(VCiv) Junção preparação intimação" name="Finalizar e sair da tarefa"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="node-enter">

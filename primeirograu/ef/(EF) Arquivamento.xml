@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Arquivamento">
-    <description><![CDATA[Código do fluxo: EF_ARQ
-
-Descrição:
+    <description><![CDATA[Código do fluxo: EF_ARQ
+
+Descrição:
 Gestão de arquivamento de processos.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">

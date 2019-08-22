@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Remessa à instância superior">
-    <description><![CDATA[Código do fluxo: EF_REM_INST_SUP
-
-Descrição: Fluxo responsável pela remessa à instância superior
-
-Raia        Localização   Papel
-Secretaria  Secretaria    Chefe de Secretaria
+    <description><![CDATA[Código do fluxo: EF_REM_INST_SUP
+
+Descrição: Fluxo responsável pela remessa à instância superior
+
+Raia        Localização   Papel
+Secretaria  Secretaria    Chefe de Secretaria
 Secretaria  Gabinete      Magistrado]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">

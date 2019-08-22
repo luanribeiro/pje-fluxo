@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PP) Arquivamento">
-    <description><![CDATA[Código do fluxo: PP_ARQ
-
-Descrição: Gestão de arquivamento de processos.
-
-Raia        Localização              Papel
+    <description><![CDATA[Código do fluxo: PP_ARQ
+
+Descrição: Gestão de arquivamento de processos.
+
+Raia        Localização              Papel
 Secretaria  Secretaria               Chefe de Secretaria]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (PP) Arquivamento">

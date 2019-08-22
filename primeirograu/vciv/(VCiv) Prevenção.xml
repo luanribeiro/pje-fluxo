@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) PrevenÃ§Ã£o">
-    <description><![CDATA[Fluxo para anÃ¡lise de prevenÃ§Ã£o...]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Prevenção">
+    <description><![CDATA[Fluxo para análise de prevenção....]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o">
+    <swimlane name="Nó de Desvio - (VCiv) Prevenção">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,7:5197')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="InÃ­cio">
+    <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(VCiv) Ã‰ urgencia?" name="(VCiv) Ã‰ urgencia?"/>
+        <transition to="(VCiv) É urgencia?" name="(VCiv) É urgencia?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{ tramitacaoProcessualService.temUrgencia() == true ? '(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]' : '(VCiv) AnÃ¡lise de PrevenÃ§Ã£o' }" name="(VCiv) Ã‰ urgencia?">
-        <transition to="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o"/>
-        <transition to="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]"/>
+    <decision expression="#{ tramitacaoProcessualService.temUrgencia() == true ? '(VCiv) Análise de Prevenção [Urgente]' : '(VCiv) Análise de Prevenção' }" name="(VCiv) É urgencia?">
+        <transition to="(VCiv) Análise de Prevenção" name="(VCiv) Análise de Prevenção"/>
+        <transition to="(VCiv) Análise de Prevenção [Urgente]" name="(VCiv) Análise de Prevenção [Urgente]"/>
     </decision>
-    <task-node end-tasks="true" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o">
-        <task name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o" swimlane="Secretaria">
+    <task-node end-tasks="true" name="(VCiv) Análise de Prevenção">
+        <task name="(VCiv) Análise de Prevenção" swimlane="Secretaria">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="TÃ©rmino" name="Prosseguir"/>
-        <transition to="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o" name="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o">
+        <transition to="Término" name="Prosseguir"/>
+        <transition to="Nó de Desvio - (VCiv) Prevenção" name="Nó de Desvio - (VCiv) Prevenção">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-assign">
             <action expression="#{ tramitacaoProcessualService.gravaVariavelTarefa( 'pje:flx:paginaExterna', parametroUtil.getParametro('pje:tjrn:pjeprevencao:link').concat('busca/').concat(authenticator.getUsuarioLogado().getLogin()).concat('/').concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso) ) }"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]">
-        <task name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]" swimlane="Secretaria">
+    <task-node end-tasks="true" name="(VCiv) Análise de Prevenção [Urgente]">
+        <task name="(VCiv) Análise de Prevenção [Urgente]" swimlane="Secretaria">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="TÃ©rmino" name="Prosseguir"/>
-        <transition to="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o" name="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o">
+        <transition to="Término" name="Prosseguir"/>
+        <transition to="Nó de Desvio - (VCiv) Prevenção" name="Nó de Desvio - (VCiv) Prevenção">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-assign">
             <action expression="#{ tramitacaoProcessualService.gravaVariavelTarefa( 'pje:flx:paginaExterna', parametroUtil.getParametro('pje:tjrn:pjeprevencao:link').concat('busca/').concat(authenticator.getUsuarioLogado().getLogin()).concat('/').concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso) ) }"/>
         </event>
     </task-node>
-    <end-state name="TÃ©rmino"/>
-    <task-node end-tasks="true" name="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o">
-        <task name="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o" swimlane="NÃ³ de Desvio - (VCiv) PrevenÃ§Ã£o"/>
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
-        <transition to="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o"/>
-        <transition to="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]" name="(VCiv) AnÃ¡lise de PrevenÃ§Ã£o [Urgente]"/>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Prevenção">
+        <task name="Nó de Desvio - (VCiv) Prevenção" swimlane="Nó de Desvio - (VCiv) Prevenção"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(VCiv) Análise de Prevenção" name="(VCiv) Análise de Prevenção"/>
+        <transition to="(VCiv) Análise de Prevenção [Urgente]" name="(VCiv) Análise de Prevenção [Urgente]"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de mandado">
-    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
-
-Descrição: Preparar mandado.
-
-Raia        Localização     Papel
-Secretaria  Secretaria      Chefe de Secretaria
-Secretaria  Secretaria      Servidor de Secretaria
-Secretaria  Gabinete        Magistrado
-Secretaria  Corregedoria    Servidor Corregedoria
-Secretaria  Corregedoria    Magistrado Corregedor
-Magistrado  Secretaria      Chefe de Secretaria
-Magistrado  Secretaria      Servidor de Secretaria
-Magistrado  Gabinete        Magistrado
-Magistrado  Corregedoria    Servidor Corregedoria
-Magistrado  Corregedoria    Magistrado Corregedor
+    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
+
+Descrição: Preparar mandado.
+
+Raia        Localização     Papel
+Secretaria  Secretaria      Chefe de Secretaria
+Secretaria  Secretaria      Servidor de Secretaria
+Secretaria  Gabinete        Magistrado
+Secretaria  Corregedoria    Servidor Corregedoria
+Secretaria  Corregedoria    Magistrado Corregedor
+Magistrado  Secretaria      Chefe de Secretaria
+Magistrado  Secretaria      Servidor de Secretaria
+Magistrado  Gabinete        Magistrado
+Magistrado  Corregedoria    Servidor Corregedoria
+Magistrado  Corregedoria    Magistrado Corregedor
 Magistrado  Gabinete        Magistrado Gabinete]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (EF) Expedição de mandado">
