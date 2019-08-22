@@ -581,7 +581,6 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <controller>
                 <variable name="WEB-INF_xhtml_flx_elaborarAcordao" mapped-name="frame:WEB-INF_xhtml_flx_elaborarAcordao" access="read,write"/>
                 <variable name="assinaturaInteiroTeorLote" mapped-name="assinarInteiroTeorLote:assinaturaInteiroTeorLote" access="read,write"/>
-                <variable name="HomologarMovimentos" mapped-name="homologadorEventoTree:HomologarMovimentos" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read"/>
             </controller>
         </task>
