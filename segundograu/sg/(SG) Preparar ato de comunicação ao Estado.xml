@@ -13,12 +13,12 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Intimação ou citação ao Estado - EXPEDIR" name="(SG) Intimação ou citação ao Estado - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao Estado - EXPEDIR">
-        <task name="(SG) Intimação ou citação ao Estado - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao Estado - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="labelComboDocumento" mapped-name="textAlert:labelComboDocumento" access="read,write"/>
                 <variable name="comboDocumento" mapped-name="combo_objetos:comboDocumento" access="read,write"/>
@@ -33,7 +33,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
    Tipo: Aviso
 
 2. Variável: comboDocumento
-   Label: #{ entityManager.createQuery(parametroUtil.getParametro("pje:tjrn:hql:atosGabinetePorProcesso")).setParameter("proc", tramitacaoProcessualService.recuperaProcesso()).getResultList() }
+   Label: #{ entityManager.createQuery(parametroUtil.getParametro("pje:tjrn:hql:atosGabinetePorProcesso")).setParameter("proc", tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).getResultList() }
    Escrita: Sim
    Obrig.: Não
    Tipo: Combo de objetos
@@ -69,7 +69,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
         <transition to="(SG) Intimação ou citação ao Estado - EXPEDIR" name="(SG) Intimação ou citação ao Estado - EXPEDIR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao Estado - CONFIRMAR">
-        <task name="(SG) Intimação ou citação ao Estado - CONFIRMAR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao Estado - CONFIRMAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="labelDestinatario" mapped-name="textAlert:labelDestinatario" access="read,write"/>
@@ -137,7 +137,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato de comunicação ao Estado">
-        <task name="Nó de Desvio - (SG) Preparar ato de comunicação ao Estado" swimlane="Secretaria"/>
+        <task name="Nó de Desvio - (SG) Preparar ato de comunicação ao Estado" swimlane="Secretaria" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Intimação ou citação ao Estado - EXPEDIR" name="(SG) Intimação ou citação ao Estado - EXPEDIR"/>
         <transition to="(SG) Intimação ou citação ao Estado - CONFIRMAR" name="(SG) Intimação ou citação ao Estado - CONFIRMAR"/>
