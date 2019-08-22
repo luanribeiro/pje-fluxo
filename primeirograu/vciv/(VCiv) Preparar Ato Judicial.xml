@@ -1014,7 +1014,7 @@
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Tem documento assinado?')}"/>
         </event>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(processoHome.idProcessoDocumento))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(tramitacAoproceSsualserVice.recuperaVariavel('minuta_semefeito')))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:jaexisteconcluso',true)}"/>
         </event>
     </task-node>
@@ -1039,9 +1039,9 @@
     <node name="(VCiv) Remover documento temporário decisão_despacho_sentença">
         <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
         <event type="node-enter">
-            <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_despacho')}"/>
-            <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_decisao')}"/>
-            <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_sentenca')}"/>
+            <action expression="${not empty tramitacaoProcessualService.recuperaVariavel('minuta_despacho') and not processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('minuta_despacho')) ? documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_despacho') : '' }'"/>
+            <action expression="${not empty tramitacaoProcessualService.recuperaVariavel('minuta_decisao') and not processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('minuta_decisao')) ? documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_decisao') : '' }'"/>
+            <action expression="${not empty tramitacaoProcessualService.recuperaVariavel('minuta_sentenca') and not processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('minuta_sentenca')) ? documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_sentenca') : '' }' "/>
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(100001).lancarMovimento()}"/>
         </event>
     </node>
