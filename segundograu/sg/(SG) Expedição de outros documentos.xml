@@ -25,12 +25,12 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial"/>
+        <task name="Tarefa inicial" priority="3"/>
         <transition to="(SG) Outros documentos - EXPEDIR" name="(SG) Outros documentos - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Outros documentos - EXPEDIR">
-        <task name="(SG) Outros documentos - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Outros documentos - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_outros_documentos" mapped-name="textEditCombo:minuta_outros_documentos" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -71,7 +71,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Secretário(a) [OUTROS DOCUMENTOS] - ASSINAR">
-        <task name="(SG) Secretário(a) [OUTROS DOCUMENTOS] - ASSINAR" swimlane="Secretaria">
+        <task name="(SG) Secretário(a) [OUTROS DOCUMENTOS] - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -117,7 +117,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Outros documentos - ASSINAR">
-        <task name="(SG) Outros documentos - ASSINAR" swimlane="Secretaria">
+        <task name="(SG) Outros documentos - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -166,7 +166,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Outros documentos pendentes de assinatura pelo gabinete - ASSINAR">
-        <task name="(SG) Outros documentos pendentes de assinatura pelo gabinete - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Outros documentos pendentes de assinatura pelo gabinete - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -221,7 +221,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
     <node name="(SG) Lançar movimento de expedição de outros documentos">
         <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
         <event type="node-enter">
-            <action expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido')).getTipoProcessoDocumento().idTipoProcessoDocumento == 67 ?  preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).lancarMovimento() :  preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).comProximoComplementoVazio().preencherComTexto(revisarMinutaAction.processoDocumento.processoDocumento).lancarMovimento()}"/>
+            <action expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido')).getTipoProcessoDocumento().idTipoProcessoDocumento == 67 ?  preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).lancarMovimento() :  preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).comProximoComplementoVazio().preencherComTexto(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel(''pje:atoProferido'')).processoDocumento).lancarMovimento()}"/>
         </event>
     </node>
     <process-state name="(SG) Verificar pendência de cumprimentos">
@@ -230,7 +230,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de outros documentos">
-        <task name="Nó de Desvio - (SG) Expedição de outros documentos" swimlane="Nó de Desvio - (SG) Expedição de outros documentos"/>
+        <task name="Nó de Desvio - (SG) Expedição de outros documentos" swimlane="Nó de Desvio - (SG) Expedição de outros documentos" priority="3"/>
         <transition to="(SG) Outros documentos - EXPEDIR" name="(SG) Outros documentos - EXPEDIR"/>
         <transition to="(SG) Outros documentos - ASSINAR" name="(SG) Outros documentos - ASSINAR"/>
         <transition to="Término" name="Término"/>
