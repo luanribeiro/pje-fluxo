@@ -247,7 +247,7 @@ expressão p/ quando ativar parnamirim:
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',34,57)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,57')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Imprimir Documento')}"/>

@@ -30,7 +30,7 @@
         <transition to="Assinar documento" name="Encaminhar para assinatura"/>
         <transition to="Término" name="Retornar para outras providências"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',34,91,94,67)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,91,94,67')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
     </task-node>
@@ -54,7 +54,7 @@
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',34,91,94,67)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,91,94,67')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Entregar documento')}"/>

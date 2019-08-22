@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de mandado">
-    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
-
-Descrição: Preparar mandado.
-
-Raia        Localização     Papel
-Secretaria  Secretaria      Chefe de Secretaria
-Secretaria  Secretaria      Servidor de Secretaria
-Secretaria  Gabinete        Magistrado
-Secretaria  Corregedoria    Servidor Corregedoria
-Secretaria  Corregedoria    Magistrado Corregedor
-Magistrado  Secretaria      Chefe de Secretaria
-Magistrado  Secretaria      Servidor de Secretaria
-Magistrado  Gabinete        Magistrado
-Magistrado  Corregedoria    Servidor Corregedoria
-Magistrado  Corregedoria    Magistrado Corregedor
+    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
+
+
+
+Descrição: Preparar mandado.
+
+
+
+Raia        Localização     Papel
+
+Secretaria  Secretaria      Chefe de Secretaria
+
+Secretaria  Secretaria      Servidor de Secretaria
+
+Secretaria  Gabinete        Magistrado
+
+Secretaria  Corregedoria    Servidor Corregedoria
+
+Secretaria  Corregedoria    Magistrado Corregedor
+
+Magistrado  Secretaria      Chefe de Secretaria
+
+Magistrado  Secretaria      Servidor de Secretaria
+
+Magistrado  Gabinete        Magistrado
+
+Magistrado  Corregedoria    Servidor Corregedoria
+
+Magistrado  Corregedoria    Magistrado Corregedor
+
 Magistrado  Gabinete        Magistrado Gabinete]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (EF) Expedição de mandado">
@@ -182,7 +197,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
         </event>
@@ -259,7 +274,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
         </event>
@@ -327,7 +342,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Mandado pendente de escolha de central - SELECIONAR')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado [magistrado] - ASSINAR">
@@ -387,7 +402,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Mandado pendente de escolha de central - SELECIONAR')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado pendente de escolha de central - SELECIONAR">

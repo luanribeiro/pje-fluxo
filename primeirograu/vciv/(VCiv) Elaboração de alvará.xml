@@ -29,7 +29,7 @@
         </transition>
         <transition to="(VCiv) Deslocar OJ origem " name="Enviar para assinatura"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento', 91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_alvara'))}"/>

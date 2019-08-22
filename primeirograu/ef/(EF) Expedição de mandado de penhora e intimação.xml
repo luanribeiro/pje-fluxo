@@ -183,7 +183,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+          <!--   <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
@@ -324,7 +324,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Mandado de penhora e intimação pendente de escolha de central - SELECIONAR')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado de penhora e intimação [magistrado] - ASSINAR">
@@ -384,7 +384,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','95')}"/>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Mandado de penhora e intimação pendente de escolha de central - SELECIONAR')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',95)}"/> -->
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado de penhora e intimação pendente de escolha de central - SELECIONAR">

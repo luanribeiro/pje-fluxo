@@ -109,7 +109,7 @@
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio','true')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <process-state name="(EF) Encaminhar para despachados">

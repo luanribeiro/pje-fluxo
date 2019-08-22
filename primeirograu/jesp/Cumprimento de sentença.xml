@@ -124,7 +124,7 @@
             <condition expression="#{true}"/>
         </transition>
         <event type="node-enter">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',92)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '92')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Alvará expedido')}"/>

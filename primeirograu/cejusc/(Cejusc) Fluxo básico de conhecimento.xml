@@ -50,7 +50,7 @@
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62')}"/>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Arquivar processo')}"/>
         </event>
     </task-node>

@@ -75,7 +75,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',34)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',34)}"/> -->
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
     </task-node>
@@ -178,7 +178,7 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',34)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',34)}"/> -->
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
         <event type="node-enter">

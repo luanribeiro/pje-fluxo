@@ -95,7 +95,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -134,7 +134,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Concluso para despacho inicial">
@@ -151,7 +151,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito despacho" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_despacho', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -190,7 +190,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:despacho') ? '(VCiv) Lançar movimento concluso para despacho' : '(VCiv) Junção de atos judiciais'}" name="(VCiv) É despacho?">
@@ -211,7 +211,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito despacho" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_despacho', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -250,7 +250,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:sentenca') ? '(VCiv) Lançar movimento de concluso para julgamento' : '(VCiv) Junção de atos judiciais'}" name="(VCiv) É sentença?">
@@ -271,7 +271,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito sentença" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_sentenca', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -310,7 +310,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <fork name="(VCiv) Bifurcação de atos judiciais">
@@ -319,7 +319,7 @@
         <transition to="(VCiv) É sentença?" name="(VCiv) É sentença?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:paj:certidaosemefeito')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </fork>
     <join name="(VCiv) Junção de atos judiciais">
@@ -390,7 +390,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -429,7 +429,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:sentenca_homologacao_extincao') ? '(VCiv) Concluso para sentença de homologação e(ou) extinção' : '(VCiv) Junção de sentença'}" name="(VCiv) É sentença de homologação e(ou) extinção?">
@@ -450,7 +450,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito sentença" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_sentenca', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -489,7 +489,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <node name="(VCiv) Lançar movimento concluso para decisão">
@@ -528,7 +528,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -567,7 +567,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_recurso') ? '(VCiv) Concluso para decisão sobre recurso' : '(VCiv) Junção de decisão'}" name="(VCiv) É decisão sobre recurso?">
@@ -588,7 +588,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -627,7 +627,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_generica') ? '(VCiv) Concluso para decisão' : '(VCiv) Junção de decisão'}" name="É decisão genérica?">
@@ -648,7 +648,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -687,7 +687,7 @@
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:despacho_cumprimento_sentenca') ? '(VCiv) Concluso para despacho de cumprimento de sentença' : '(VCiv) Junção de despacho'}" name="(VCiv) É despacho de cumprimento de sentença?">
@@ -707,7 +707,7 @@
         <transition to="(VCiv) Assinar despacho de cumprimento de sentença" name="Encaminhar para assinatura"/>
         <transition to="(VCiv) Gravar variável conclusão sem efeito despacho" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_despacho', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
@@ -747,7 +747,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_reativacao') ? '(VCiv) Concluso para decisão sobre reativação' : '(VCiv) Junção de decisão'}" name="(VCiv) É decisão sobre reativação">
@@ -767,7 +767,7 @@
         <transition to="(VCiv) Assinar decisão sobre reativação" name="Encaminhar para assinatura"/>
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
@@ -808,7 +808,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action name="upd" expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_penhora_online') ? '(VCiv) Concluso para decisão de penhora online' : '(VCiv) Junção de decisão'}" name="(VCiv) É decisão de penhora online?">
@@ -829,7 +829,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -868,7 +868,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_desbloqueio') ? '(VCiv) Concluso para decisão de desbloqueio' : '(VCiv) Junção de decisão'}" name="(VCiv) É decisão de desbloqueio?">
@@ -889,7 +889,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -927,7 +927,7 @@
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:decisao_suspensao') ? '(VCiv) Concluso para decisão de suspensão' : '(VCiv) Junção de decisão'}" name="(VCiv) É decisão de suspensão?">
@@ -948,7 +948,7 @@
         <transition to="(VCiv) Gravar variável conclusão sem efeito decisão" name="Emitir certidão de conclusão sem efeito"/>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('textEditCombo:minuta_decisao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao') == null ? tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao') : tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
         </event>
         <event type="task-end">
@@ -987,7 +987,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',62,63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:paj:certidaosemefeito') ? '(VCiv) Certificar Conclusão sem Efeito' : '(VCiv) Remover documento temporário sem efeito'}" name="(VCiv) Certificar Conclusão sem Efeito?">
