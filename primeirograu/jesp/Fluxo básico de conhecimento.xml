@@ -133,7 +133,7 @@
             <action name="upd" expression="#{modeloDocumento.set('minutaEmElaboracao',102)}"/>
         </event>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Assinar alvará judicial">
@@ -157,7 +157,7 @@
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Lançar movimento de expedição de alvará')}"/>
         </event>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
     </task-node>
     <node name="Lançar movimento de expedição de alvará">

@@ -24,18 +24,30 @@ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
-
-1. Variável: minuta_outros_documentos
-   Label: Minuta em elaboração de Certidão sem efeito
-   Escrita: Sim
-   Obrig.: Sim
-   Tipo: Editor
-
-2. Variável: minutarLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[*Variáveis*
+
+
+
+1. Variável: minuta_outros_documentos
+
+   Label: Minuta em elaboração de Certidão sem efeito
+
+   Escrita: Sim
+
+   Obrig.: Sim
+
+   Tipo: Editor
+
+
+
+2. Variável: minutarLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Minutar em Lote]]></description>
         <transition to="Nó de Desvio - (VEF) Expedição de Certidão sem efeito" name="Nó de Desvio - (VEF) Expedição de Certidão sem efeito">
             <condition expression="#{true}"/>
@@ -46,7 +58,7 @@ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
-            <action expression="#{tipoDocumento.set('TipoDocumento',57)}"/>
+            <!-- <action expression="#{tipoDocumento.set('TipoDocumento',57)}"/> -->
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar e sair da tarefa')}"/>
         </event>
@@ -66,24 +78,42 @@ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description
                 <variable name="assinaturaLote" mapped-name="assinarLote:assinaturaLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
-
-1. Variável: Processo_Fluxo_revisarMinuta
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Frame
-
-2. Variável: movimentacaoLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Habilitar Movimentação em Lote
-
-3. Variável: assinaturaLote
-   Label: 
-   Escrita: Sim
-   Obrig.: Não
+        <description><![CDATA[*Variáveis*
+
+
+
+1. Variável: Processo_Fluxo_revisarMinuta
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Frame
+
+
+
+2. Variável: movimentacaoLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
+   Tipo: Habilitar Movimentação em Lote
+
+
+
+3. Variável: assinaturaLote
+
+   Label: 
+
+   Escrita: Sim
+
+   Obrig.: Não
+
    Tipo: Habilitar Assinatura em Lote]]></description>
         <transition to="Nó de Desvio - (VEF) Expedição de Certidão sem efeito" name="Nó de Desvio - (VEF) Expedição de Certidão sem efeito">
             <condition expression="#{true}"/>
