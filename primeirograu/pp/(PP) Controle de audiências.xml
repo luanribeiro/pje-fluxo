@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PP) Controle de audiências">
-    <description><![CDATA[Código do fluxo: PP_CONT_AUD
-
-Descrição: Fluxo responsável por controlar as audiências dos procedimentos prévios.
-
-Raia        Localização              Papel
-Secretaria  Secretaria               Chefe de Secretaria
-            Gabinete                 Magistrado
+    <description><![CDATA[Código do fluxo: PP_CONT_AUD
+
+
+
+Descrição: Fluxo responsável por controlar as audiências dos procedimentos prévios.
+
+
+
+Raia        Localização              Papel
+
+Secretaria  Secretaria               Chefe de Secretaria
+
+            Gabinete                 Magistrado
+
             Assessoria               Assessor]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (PP) Controle de audiências">
@@ -112,7 +119,7 @@ Secretaria  Secretaria               Chefe de Secretaria
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pp:intimacao:cancelada')}"/>
         </event>
     </decision>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null ? '(PP) Audiência - AGUARDAR' : '(PP) Audiência - DESIGNAR'}" name="(PP) Designou audiência?">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) != null ? '(PP) Audiência - AGUARDAR' : '(PP) Audiência - DESIGNAR'}" name="(PP) Designou audiência?">
         <transition to="(PP) Audiência - AGUARDAR" name="(PP) Audiência - AGUARDAR"/>
         <transition to="(PP) Audiência - DESIGNAR" name="(PP) Audiência - DESIGNAR"/>
     </decision>
