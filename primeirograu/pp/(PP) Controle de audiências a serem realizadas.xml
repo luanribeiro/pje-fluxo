@@ -61,7 +61,7 @@ Descrição: Fluxo responsável por controlar as audiências que serão realizadas.]]
             <action expression="#{not empty processoHome.idProcessoDocumento ? org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)))}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(PP) Audiência pendente de informação - PREENCHER">

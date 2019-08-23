@@ -25,7 +25,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
         </event>
     </node>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) == null ? 'Término' : '(CEJUSC) Realizar audiência'}" name="(CEJUSC) Verifica se existe audiência designada">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? 'Término' : '(CEJUSC) Realizar audiência'}" name="(CEJUSC) Verifica se existe audiência designada">
         <transition to="(CEJUSC) Realizar audiência" name="(CEJUSC) Realizar audiência"/>
         <transition to="Término" name="Término"/>
     </decision>
@@ -68,7 +68,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false))}"/>
         </event>
     </task-node>
     <node name="(CEJUSC) Apagar minuta em elaboração">

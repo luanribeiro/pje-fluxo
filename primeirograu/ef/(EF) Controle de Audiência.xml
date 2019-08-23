@@ -24,7 +24,7 @@
             <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ = :nomeVariavelAudiencia order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).setParameter('nomeVariavelAudiencia', 'pje:fluxo:audienciaSelecionada').executeUpdate()}"/>
         </event>
     </node>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) == null ? '(EF) Audiência - DESIGNAR' : '(EF) Audiência - AGUARDAR'}" name="(EF) Verifica se existe audiência designada">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(EF) Audiência - DESIGNAR' : '(EF) Audiência - AGUARDAR'}" name="(EF) Verifica se existe audiência designada">
         <transition to="(EF) Audiência - AGUARDAR" name="(EF) Audiência - AGUARDAR"/>
         <transition to="(EF) Audiência - DESIGNAR" name="(EF) Audiência - DESIGNAR"/>
     </decision>
@@ -123,7 +123,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:aud:citar_intimar_aud', true)}"/>
         </event>
     </process-state>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) == null ? '(EF) Audiência - DESIGNAR' : '(EF) Audiência - REALIZAR'}" name="(EF) Existe audiência designada?">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(EF) Audiência - DESIGNAR' : '(EF) Audiência - REALIZAR'}" name="(EF) Existe audiência designada?">
         <transition to="(EF) Audiência - REALIZAR" name="(EF) Audiência - REALIZAR"/>
         <transition to="(EF) Audiência - DESIGNAR" name="(EF) Audiência - DESIGNAR"/>
     </decision>
@@ -166,7 +166,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)))}"/>
         </event>
     </task-node>
     <node name="(EF) Apagar minuta em elaboração">
@@ -465,7 +465,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:audienciaSelecionada')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)))}"/>
         </event>
     </node>
     <process-state name="(EF) Intimar da audiência">

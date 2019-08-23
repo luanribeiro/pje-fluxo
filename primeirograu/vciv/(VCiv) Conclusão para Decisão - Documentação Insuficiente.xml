@@ -254,7 +254,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Tem documento assinado?')}"/>
         </event>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(processoHome.idProcessoDocumento))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado')))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:jaexisteconcluso',true)}"/>
         </event>
     </task-node>
@@ -494,7 +494,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Tem documento assinado?')}"/>
         </event>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(processoHome.idProcessoDocumento))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:idDocAssinado', processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado')))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:paj:jaexisteconcluso',true)}"/>
         </event>
     </task-node>
