@@ -20,12 +20,12 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Ato ordinatório do gabinete - EXPEDIR" name="(SG) Ato ordinatório do gabinete - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Ato ordinatório do gabinete - EXPEDIR">
-        <task name="(SG) Ato ordinatório do gabinete - EXPEDIR" swimlane="Assessoria">
+        <task name="(SG) Ato ordinatório do gabinete - EXPEDIR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -83,7 +83,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Ato ordinatório do gabinete - ASSINAR">
-        <task name="(SG) Ato ordinatório do gabinete - ASSINAR" swimlane="Assessoria">
+        <task name="(SG) Ato ordinatório do gabinete - ASSINAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -135,7 +135,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:conclusao_cancelada', false)}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao'))).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(11383).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:ultimoDocumentoJuntado'))).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).lancarMovimento()}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:eaog:assinou_ato_ordinatorio', true)}"/>
         </event>
     </node>
@@ -162,7 +162,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete">
-        <task name="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete" swimlane="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete"/>
+        <task name="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete" swimlane="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Ato ordinatório do gabinete - EXPEDIR" name="(SG) Ato ordinatório do gabinete - EXPEDIR"/>
         <transition to="(SG) Ato ordinatório do gabinete - ASSINAR" name="(SG) Ato ordinatório do gabinete - ASSINAR"/>
