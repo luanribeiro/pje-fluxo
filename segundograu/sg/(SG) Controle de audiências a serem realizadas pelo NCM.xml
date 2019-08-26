@@ -20,12 +20,12 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Núcleo de Conciliação e Mediação"/>
+        <task name="Tarefa inicial" swimlane="Núcleo de Conciliação e Mediação" priority="3"/>
         <transition to="(SG) Audiência - REALIZAR" name="(SG) Audiência - REALIZAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Audiência - REALIZAR">
-        <task name="(SG) Audiência - REALIZAR" swimlane="Núcleo de Conciliação e Mediação"/>
+        <task name="(SG) Audiência - REALIZAR" swimlane="Núcleo de Conciliação e Mediação" priority="3"/>
         <transition to="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM">
             <condition expression="#{true}"/>
         </transition>
@@ -33,7 +33,7 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
         <transition to="(SG) Apagar variáveis do fluxo" name="Cancelar realização de audiência"/>
     </task-node>
     <task-node end-tasks="true" name="(SG) Audiência pendente de ata - MINUTAR">
-        <task name="(SG) Audiência pendente de ata - MINUTAR" swimlane="Núcleo de Conciliação e Mediação">
+        <task name="(SG) Audiência pendente de ata - MINUTAR" swimlane="Núcleo de Conciliação e Mediação" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="minuta_audiencia" mapped-name="textEditCombo:minuta_audiencia" access="read,write"/>
@@ -56,6 +56,7 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Audiência pendente de informação - PREENCHER" name="Informar dados da audiência"/>
+        <transition to="(SG) Audiência - REALIZAR" name="Retornar para realização de audiência"/>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '87')}"/>
         </event>
@@ -70,7 +71,7 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Audiência pendente de informação - PREENCHER">
-        <task name="(SG) Audiência pendente de informação - PREENCHER" swimlane="Núcleo de Conciliação e Mediação">
+        <task name="(SG) Audiência pendente de informação - PREENCHER" swimlane="Núcleo de Conciliação e Mediação" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="ProcessoAudiencia_informarDadosAudiencia" mapped-name="frame:ProcessoAudiencia_informarDadosAudiencia" access="read,write"/>
@@ -116,7 +117,7 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
         <transition to="(SG) Audiência pendente de informação - PREENCHER" name="(SG) Audiência pendente de informação - PREENCHER"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Audiência pendente de ata - ASSINAR">
-        <task name="(SG) Audiência pendente de ata - ASSINAR" swimlane="Núcleo de Conciliação e Mediação">
+        <task name="(SG) Audiência pendente de ata - ASSINAR" swimlane="Núcleo de Conciliação e Mediação" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="assinaturaLote" mapped-name="assinarLote:assinaturaLote" access="read,write"/>
@@ -163,14 +164,13 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:audienciaSelecionada')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:tjrn:idOrgaoJulgador')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:statusAudienciaSelecionada')}"/>
         </event>
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM">
-        <task name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" swimlane="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM"/>
+        <task name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" swimlane="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Audiência - REALIZAR" name="(SG) Audiência - REALIZAR"/>
         <transition to="(SG) Audiência pendente de ata - MINUTAR" name="(SG) Audiência pendente de ata - MINUTAR"/>
