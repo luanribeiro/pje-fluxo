@@ -11,7 +11,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Magistrado"/>
+        <task name="Tarefa inicial" swimlane="Magistrado" priority="3"/>
         <transition to="(TR) Enviar para a presidência" name="(TR) Enviar para a presidência"/>
     </start-state>  
     <!-- NODES -->
@@ -36,7 +36,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(TR) Concluso para decisão da presidência">
-        <task name="(TR) Concluso para decisão da presidência" swimlane="Magistrado">
+        <task name="(TR) Concluso para decisão da presidência" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
@@ -52,7 +52,7 @@
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:documento:tipo:minuta:ids','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action name="upd" expression="#{tipoDocumento.set('TipoDocumento', 63, 64)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action name="upd" expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -69,7 +69,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão da presidência">
-        <task name="(TR) Assinar decisão da presidência" swimlane="Magistrado">
+        <task name="(TR) Assinar decisão da presidência" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -120,7 +120,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(TR) Concluso para despacho da presidência">
-        <task name="(TR) Concluso para despacho da presidência" swimlane="Magistrado">
+        <task name="(TR) Concluso para despacho da presidência" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
@@ -136,7 +136,7 @@
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:documento:tipo:minuta:ids','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action name="upd" expression="#{tipoDocumento.set('TipoDocumento', 63, 64)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action name="upd" expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -153,7 +153,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar despacho da presidencia">
-        <task name="(TR) Assinar despacho da presidencia" swimlane="Magistrado">
+        <task name="(TR) Assinar despacho da presidencia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -203,7 +203,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(TR) Certificar Conclusão sem Efeito da presidência">
-        <task name="(TR) Certificar Conclusão sem Efeito da presidência" swimlane="Magistrado">
+        <task name="(TR) Certificar Conclusão sem Efeito da presidência" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_semefeito" mapped-name="textEditCombo:minuta_semefeito" access="read,write,required"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
@@ -215,7 +215,7 @@
         <transition to="(TR) Retornar para qual concluso?" name="Retornar para minuta"/>
         <transition to="(TR) Assinar Conclusão sem Efeito da presidência" name="Encaminhar para assinatura"/>
         <event type="task-start">
-            <action name="upd" expression="#{tipoDocumento.set('TipoDocumento',57)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_semefeito'))}"/>
@@ -230,7 +230,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar Conclusão sem Efeito da presidência">
-        <task name="(TR) Assinar Conclusão sem Efeito da presidência" swimlane="Magistrado">
+        <task name="(TR) Assinar Conclusão sem Efeito da presidência" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -286,7 +286,7 @@
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TR) Remessa para a presidência">
-        <task name="Nó de Desvio - (TR) Remessa para a presidência" swimlane="Nó de Desvio - (TR) Remessa para a presidência"/>
+        <task name="Nó de Desvio - (TR) Remessa para a presidência" swimlane="Nó de Desvio - (TR) Remessa para a presidência" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(TR) Concluso para decisão da presidência" name="(TR) Concluso para decisão da presidência"/>
         <transition to="(TR) Concluso para despacho da presidência" name="(TR) Concluso para despacho da presidência"/>

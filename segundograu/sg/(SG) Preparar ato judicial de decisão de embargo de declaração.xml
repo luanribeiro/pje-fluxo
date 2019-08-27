@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Preparar ato judicial de decisão de embargo de declaração">
-    <description><![CDATA[Código do fluxo: SG_PAJ_DEC_EMB_DEC.
+    <description><![CDATA[Código do fluxo: SG_PAJ_DEC_EMB_DEC
 
 Descrição: Fluxo destinado ao preparo de atos judiciais de decisões genéricas.
 
@@ -28,12 +28,12 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Concluso para decisão de embargos de declaração - MINUTAR" name="(SG) Concluso para decisão de embargos de declaração - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Concluso para decisão de embargos de declaração - MINUTAR">
-        <task name="(SG) Concluso para decisão de embargos de declaração - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de embargos de declaração - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -66,7 +66,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </transition>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -80,7 +80,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de embargos de declaração - CONFIRMAR">
-        <task name="(SG) Concluso para decisão de embargos de declaração - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de embargos de declaração - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -128,7 +128,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de embargos de declaração - ASSINAR">
-        <task name="(SG) Concluso para decisão de embargos de declaração - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para decisão de embargos de declaração - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -187,7 +187,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão de embargo de declaração">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de embargo de declaração" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de embargo de declaração"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de embargo de declaração" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de embargo de declaração" priority="3"/>
         <transition to="(SG) Concluso para decisão de embargos de declaração - MINUTAR" name="(SG) Concluso para decisão de embargos de declaração - MINUTAR"/>
         <transition to="(SG) Concluso para decisão de embargos de declaração - CONFIRMAR" name="(SG) Concluso para decisão de embargos de declaração - CONFIRMAR"/>
         <transition to="(SG) Concluso para decisão de embargos de declaração - ASSINAR" name="(SG) Concluso para decisão de embargos de declaração - ASSINAR"/>

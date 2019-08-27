@@ -3,7 +3,7 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Preparar ato judicial de decisão mediante encaminhamento">
     <description><![CDATA[Código do fluxo: SG_PAJ_DEC_ENC
 
-Descrição: Fluxo destinado ao preparo de atos judiciais de decisões mediante encaminhamento..
+Descrição: Fluxo destinado ao preparo de atos judiciais de decisões mediante encaminhamento.
 
 Raia        Localização              Papel
 Assessoria  Assessoria Segundo Grau  Assessoria
@@ -28,12 +28,12 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Concluso para decisão mediante encaminhamento - MINUTAR" name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR">
-        <task name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutaLote" mapped-name="minutarLote:minutaLote" access="read,write"/>
@@ -63,8 +63,9 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </transition>
         <transition to="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR" name="Encaminhar para confirmação da minuta"/>
         <transition to="(SG) Concluso para decisão mediante encaminhamento - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
+        <transition to="(SG) Encaminhar para preparação do voto, relatório e ementa" name="Encaminhar para preparação do voto, relatório e ementa"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="task-end">
@@ -74,12 +75,12 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Prosseguir através de ato ordinatório')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Encaminhar para preparação do voto, relatório e ementa')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio','true')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR">
-        <task name="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -128,7 +129,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão mediante encaminhamento - ASSINAR">
-        <task name="(SG) Concluso para decisão mediante encaminhamento - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para decisão mediante encaminhamento - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -179,9 +180,23 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <sub-process name="(SG) Autos recebidos do gabinete" binding="late"/>
         <transition to="Término" name="Término"/>
     </process-state>
+    <process-state name="(SG) Encaminhar para preparação do voto, relatório e ementa">
+        <sub-process name="(SG) Decisão colegiada como relator" binding="late"/>
+        <transition to="(SG) Houve julgamento?" name="(SG) Houve julgamento?"/>
+        <event type="node-leave">
+            <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
+        </event>
+    </process-state>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:paj:conclusao_cancelada') == true ? '(SG) Concluso para decisão mediante encaminhamento - MINUTAR' : 'Término'}" name="(SG) Houve julgamento?">
+        <transition to="(SG) Concluso para decisão mediante encaminhamento - MINUTAR" name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:paj:conclusao_cancelada')}"/>
+        </event>
+    </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão mediante encaminhamento">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão mediante encaminhamento" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão mediante encaminhamento"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão mediante encaminhamento" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão mediante encaminhamento" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Concluso para decisão mediante encaminhamento - MINUTAR" name="(SG) Concluso para decisão mediante encaminhamento - MINUTAR"/>
         <transition to="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR" name="(SG) Concluso para decisão mediante encaminhamento - CONFIRMAR"/>

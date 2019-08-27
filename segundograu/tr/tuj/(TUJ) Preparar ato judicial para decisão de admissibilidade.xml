@@ -22,12 +22,12 @@ Magistrado  Assessoria TUJ  Assessor]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(TUJ) Concluso para decisão de admissibilidade - MINUTAR" name="(TUJ) Concluso para decisão de admissibilidade - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(TUJ) Concluso para decisão de admissibilidade - MINUTAR">
-        <task name="(TUJ) Concluso para decisão de admissibilidade - MINUTAR" swimlane="Assessoria">
+        <task name="(TUJ) Concluso para decisão de admissibilidade - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -57,7 +57,7 @@ Magistrado  Assessoria TUJ  Assessor]]></description>
         </transition>
         <transition to="(TUJ) Concluso para decisão de admissibilidade - ASSINAR" name="Encaminhar para assinatura"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento',63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="task-end">
@@ -67,7 +67,7 @@ Magistrado  Assessoria TUJ  Assessor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TUJ) Concluso para decisão de admissibilidade - ASSINAR">
-        <task name="(TUJ) Concluso para decisão de admissibilidade - ASSINAR" swimlane="Magistrado">
+        <task name="(TUJ) Concluso para decisão de admissibilidade - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -119,7 +119,7 @@ Magistrado  Assessoria TUJ  Assessor]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade">
-        <task name="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade"/>
+        <task name="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(TUJ) Concluso para decisão de admissibilidade - MINUTAR" name="(TUJ) Concluso para decisão de admissibilidade - MINUTAR"/>
         <transition to="(TUJ) Concluso para decisão de admissibilidade - ASSINAR" name="(TUJ) Concluso para decisão de admissibilidade - ASSINAR"/>

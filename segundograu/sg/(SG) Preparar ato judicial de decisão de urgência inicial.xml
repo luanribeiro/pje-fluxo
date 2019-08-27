@@ -28,7 +28,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Encaminhar para ato ordinatório à PGJ?" name="(SG) Encaminhar para ato ordinatório à PGJ?"/>
     </start-state>  
     <!-- NODES -->
@@ -40,7 +40,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </decision>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de urgência inicial - MINUTAR">
-        <task name="(SG) Concluso para decisão de urgência inicial - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de urgência inicial - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -76,7 +76,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Encaminhar para preparação do voto, relatório e ementa." name="Encaminhar para preparação do voto, relatório e ementa"/>
         <transition to="(SG) Expedir ato ordinatório à PGJ" name="Prosseguir através de ato ordinatório à PGJ"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="task-end">
@@ -92,7 +92,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de urgência inicial - CONFIRMAR">
-        <task name="(SG) Concluso para decisão de urgência inicial - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de urgência inicial - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -140,7 +140,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de urgência inicial - ASSINAR">
-        <task name="(SG) Concluso para decisão de urgência inicial - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para decisão de urgência inicial - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -223,7 +223,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão de urgência inicial">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de urgência inicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de urgência inicial"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de urgência inicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de urgência inicial" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Concluso para decisão de urgência inicial - MINUTAR" name="(SG) Concluso para decisão de urgência inicial - MINUTAR"/>
         <transition to="(SG) Concluso para decisão de urgência inicial - ASSINAR" name="(SG) Concluso para decisão de urgência inicial - ASSINAR"/>

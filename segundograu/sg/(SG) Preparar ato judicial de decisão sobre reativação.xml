@@ -28,12 +28,12 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Concluso para decisão sobre reativação - MINUTAR" name="(SG) Concluso para decisão sobre reativação - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Concluso para decisão sobre reativação - MINUTAR">
-        <task name="(SG) Concluso para decisão sobre reativação - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão sobre reativação - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -65,7 +65,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </transition>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -79,7 +79,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão sobre reativação - CONFIRMAR">
-        <task name="(SG) Concluso para decisão sobre reativação - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão sobre reativação - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -127,7 +127,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão sobre reativação - ASSINAR">
-        <task name="(SG) Concluso para decisão sobre reativação - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para decisão sobre reativação - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -186,7 +186,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação" priority="3"/>
         <transition to="(SG) Concluso para decisão sobre reativação - MINUTAR" name="(SG) Concluso para decisão sobre reativação - MINUTAR"/>
         <transition to="(SG) Concluso para decisão sobre reativação - CONFIRMAR" name="(SG) Concluso para decisão sobre reativação - CONFIRMAR"/>
         <transition to="(SG) Concluso para decisão sobre reativação - ASSINAR" name="(SG) Concluso para decisão sobre reativação - ASSINAR"/>

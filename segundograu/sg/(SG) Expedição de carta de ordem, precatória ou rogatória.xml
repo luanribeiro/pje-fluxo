@@ -14,23 +14,23 @@ Magistrado  Assessoria Segundo Grau  Assessor Chefe
 Magistrado  Assessoria Segundo Grau  Assessor para Votação Antecipada
 Assessoria Segundo Grau  Assessor Geral]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
-        <assignment actor-id="#{actor.id}"/>
-    </swimlane>
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
+        <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR" name="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR">
-        <task name="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_carta" mapped-name="textEditCombo:minuta_carta" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -54,11 +54,6 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </transition>
         <transition to="(SG) Carta de ordem, precatória ou rogatória - ASSINAR" name="Encaminhar para assinatura"/>
         <transition to="(SG) Apagar minuta não assinada de carta" name="Cancelar e sair da tarefa"/>
-        <event type="task-create">
-            <action name="upd" expression="#{tipoDocumento.set('TipoDocumento',94,203,204)}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','94,203,204')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_carta'))}"/>
             <action expression="#{not empty processoHome.idProcessoDocumento ? org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
@@ -67,9 +62,13 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
             <action expression="#{taskInstanceUtil.deleteVariableLocally('frameDefaultLeavingTransition')}"/>
         </event>
+        <event type="task-create">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','94,203,204')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Carta de ordem, precatória ou rogatória - ASSINAR">
-        <task name="(SG) Carta de ordem, precatória ou rogatória - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Carta de ordem, precatória ou rogatória - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -102,13 +101,13 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Lançar movimento de expedição de carta de ordem, precatória ou rogatória" name="(SG) Lançar movimento de expedição de carta de ordem, precatória ou rogatória">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','94,203,204')}"/>
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Lançar movimento de expedição de carta de ordem, precatória ou rogatória')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{taskInstanceUtil.deleteVariableLocally('frameDefaultLeavingTransition')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','94,203,204')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Lançar movimento de expedição de carta de ordem, precatória ou rogatória')}"/>
         </event>
     </task-node>
     <node name="(SG) Lançar movimento de expedição de carta de ordem, precatória ou rogatória">
@@ -120,7 +119,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Carta de ordem, precatória ou rogatória - AGUARDAR">
-        <task name="(SG) Carta de ordem, precatória ou rogatória - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Carta de ordem, precatória ou rogatória - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="label_informacao" mapped-name="textAlert:label_informacao" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -143,11 +142,11 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Finalizar e sair da tarefa"/>
-        <event type="task-create">
-            <action expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
         <event type="task-end">
             <action expression="#{taskInstanceUtil.deleteVariableLocally('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <node name="(SG) Apagar minuta não assinada de carta">
@@ -158,17 +157,44 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
-        <task name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" swimlane="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória"/>
+        <task name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" swimlane="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR" name="(SG) Carta de ordem, precatória ou rogatória - EXPEDIR"/>
         <transition to="(SG) Carta de ordem, precatória ou rogatória - ASSINAR" name="(SG) Carta de ordem, precatória ou rogatória - ASSINAR"/>
         <transition to="(SG) Carta de ordem, precatória ou rogatória - AGUARDAR" name="(SG) Carta de ordem, precatória ou rogatória - AGUARDAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -177,40 +203,13 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 

@@ -25,12 +25,12 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR" name="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR">
-        <task name="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="expedir_carta" mapped-name="textEditCombo:expedir_carta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -70,14 +70,13 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '94,203,204')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',94,203,204)}"/>
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar e sair da tarefa')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('number:prazoExpedienteCarta', 0)}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem - REVISAR">
-        <task name="(SG) Carta precatória, rogatória ou de ordem - REVISAR" swimlane="Secretaria">
+        <task name="(SG) Carta precatória, rogatória ou de ordem - REVISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="expedir_carta" mapped-name="textEditCombo:expedir_carta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -122,7 +121,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem pendente de assinatura pelo gabinete - ASSINAR">
-        <task name="(SG) Carta precatória, rogatória ou de ordem pendente de assinatura pelo gabinete - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Carta precatória, rogatória ou de ordem pendente de assinatura pelo gabinete - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
@@ -191,7 +190,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR">
-        <task name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR" swimlane="Secretaria">
+        <task name="(SG) Carta precatória, rogatória ou de ordem - ENCAMINHAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="Processo_Fluxo_expedientes_correios" mapped-name="frame:Processo_Fluxo_expedientes_correios" access="read,write"/>
@@ -243,7 +242,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem">
-        <task name="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem" swimlane="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem"/>
+        <task name="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem" swimlane="Nó de Desvio - (SG) Expedição de carta precatória, rogatória ou de ordem" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR" name="(SG) Carta precatória, rogatória ou de ordem - EXPEDIR"/>
         <transition to="(SG) Carta precatória, rogatória ou de ordem - REVISAR" name="(SG) Carta precatória, rogatória ou de ordem - REVISAR"/>

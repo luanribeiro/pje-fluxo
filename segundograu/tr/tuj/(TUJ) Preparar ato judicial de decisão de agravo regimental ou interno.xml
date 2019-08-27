@@ -22,12 +22,12 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR" name="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR">
-        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR" swimlane="Assessoria">
+        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -60,7 +60,7 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
         </transition>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -74,7 +74,7 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TUJ) Concluso para decisão de agravo regimental ou interno - CONFIRMAR">
-        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - CONFIRMAR" swimlane="Assessoria">
+        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -122,7 +122,7 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TUJ) Concluso para decisão de agravo regimental ou interno - ASSINAR">
-        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - ASSINAR" swimlane="Magistrado">
+        <task name="(TUJ) Concluso para decisão de agravo regimental ou interno - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -181,7 +181,7 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de agravo regimental ou interno">
-        <task name="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de agravo regimental ou interno" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de agravo regimental ou interno"/>
+        <task name="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de agravo regimental ou interno" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de agravo regimental ou interno" priority="3"/>
         <transition to="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR" name="(TUJ) Concluso para decisão de agravo regimental ou interno - MINUTAR"/>
         <transition to="(TUJ) Concluso para decisão de agravo regimental ou interno - CONFIRMAR" name="(TUJ) Concluso para decisão de agravo regimental ou interno - CONFIRMAR"/>
         <transition to="(TUJ) Concluso para decisão de agravo regimental ou interno - ASSINAR" name="(TUJ) Concluso para decisão de agravo regimental ou interno - ASSINAR"/>

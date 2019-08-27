@@ -28,7 +28,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Encaminhar para ato ordinatório à PGJ?" name="(SG) Encaminhar para ato ordinatório à PGJ?"/>
     </start-state>  
     <!-- NODES -->
@@ -40,7 +40,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </decision>
     <task-node end-tasks="true" name="(SG) Concluso para despacho inicial - MINUTAR">
-        <task name="(SG) Concluso para despacho inicial - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para despacho inicial - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="minutaLote" mapped-name="minutarLote:minutaLote" access="read,write"/>
@@ -77,7 +77,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Expedir ato ordinatório à PGJ" name="Prosseguir através de ato ordinatório à PGJ"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -91,7 +91,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho inicial - CONFIRMAR">
-        <task name="(SG) Concluso para despacho inicial - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para despacho inicial - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -139,7 +139,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho inicial - ASSINAR">
-        <task name="(SG) Concluso para despacho inicial - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para despacho inicial - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -222,7 +222,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Concluso para despacho inicial - MINUTAR" name="(SG) Concluso para despacho inicial - MINUTAR"/>
         <transition to="(SG) Concluso para despacho inicial - ASSINAR" name="(SG) Concluso para despacho inicial - ASSINAR"/>

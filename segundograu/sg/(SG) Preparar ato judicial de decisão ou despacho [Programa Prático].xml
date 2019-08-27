@@ -11,18 +11,18 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Deslocar para o órgão do Programa Prático" name="(SG) Deslocar para o órgão do Programa Prático"/>
     </start-state>  
     <!-- NODES -->
     <node name="(SG) Deslocar para o órgão do Programa Prático">
         <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 74, 143, 21)}"/>
+            <action expression="#{parametroUtil.getParametro('pje:tjrn:idOjProgPraticoMovInterna').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().getOrgaoJulgador().getIdOrgaoJulgador()).concat('_')) == true ? (tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 74, 143, 21)) : '' }"/>
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR">
-        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_desp_dec_prog_prat" mapped-name="textEditCombo:minuta_desp_dec_prog_prat" access="read,write"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -48,7 +48,7 @@
         <transition to="(SG) Gravar variável de cancelamento de conclusão" name="Cancelar tarefa e encaminhar para voto, relatório e ementa"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento', 63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
         </event>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_ato_judicial')) : ''}"/>
@@ -68,7 +68,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR">
-        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -107,7 +107,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR">
-        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para despacho ou decisão [Programa Prático] - ASSINAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -167,7 +167,7 @@
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão ou despacho [Programa Prático]" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - MINUTAR"/>
         <transition to="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR" name="(SG) Concluso para despacho ou decisão [Programa Prático] - CONFIRMAR"/>
