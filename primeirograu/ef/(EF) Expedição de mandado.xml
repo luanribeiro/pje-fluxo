@@ -1,36 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de mandado">
-    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO
-
-
-
+    <description><![CDATA[Código do fluxo: EF_EXP_MANDADO.
 Descrição: Preparar mandado.
-
-
-
 Raia        Localização     Papel
-
 Secretaria  Secretaria      Chefe de Secretaria
-
 Secretaria  Secretaria      Servidor de Secretaria
-
 Secretaria  Gabinete        Magistrado
-
 Secretaria  Corregedoria    Servidor Corregedoria
-
 Secretaria  Corregedoria    Magistrado Corregedor
-
 Magistrado  Secretaria      Chefe de Secretaria
-
 Magistrado  Secretaria      Servidor de Secretaria
-
 Magistrado  Gabinete        Magistrado
-
 Magistrado  Corregedoria    Servidor Corregedoria
-
 Magistrado  Corregedoria    Magistrado Corregedor
-
 Magistrado  Gabinete        Magistrado Gabinete]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (EF) Expedição de mandado">
@@ -56,13 +39,11 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: minuta_mandado
    Label: Minuta em elaboração de mandado
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -164,19 +145,16 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: aviso1
    Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado')).concat(' dias.'))}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 2. Variável: minuta_mandado
    Label: Minuta em elaboração de mandado
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 3. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
@@ -236,25 +214,21 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: aviso1
    Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado')).concat(' dias.'))}
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso
-
 2. Variável: aviso2
    Label: #{'Destinatário: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:mandado')).concat('.')}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 3. Variável: minuta_mandado
    Label: Minuta em elaboração de mandado
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 4. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
@@ -290,31 +264,26 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: aviso1
    Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado')).concat(' dias.'))}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 2. Variável: aviso2
    Label: #{'Destinatário: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:mandado')).concat('.')}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 3. Variável: Processo_Fluxo_revisarMinuta
    Label: Assinar Minuta
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame
-
 4. Variável: MovimentarEmLote
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 5. Variável: AssinaturaEmLote
    Label: 
    Escrita: Sim
@@ -356,31 +325,26 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: aviso1
    Label: #{'Prazo para manifestação: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado') == 0 ? 'Sem prazo.' : ''.concat(tramitacaoProcessualService.recuperaVariavel('ef:prazoManifestacao:mandado')).concat(' dias.'))}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 2. Variável: aviso2
    Label: #{'Destinatário: '.concat(tramitacaoProcessualService.recuperaVariavel('ef:destExpediente:texto:mandado')).concat('.')}
     Escrita: Sim
     Obrig.: Não
     Tipo: Aviso
-
 3. Variável: Processo_Fluxo_revisarMinuta
    Label: Assinar Minuta
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame
-
 4. Variável: MovimentarEmLote
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 5. Variável: AssinaturaEmLote
    Label: 
    Escrita: Sim
@@ -412,7 +376,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: Processo_Fluxo_expedientes_centralmandados
    Label: Expedientes da central de mandados
    Escrita: Sim
@@ -444,7 +407,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: MovimentarLote
    Label:
    Escrita: Sim
@@ -482,7 +444,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: MovimentarLote
    Label:
    Escrita: Sim
@@ -520,7 +481,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: MovimentarLote
    Label:
    Escrita: Sim
@@ -558,7 +518,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[* Variáveis *
-
 1. Variável: MovimentarLote
    Label:
    Escrita: Sim
@@ -591,7 +550,6 @@ Magistrado  Gabinete        Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: MovimentarEmLote
    Label:]]></description>
         <transition to="(EF) Apagar minuta não assinada de mandado" name="Finalizar e sair da tarefa"/>

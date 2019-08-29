@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VEF) Expedição de Certidão sem efeito">
+ <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VEF) Expedição de Certidão sem efeito">
     <description><![CDATA[Código do fluxo: VEF_EXP_CERTEF
-
-Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description>  
+ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VEF) Expedição de Certidão sem efeito">
         <assignment actor-id="#{actor.id}"/>
@@ -25,29 +24,15 @@ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
-
-
-1. Variável: minuta_outros_documentos
-
+ 1. Variável: minuta_outros_documentos
    Label: Minuta em elaboração de Certidão sem efeito
-
    Escrita: Sim
-
    Obrig.: Sim
-
    Tipo: Editor
-
-
-
-2. Variável: minutarLote
-
+ 2. Variável: minutarLote
    Label: 
-
    Escrita: Sim
-
    Obrig.: Não
-
    Tipo: Habilitar Minutar em Lote]]></description>
         <transition to="Nó de Desvio - (VEF) Expedição de Certidão sem efeito" name="Nó de Desvio - (VEF) Expedição de Certidão sem efeito">
             <condition expression="#{true}"/>
@@ -79,41 +64,20 @@ Descrição: Fluxo destinado a expedição de certidão sem efeito...]]></description
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
-
-
-1. Variável: Processo_Fluxo_revisarMinuta
-
+ 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
-
    Escrita: Sim
-
    Obrig.: Não
-
    Tipo: Frame
-
-
-
-2. Variável: movimentacaoLote
-
+ 2. Variável: movimentacaoLote
    Label: 
-
    Escrita: Sim
-
    Obrig.: Não
-
    Tipo: Habilitar Movimentação em Lote
-
-
-
-3. Variável: assinaturaLote
-
+ 3. Variável: assinaturaLote
    Label: 
-
    Escrita: Sim
-
    Obrig.: Não
-
    Tipo: Habilitar Assinatura em Lote]]></description>
         <transition to="Nó de Desvio - (VEF) Expedição de Certidão sem efeito" name="Nó de Desvio - (VEF) Expedição de Certidão sem efeito">
             <condition expression="#{true}"/>
