@@ -32,18 +32,18 @@ Secretaria  Secretaria               Chefe de Secretaria
     <task-node end-tasks="true" name="(PP) Audiência - ANALISAR">
         <task name="(PP) Audiência - ANALISAR" swimlane="Secretaria"/>
         <transition to="(PP) Audiência - AGUARDAR" name="03 - Aguardar audiência">
-            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null}"/>
+            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) != null}"/>
         </transition>
         <transition to="Nó de Desvio - (PP) Controle de audiências" name="Nó de Desvio - (PP) Controle de audiências">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(PP) Audiência - DESIGNAR" name="01 - Designar audiência"/>
         <transition to="(PP) Audiência - CANCELAR" name="05 - Cancelar audiência">
-            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null}"/>
+            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) != null}"/>
         </transition>
         <transition to="(PP) Intimar as partes" name="02 - Intimar as partes"/>
         <transition to="(PP) Realizar audiência" name="04 - Realizar audiência">
-            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null}"/>
+            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) != null}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(PP) Audiência - DESIGNAR">
