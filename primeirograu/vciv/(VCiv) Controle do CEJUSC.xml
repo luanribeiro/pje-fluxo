@@ -68,7 +68,7 @@ expressão p/ quando ativar parnamirim:
             <condition expression="#{true}"/>
         </transition>
         <transition to="(CEJUSC) Realização da audiência" name="Realizar Audiência">
-            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null}"/>
+            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) != null}"/>
         </transition>
         <transition to="(CEJUSC) Designar audiência" name="Designar/Cancelar audiência">
             <condition expression="#{!authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;DPVAT&quot;)}"/>
