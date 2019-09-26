@@ -268,6 +268,7 @@
         <transition to="(VCiv) Processos devolvidos pela instância superior" name="(VCiv) Processos devolvidos pela instância superior"/>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Processos devolvidos pela instância superior')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:mni:aguardaRemessa','true')}"/>
         </event>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('instância superior').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>

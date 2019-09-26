@@ -350,6 +350,7 @@
         </event>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Avaliar forma de encerramento')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:mni:aguardaRemessa','true')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Avaliar forma de encerramento">
