@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Fluxo básico de conhecimento">
-    <description><![CDATA[...]]></description>  
+    <description><![CDATA[...........]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Direção">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
@@ -15,11 +15,11 @@
     <swimlane name="Assessoria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('7:1469,7:5197,5:1338,6:1469,7:1338,8:5852,8:5853')}"/>
     </swimlane>
-    <swimlane name="Conciliação">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,7:5886,7:5197,6:1469,8:5852,8:5853')}"/>
-    </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,5:5186,5:5197,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Conciliação">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,7:5886,7:5197,6:1469,8:5852,8:5853')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -59,6 +59,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Verificar providência a adotar" name="Outras providências a adotar"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCiv)"/>
     </task-node>
     <process-state name="Citar para resposta">
         <sub-process name="Preparar ato de comunicação" binding="late"/>
@@ -127,11 +128,12 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Assinar alvará judicial" name="Encaminhar para assinatura do alvará judicial"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
         <event type="node-enter">
             <action name="upd" expression="#{modeloDocumento.set('minutaEmElaboracao',102)}"/>
         </event>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Assinar alvará judicial">
@@ -147,6 +149,7 @@
         <transition to="Lançar movimento de expedição de alvará" name="Lançar movimento de expedição de alvará">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
         <event type="node-enter">
             <action name="upd" expression="#{modeloDocumento.set('Processo_Fluxo_revisarMinuta',102)}"/>
         </event>
@@ -154,7 +157,7 @@
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Lançar movimento de expedição de alvará')}"/>
         </event>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
     </task-node>
     <node name="Lançar movimento de expedição de alvará">
@@ -174,6 +177,7 @@
         </transition>
         <transition to="Arquivar o processo" name="Arquivar o processo"/>
         <transition to="Verificar providência a adotar" name="Encaminhar para outras providências"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCiv)"/>
     </task-node>
     <node name="FazConcJulg">
         <event type="node-enter">
@@ -203,6 +207,7 @@
             <condition expression="#{competenciaClasseAssuntoHome.processoContemClasseAssunto('159')}"/>
         </transition>
         <transition to="Verificar providência a adotar" name="Verificar providência a adotar"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <process-state name="Fluxo Execução">
         <sub-process name="Cumprimento de sentença" binding="late"/>
@@ -246,6 +251,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Certificar decurso" name="Certificar decurso"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <decision expression="#{org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processarFeitos:recursoInterno') ? 'Julgar recurso interno' : 'Verifica existencia recurso externo'}" name="Verifica existência de recurso interno">
         <description><![CDATA[]]></description>
@@ -285,6 +291,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Avaliar forma de encerramento" name="Avaliar forma de encerramento"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <task-node end-tasks="true" name="Certificar decurso">
         <task name="Certificar decurso" swimlane="Secretaria">
@@ -298,6 +305,7 @@
         </transition>
         <transition to="Analisar providência após certificar decurso" name="Analisar providência após certificar decurso"/>
         <transition to="Verificar providência a adotar" name="Cancelar e sair da tarefa"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
         <event type="task-create">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
         </event>
@@ -315,6 +323,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Avaliar forma de encerramento" name="Cancelar e sair da tarefa"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Aguardar julgamento de instância superior')}"/>
         </event>
@@ -335,11 +344,13 @@
         <transition to="Nó de Desvio - Fluxo básico de conhecimento" name="Nó de Desvio - Fluxo básico de conhecimento">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('Turma Recursal').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
         </event>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Avaliar forma de encerramento')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:mni:aguardaRemessa','true')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Avaliar forma de encerramento">
@@ -351,6 +362,7 @@
         <transition to="Verificar providência a adotar" name="Encaminhar para outras providências"/>
         <transition to="Arquivar o processo" name="Arquivar o processo"/>
         <transition to="Encaminhar para instância superior" name="Encaminhar para instância superior"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <process-state name="Verificar providências finais">
         <sub-process name="(JESP) Preparar Ato Judicial" binding="late"/>
@@ -371,6 +383,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Arquivar o processo" name="Arquivar o processo"/>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <process-state name="Arquivar o processo">
         <sub-process name="Arquivamento" binding="late"/>
@@ -383,6 +396,7 @@
         <transition to="Nó de Desvio - Fluxo básico de conhecimento" name="Nó de Desvio - Fluxo básico de conhecimento">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="Encaminhar para outro fluxo (VCic)" name="Encaminhar para outro fluxo (VCic)"/>
     </task-node>
     <process-state name="Intimar MP de recurso interposto">
         <sub-process name="Preparar ato de comunicação" binding="late"/>

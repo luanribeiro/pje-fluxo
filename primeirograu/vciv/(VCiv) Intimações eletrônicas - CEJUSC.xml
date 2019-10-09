@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Intimações eletrônicas - CEJUSC">
-    <description><![CDATA[Realiza intimações eletrônicas do último ato proferido....
-
-Para complementar as variáveis:
-- Selecione: label "Selecione o destinatário que deseja intimar diretamente"
-- partesAtivas: label "#{processoParteManager.recuperaPartes(tramitacaoProcessualService.recuperaProcesso(), true, null, null)}"
-- prazoIntimacao: label "Prazo (em dias - 0 para sem prazo)"
+    <description><![CDATA[Realiza intimações eletrônicas do último ato proferido....
+
+Para complementar as variáveis:
+- Selecione: label "Selecione o destinatário que deseja intimar diretamente"
+- partesAtivas: label "#{processoParteManager.recuperaPartes(tramitacaoProcessualService.recuperaProcesso(), true, null, null)}"
+- prazoIntimacao: label "Prazo (em dias - 0 para sem prazo)"
 - Processo_Fluxo_visualizarDecisao: label "Ato proferido"]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Intimações eletrônicas - CEJUSC">
@@ -27,7 +27,7 @@ Para complementar as variáveis:
                 <variable name="prazoIntimacao" mapped-name="number:prazoIntimacao" access="read,write,required"/>
             </controller>
         </task>
-        <description><![CDATA[Labels:
+        <description><![CDATA[Labels:
 - prazoIntimacao: label "Prazo (em dias - 0 para sem prazo)"]]></description>
         <transition to="(CEJUSC) Intimar partes do polo ativo" name="01 - Intimar advogados do polo ativo">
             <condition expression="#{authenticator.getPapelAtual().getIdPapel() == 5886}"/>
@@ -63,9 +63,9 @@ Para complementar as variáveis:
                 <variable name="prazoIntimacao" mapped-name="number:prazoIntimacao" access="read,write,required"/>
             </controller>
         </task>
-        <description><![CDATA[Labels:
-- Selecione: label "Selecione o destinatário que deseja intimar diretamente"
-- partesAtivas: label "#{processoParteManager.recuperaPartes(tramitacaoProcessualService.recuperaProcesso(), true, null, null)}"
+        <description><![CDATA[Labels:
+- Selecione: label "Selecione o destinatário que deseja intimar diretamente"
+- partesAtivas: label "#{processoParteManager.recuperaPartes(tramitacaoProcessualService.recuperaProcesso(), true, null, null)}"
 - prazoIntimacao: label "Prazo (em dias - 0 para sem prazo)"]]></description>
         <transition to="(CEJUSC) Intimar destinatário específico" name="Intimar destinatário selecionado">
             <condition expression="#{authenticator.getPapelAtual().getIdPapel() == 5886}"/>

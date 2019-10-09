@@ -1,0 +1,1247 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PROJUDI) Projudi migração">
+    <description><![CDATA[.....]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="solicitante">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,7:5197,6:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - (PROJUDI) Projudi migração">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante"/>
+        <transition to="(Projudi) Processo migrado do projudi" name="(Projudi) Processo migrado do projudi"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(Projudi) Processo migrado do projudi">
+        <task name="(Projudi) Processo migrado do projudi" swimlane="solicitante">
+            <controller>
+                <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Arquivado" name="(Projudi) Arquivado"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso"/>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40"/>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento"/>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente"/>
+        <transition to="(Projudi) Enviado à Central de Avaliação" name="(Projudi) Enviado à Central de Avaliação"/>
+        <transition to="(Projudi) Em Tramitação na Turma Recursal" name="(Projudi) Em Tramitação na Turma Recursal"/>
+        <transition to="(Projudi) Concluso para Despacho" name="(Projudi) Concluso para Despacho"/>
+        <transition to="(Projudi) Concluso para Decisão" name="(Projudi) Concluso para Decisão"/>
+        <transition to="(Projudi) Concluso para Sentença" name="(Projudi) Concluso para Sentença"/>
+        <transition to="(Projudi) Concluso para Homologação" name="(Projudi) Concluso para Homologação"/>
+        <transition to="(Projudi) Concluso para Pedido de Urgência" name="(Projudi) Concluso para Pedido de Urgência"/>
+        <transition to="(Projudi) Concluso para Homologação de Juiz Leigo" name="(Projudi) Concluso para Homologação de Juiz Leigo"/>
+        <transition to="(Projudi) Concluso para Arquivamento" name="(Projudi) Concluso para Arquivamento"/>
+        <transition to="(Projudi) Concluso para Analise de Recurso" name="(Projudi) Concluso para Analise de Recurso"/>
+        <transition to="(Projudi) Concluso para Entrada de Execução Extrajudicial" name="(Projudi) Concluso para Entrada de Execução Extrajudicial"/>
+        <transition to="(Projudi) Concluso para Retorno Turma Recursal" name="(Projudi) Concluso para Retorno Turma Recursal"/>
+        <transition to="(Projudi) Concluso para Despacho Inicial" name="(Projudi) Concluso para Despacho Inicial"/>
+        <transition to="(Projudi) Concluso para Audiência Imediata" name="(Projudi) Concluso para Audiência Imediata"/>
+        <transition to="(Projudi) Concluso para Decisão após audiência" name="(Projudi) Concluso para Decisão após audiência"/>
+        <transition to="(Projudi) Concluso para Extinção de Prazo Decadencial" name="(Projudi) Concluso para Extinção de Prazo Decadencial"/>
+        <transition to="(Projudi) Concluso para Desinteresse" name="(Projudi) Concluso para Desinteresse"/>
+        <transition to="(Projudi) Concluso para Competencia Declinada" name="(Projudi) Concluso para Competencia Declinada"/>
+        <transition to="(Projudi) Concluso para Aguard. Analise de Alvará" name="(Projudi) Concluso para Aguard. Analise de Alvará"/>
+        <transition to="(Projudi) Concluso para Aguard. Sistemas online" name="(Projudi) Concluso para Aguard. Sistemas online"/>
+        <transition to="(Projudi) Concluso para Embargos de Declaração" name="(Projudi) Concluso para Embargos de Declaração"/>
+        <transition to="(Projudi) Concluso para Analise de Contumacia" name="(Projudi) Concluso para Analise de Contumacia"/>
+        <transition to="(Projudi) Concluso para Analise de Revelia" name="(Projudi) Concluso para Analise de Revelia"/>
+        <transition to="(Projudi) Concluso para Homologação Desistência" name="(Projudi) Concluso para Homologação Desistência"/>
+        <transition to="(Projudi) Concluso para Embargos a Execução" name="(Projudi) Concluso para Embargos a Execução"/>
+        <transition to="(Projudi) Aguard. Manifestação de Intimação" name="(Projudi) Aguard. Manifestação de Intimação"/>
+        <transition to="(Projudi) Aguard. Cump. Pena Restritiva de Direito" name="(Projudi) Aguard. Cump. Pena Restritiva de Direito"/>
+        <transition to="(Projudi) Aguard. Cump. Diligência Interna" name="(Projudi) Aguard. Cump. Diligência Interna"/>
+        <transition to="(Projudi) Aguard. Realização Sessão de Julgamento" name="(Projudi) Aguard. Realização Sessão de Julgamento"/>
+        <transition to="(Projudi) Aguard. prestação de informação do Juiz" name="(Projudi) Aguard. prestação de informação do Juiz"/>
+        <transition to="(Projudi) Aguard. manifestação do MP" name="(Projudi) Aguard. manifestação do MP"/>
+        <transition to="(Projudi) Aguard. manifestação da Unid. Policial" name="(Projudi) Aguard. manifestação da Unid. Policial"/>
+        <transition to="(Projudi) Aguard. manifestação do Cartório Ext." name="(Projudi) Aguard. manifestação do Cartório Ext."/>
+        <transition to="(Projudi) Aguard. manif. do Setor Psicossocial" name="(Projudi) Aguard. manif. do Setor Psicossocial"/>
+        <transition to="(Projudi) Aguard. realização de cálculos" name="(Projudi) Aguard. realização de cálculos"/>
+        <transition to="(Projudi) Aguard. retorno de Mandado Judicial" name="(Projudi) Aguard. retorno de Mandado Judicial"/>
+        <transition to="(Projudi) Aguard. retorno de Carta Precatória" name="(Projudi) Aguard. retorno de Carta Precatória"/>
+        <transition to="(Projudi) Aguard. retorno da Turma Recursal" name="(Projudi) Aguard. retorno da Turma Recursal"/>
+        <transition to="(Projudi) Aguard. manifestação do Magistrado" name="(Projudi) Aguard. manifestação do Magistrado"/>
+        <transition to="(Projudi) Aguard. realização Audiência Designada" name="(Projudi) Aguard. realização Audiência Designada"/>
+        <transition to="(Projudi) Elaboração de Cálculo" name="(Projudi) Elaboração de Cálculo"/>
+        <transition to="(Projudi) Aud. Conciliação realizada sem realização no sistema" name="(Projudi) Aud. Conciliação realizada sem realização no sistema"/>
+        <transition to="(Projudi) Controle de Sobrestamento-Suspensão" name="(Projudi) Controle de Sobrestamento-Suspensão"/>
+        <transition to="(Projudi) Processo migrado do projudi" name="(Projudi) Processo migrado do projudi"/>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Arquivado">
+        <task name="(Projudi) Arquivado" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Suspenso">
+        <task name="(Projudi) Suspenso" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Suspenso - Art. 40">
+        <task name="(Projudi) Suspenso - Art. 40" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Suspenso Parcelamento">
+        <task name="(Projudi) Suspenso Parcelamento" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Arquivado provisoriamente">
+        <task name="(Projudi) Arquivado provisoriamente" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Enviado à Central de Avaliação">
+        <task name="(Projudi) Enviado à Central de Avaliação" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Em Tramitação na Turma Recursal">
+        <task name="(Projudi) Em Tramitação na Turma Recursal" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Despacho">
+        <task name="(Projudi) Concluso para Despacho" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Decisão">
+        <task name="(Projudi) Concluso para Decisão" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Sentença">
+        <task name="(Projudi) Concluso para Sentença" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Homologação">
+        <task name="(Projudi) Concluso para Homologação" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Pedido de Urgência">
+        <task name="(Projudi) Concluso para Pedido de Urgência" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Homologação de Juiz Leigo">
+        <task name="(Projudi) Concluso para Homologação de Juiz Leigo" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Arquivamento">
+        <task name="(Projudi) Concluso para Arquivamento" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Analise de Recurso">
+        <task name="(Projudi) Concluso para Analise de Recurso" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Entrada de Execução Extrajudicial">
+        <task name="(Projudi) Concluso para Entrada de Execução Extrajudicial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Retorno Turma Recursal">
+        <task name="(Projudi) Concluso para Retorno Turma Recursal" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Despacho Inicial">
+        <task name="(Projudi) Concluso para Despacho Inicial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Audiência Imediata">
+        <task name="(Projudi) Concluso para Audiência Imediata" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Decisão após audiência">
+        <task name="(Projudi) Concluso para Decisão após audiência" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Extinção de Prazo Decadencial">
+        <task name="(Projudi) Concluso para Extinção de Prazo Decadencial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Desinteresse">
+        <task name="(Projudi) Concluso para Desinteresse" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Competencia Declinada">
+        <task name="(Projudi) Concluso para Competencia Declinada" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Aguard. Analise de Alvará">
+        <task name="(Projudi) Concluso para Aguard. Analise de Alvará" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Aguard. Sistemas online">
+        <task name="(Projudi) Concluso para Aguard. Sistemas online" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Embargos de Declaração">
+        <task name="(Projudi) Concluso para Embargos de Declaração" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Analise de Contumacia">
+        <task name="(Projudi) Concluso para Analise de Contumacia" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Analise de Revelia">
+        <task name="(Projudi) Concluso para Analise de Revelia" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Homologação Desistência">
+        <task name="(Projudi) Concluso para Homologação Desistência" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Concluso para Embargos a Execução">
+        <task name="(Projudi) Concluso para Embargos a Execução" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. Manifestação de Intimação">
+        <task name="(Projudi) Aguard. Manifestação de Intimação" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. Cump. Pena Restritiva de Direito">
+        <task name="(Projudi) Aguard. Cump. Pena Restritiva de Direito" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. Cump. Diligência Interna">
+        <task name="(Projudi) Aguard. Cump. Diligência Interna" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. Realização Sessão de Julgamento">
+        <task name="(Projudi) Aguard. Realização Sessão de Julgamento" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. prestação de informação do Juiz">
+        <task name="(Projudi) Aguard. prestação de informação do Juiz" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. manifestação do MP">
+        <task name="(Projudi) Aguard. manifestação do MP" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. manifestação da Unid. Policial">
+        <task name="(Projudi) Aguard. manifestação da Unid. Policial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. manifestação do Cartório Ext.">
+        <task name="(Projudi) Aguard. manifestação do Cartório Ext." swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. manif. do Setor Psicossocial">
+        <task name="(Projudi) Aguard. manif. do Setor Psicossocial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. realização de cálculos">
+        <task name="(Projudi) Aguard. realização de cálculos" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. retorno de Mandado Judicial">
+        <task name="(Projudi) Aguard. retorno de Mandado Judicial" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. retorno de Carta Precatória">
+        <task name="(Projudi) Aguard. retorno de Carta Precatória" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. retorno da Turma Recursal">
+        <task name="(Projudi) Aguard. retorno da Turma Recursal" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. manifestação do Magistrado">
+        <task name="(Projudi) Aguard. manifestação do Magistrado" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aguard. realização Audiência Designada">
+        <task name="(Projudi) Aguard. realização Audiência Designada" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Elaboração de Cálculo">
+        <task name="(Projudi) Elaboração de Cálculo" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Aud. Conciliação realizada sem realização no sistema">
+        <task name="(Projudi) Aud. Conciliação realizada sem realização no sistema" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="(Projudi) Controle de Sobrestamento-Suspensão">
+        <task name="(Projudi) Controle de Sobrestamento-Suspensão" swimlane="solicitante">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (PROJUDI) Projudi migração" name="Nó de Desvio - (PROJUDI) Projudi migração">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (PROJUDI) Projudi migração">
+        <task name="Nó de Desvio - (PROJUDI) Projudi migração" swimlane="Nó de Desvio - (PROJUDI) Projudi migração"/>
+        <transition to="Término" name="Encaminhar para análise da secretaria"/>
+        <transition to="(Projudi) Arquivado" name="(Projudi) Arquivado"/>
+        <transition to="(Projudi) Suspenso" name="(Projudi) Suspenso"/>
+        <transition to="(Projudi) Suspenso - Art. 40" name="(Projudi) Suspenso - Art. 40"/>
+        <transition to="(Projudi) Suspenso Parcelamento" name="(Projudi) Suspenso Parcelamento"/>
+        <transition to="(Projudi) Arquivado provisoriamente" name="(Projudi) Arquivado provisoriamente"/>
+        <transition to="(Projudi) Enviado à Central de Avaliação" name="(Projudi) Enviado à Central de Avaliação"/>
+        <transition to="(Projudi) Em Tramitação na Turma Recursal" name="(Projudi) Em Tramitação na Turma Recursal"/>
+        <transition to="(Projudi) Concluso para Despacho" name="(Projudi) Concluso para Despacho"/>
+        <transition to="(Projudi) Concluso para Decisão" name="(Projudi) Concluso para Decisão"/>
+        <transition to="(Projudi) Concluso para Sentença" name="(Projudi) Concluso para Sentença"/>
+        <transition to="(Projudi) Concluso para Homologação" name="(Projudi) Concluso para Homologação"/>
+        <transition to="(Projudi) Concluso para Pedido de Urgência" name="(Projudi) Concluso para Pedido de Urgência"/>
+        <transition to="(Projudi) Concluso para Homologação de Juiz Leigo" name="(Projudi) Concluso para Homologação de Juiz Leigo"/>
+        <transition to="(Projudi) Concluso para Arquivamento" name="(Projudi) Concluso para Arquivamento"/>
+        <transition to="(Projudi) Concluso para Analise de Recurso" name="(Projudi) Concluso para Analise de Recurso"/>
+        <transition to="(Projudi) Concluso para Entrada de Execução Extrajudicial" name="(Projudi) Concluso para Entrada de Execução Extrajudicial"/>
+        <transition to="(Projudi) Concluso para Retorno Turma Recursal" name="(Projudi) Concluso para Retorno Turma Recursal"/>
+        <transition to="(Projudi) Concluso para Despacho Inicial" name="(Projudi) Concluso para Despacho Inicial"/>
+        <transition to="(Projudi) Concluso para Audiência Imediata" name="(Projudi) Concluso para Audiência Imediata"/>
+        <transition to="(Projudi) Concluso para Decisão após audiência" name="(Projudi) Concluso para Decisão após audiência"/>
+        <transition to="(Projudi) Concluso para Extinção de Prazo Decadencial" name="(Projudi) Concluso para Extinção de Prazo Decadencial"/>
+        <transition to="(Projudi) Concluso para Desinteresse" name="(Projudi) Concluso para Desinteresse"/>
+        <transition to="(Projudi) Concluso para Competencia Declinada" name="(Projudi) Concluso para Competencia Declinada"/>
+        <transition to="(Projudi) Concluso para Aguard. Analise de Alvará" name="(Projudi) Concluso para Aguard. Analise de Alvará"/>
+        <transition to="(Projudi) Concluso para Aguard. Sistemas online" name="(Projudi) Concluso para Aguard. Sistemas online"/>
+        <transition to="(Projudi) Concluso para Embargos de Declaração" name="(Projudi) Concluso para Embargos de Declaração"/>
+        <transition to="(Projudi) Concluso para Analise de Contumacia" name="(Projudi) Concluso para Analise de Contumacia"/>
+        <transition to="(Projudi) Concluso para Analise de Revelia" name="(Projudi) Concluso para Analise de Revelia"/>
+        <transition to="(Projudi) Concluso para Homologação Desistência" name="(Projudi) Concluso para Homologação Desistência"/>
+        <transition to="(Projudi) Concluso para Embargos a Execução" name="(Projudi) Concluso para Embargos a Execução"/>
+        <transition to="(Projudi) Aguard. Manifestação de Intimação" name="(Projudi) Aguard. Manifestação de Intimação"/>
+        <transition to="(Projudi) Aguard. Cump. Pena Restritiva de Direito" name="(Projudi) Aguard. Cump. Pena Restritiva de Direito"/>
+        <transition to="(Projudi) Aguard. Cump. Diligência Interna" name="(Projudi) Aguard. Cump. Diligência Interna"/>
+        <transition to="(Projudi) Aguard. Realização Sessão de Julgamento" name="(Projudi) Aguard. Realização Sessão de Julgamento"/>
+        <transition to="(Projudi) Aguard. prestação de informação do Juiz" name="(Projudi) Aguard. prestação de informação do Juiz"/>
+        <transition to="(Projudi) Aguard. manifestação do MP" name="(Projudi) Aguard. manifestação do MP"/>
+        <transition to="(Projudi) Aguard. manifestação da Unid. Policial" name="(Projudi) Aguard. manifestação da Unid. Policial"/>
+        <transition to="(Projudi) Aguard. manifestação do Cartório Ext." name="(Projudi) Aguard. manifestação do Cartório Ext."/>
+        <transition to="(Projudi) Aguard. manif. do Setor Psicossocial" name="(Projudi) Aguard. manif. do Setor Psicossocial"/>
+        <transition to="(Projudi) Aguard. realização de cálculos" name="(Projudi) Aguard. realização de cálculos"/>
+        <transition to="(Projudi) Aguard. retorno de Mandado Judicial" name="(Projudi) Aguard. retorno de Mandado Judicial"/>
+        <transition to="(Projudi) Aguard. retorno de Carta Precatória" name="(Projudi) Aguard. retorno de Carta Precatória"/>
+        <transition to="(Projudi) Aguard. retorno da Turma Recursal" name="(Projudi) Aguard. retorno da Turma Recursal"/>
+        <transition to="(Projudi) Aguard. manifestação do Magistrado" name="(Projudi) Aguard. manifestação do Magistrado"/>
+        <transition to="(Projudi) Aguard. realização Audiência Designada" name="(Projudi) Aguard. realização Audiência Designada"/>
+        <transition to="(Projudi) Elaboração de Cálculo" name="(Projudi) Elaboração de Cálculo"/>
+        <transition to="(Projudi) Aud. Conciliação realizada sem realização no sistema" name="(Projudi) Aud. Conciliação realizada sem realização no sistema"/>
+        <transition to="(Projudi) Controle de Sobrestamento-Suspensão" name="(Projudi) Controle de Sobrestamento-Suspensão"/>
+        <transition to="(Projudi) Processo migrado do projudi" name="(Projudi) Processo migrado do projudi"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>

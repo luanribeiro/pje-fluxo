@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Renajud">
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) RENAJUD">
     <description><![CDATA[Código do fluxo: EF_RENAJUD.
 
-Descrição: Fluxo para consultar Renajud.
+Descrição: Fluxo para consultar RENAJUD.
 
 Raia        Localização   Papel
 Secretaria  Secretaria    Chefe de Secretaria
 Secretaria  Gabinete      Magistrado]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (EF) Renajud">
+    <swimlane name="Nó de Desvio - (EF) RENAJUD">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
@@ -18,11 +18,11 @@ Secretaria  Gabinete      Magistrado]]></description>
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial"/>
-        <transition to="(EF) Renajud - Consultar" name="(EF) Renajud - Consultar"/>
+        <transition to="(EF) RENAJUD" name="(EF) RENAJUD"/>
     </start-state>  
     <!-- NODES -->
-    <task-node end-tasks="true" name="(EF) Renajud - Consultar">
-        <task name="(EF) Renajud - Consultar" swimlane="Secretaria">
+    <task-node end-tasks="true" name="(EF) RENAJUD">
+        <task name="(EF) RENAJUD" swimlane="Secretaria">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -30,11 +30,11 @@ Secretaria  Gabinete      Magistrado]]></description>
         <description><![CDATA[* Variáveis *
 
 1. Variável: aviso
-   Label: Para juntar a resposta do Renajud, clique no número do processo e Anexar documentos.
+   Label: Para juntar a resposta do RENAJUD, clique no número do processo e Anexar documentos.
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso]]></description>
-        <transition to="Nó de Desvio - (EF) Renajud" name="Nó de Desvio - (EF) Renajud">
+        <transition to="Nó de Desvio - (EF) RENAJUD" name="Nó de Desvio - (EF) RENAJUD">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(EF) Mandado de intimação e penhora" name="Expedir mandado de intimação e penhora"/>
@@ -47,7 +47,7 @@ Secretaria  Gabinete      Magistrado]]></description>
         </event>
     </task-node>
     <process-state name="(EF) Mandado de intimação e penhora">
-        <sub-process name="(EF) Expedição de mandado de intimação e penhora" binding="late"/>
+        <sub-process name="(EF) Expedição de mandado de penhora e intimação" binding="late"/>
         <transition to="(EF) Devolução à secretaria" name="(EF) Devolução à secretaria"/>
     </process-state>
     <process-state name="(EF) Devolução à secretaria">
@@ -55,10 +55,10 @@ Secretaria  Gabinete      Magistrado]]></description>
         <transition to="Término" name="Término"/>
     </process-state>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (EF) Renajud">
-        <task name="Nó de Desvio - (EF) Renajud" swimlane="Nó de Desvio - (EF) Renajud"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (EF) RENAJUD">
+        <task name="Nó de Desvio - (EF) RENAJUD" swimlane="Nó de Desvio - (EF) RENAJUD"/>
         <transition to="Término" name="Término"/>
-        <transition to="(EF) Renajud - Consultar" name="(EF) Renajud - Consultar"/>
+        <transition to="(EF) RENAJUD" name="(EF) RENAJUD"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">

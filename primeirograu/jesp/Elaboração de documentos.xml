@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="ElaboraÃ§Ã£o de documentos">
-    <description><![CDATA[Fluxo destinado a elaboraÃ§Ã£o de documentos diversos (ofÃ­cio, alvarÃ¡, carta precatÃ³ria, etc).]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Elaboração de documentos">
+    <description><![CDATA[Fluxo destinado a elaboração de documentos diversos (ofício, alvará, carta precatória, etc).]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}"/>
     </swimlane>
-    <swimlane name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos">
+    <swimlane name="Nó de Desvio - Elaboração de documentos">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="InÃ­cio">
+    <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Secretaria"/>
         <transition to="Elaborar documento" name="Elaborar documento"/>
     </start-state>  
@@ -24,13 +24,13 @@
                 <variable name="minutaEmElaboracao" mapped-name="textEditSecretariaJT:minutaEmElaboracao" access="read,write"/>
             </controller>
         </task>
-        <transition to="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos" name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos">
+        <transition to="Nó de Desvio - Elaboração de documentos" name="Nó de Desvio - Elaboração de documentos">
             <condition expression="#{true}"/>
         </transition>
         <transition to="Assinar documento" name="Encaminhar para assinatura"/>
-        <transition to="TÃ©rmino" name="Retornar para outras providÃªncias"/>
+        <transition to="Término" name="Retornar para outras providências"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('minutaEmElaboracao',34,91,94,67)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,91,94,67')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
     </task-node>
@@ -41,20 +41,20 @@
                 <variable name="AssinarLote" mapped-name="assinarLote:AssinarLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos" name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos">
+        <transition to="Nó de Desvio - Elaboração de documentos" name="Nó de Desvio - Elaboração de documentos">
             <condition expression="#{true}"/>
         </transition>
         <transition to="Entregar documento" name="Entregar documento">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Elaborar documento" name="Retornar para elaboraÃ§Ã£o">
+        <transition to="Elaborar documento" name="Retornar para elaboração">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
-        <transition to="Entregar documento" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+        <transition to="Entregar documento" name="Documento já assinado! Encaminhar para secretaria">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',34,91,94,67)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,91,94,67')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Entregar documento')}"/>
@@ -67,22 +67,22 @@
             </controller>
         </task>
         <description><![CDATA[]]></description>
-        <transition to="TÃ©rmino" name="Prosseguir no fluxo"/>
-        <transition to="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos" name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos">
+        <transition to="Término" name="Prosseguir no fluxo"/>
+        <transition to="Nó de Desvio - Elaboração de documentos" name="Nó de Desvio - Elaboração de documentos">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos">
-        <task name="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos" swimlane="NÃ³ de Desvio - ElaboraÃ§Ã£o de documentos"/>
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Elaboração de documentos">
+        <task name="Nó de Desvio - Elaboração de documentos" swimlane="Nó de Desvio - Elaboração de documentos"/>
+        <transition to="Término" name="Término"/>
         <transition to="Elaborar documento" name="Elaborar documento"/>
         <transition to="Assinar documento" name="Assinar documento"/>
         <transition to="Entregar documento" name="Entregar documento"/>
     </task-node>
-    <end-state name="TÃ©rmino"/>  
+    <end-state name="Término"/>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>

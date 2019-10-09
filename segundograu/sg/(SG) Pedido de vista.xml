@@ -24,8 +24,8 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Magistrado"/>
-        <transition to="(SG) Descolcar fluxo de vista" name="(SG) Descolcar fluxo de vista"/>
+        <task name="Tarefa inicial" swimlane="Magistrado" priority="3"/>
+        <transition to="(SG) Pedido de vista - ANALISAR" name="(SG) Pedido de vista - ANALISAR"/>
     </start-state>  
     <!-- NODES -->
     <node name="(SG) Descolcar fluxo de vista">
@@ -35,7 +35,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Pedido de vista - ANALISAR">
-        <task name="(SG) Pedido de vista - ANALISAR" swimlane="Magistrado">
+        <task name="(SG) Pedido de vista - ANALISAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -96,7 +96,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Sessão de julgamento [voto vista] - AGUARDAR" name="retiradoJulgamento"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Sessão de julgamento [voto vista] - AGUARDAR">
-        <task name="(SG) Sessão de julgamento [voto vista] - AGUARDAR" swimlane="Magistrado">
+        <task name="(SG) Sessão de julgamento [voto vista] - AGUARDAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoVogal" mapped-name="frame:WEB-INF_xhtml_flx_votacaoVogal" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -140,7 +140,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Encaminhamento para gabinete substituto - ENCAMINHAR">
-        <task name="(SG) Encaminhamento para gabinete substituto - ENCAMINHAR" swimlane="Redação judiciária"/>
+        <task name="(SG) Encaminhamento para gabinete substituto - ENCAMINHAR" swimlane="Redação judiciária" priority="3"/>
         <transition to="(SG) Encaminhar para CCv1Gab1" name="Encaminhar para Gab. Des. Cláudio Santos na Câmara Cível"/>
         <transition to="(SG) Encaminhar para CCv1Gab2" name="Encaminhar para Gab. Des. Dilermando Mota na Câmara Cível"/>
         <transition to="(SG) Encaminhar para CCv1Gab3" name="Encaminhar para Gab. Des. Cornélio Alves na Câmara Cível"/>
@@ -312,7 +312,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Pedido de vista">
-        <task name="Nó de Desvio - (SG) Pedido de vista" swimlane="Nó de Desvio - (SG) Pedido de vista"/>
+        <task name="Nó de Desvio - (SG) Pedido de vista" swimlane="Nó de Desvio - (SG) Pedido de vista" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Pedido de vista - ANALISAR" name="(SG) Pedido de vista - ANALISAR"/>
         <transition to="(SG) Encaminhamento para gabinete substituto - ENCAMINHAR" name="(SG) Encaminhamento para gabinete substituto - ENCAMINHAR"/>

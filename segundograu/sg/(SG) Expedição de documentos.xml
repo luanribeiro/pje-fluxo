@@ -24,7 +24,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Certidão de decurso de prazo?" name="(SG) Certidão de decurso de prazo?"/>
     </start-state>  
     <!-- NODES -->
@@ -33,7 +33,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Certidão de trânsito em julgado?" name="(SG) Certidão de trânsito em julgado?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Certidão de decurso de prazo - EXPEDIR">
-        <task name="(SG) Certidão de decurso de prazo - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Certidão de decurso de prazo - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_certidao_decurso_prazo" mapped-name="textEditCombo:minuta_certidao_decurso_prazo" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -65,7 +65,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Certidão de decurso de prazo - ASSINAR" name=" Encaminhar para assinatura"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',167)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','167')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_certidao_decurso_prazo'))}"/>
@@ -81,7 +81,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Certidão de decurso de prazo - ASSINAR">
-        <task name="(SG) Certidão de decurso de prazo - ASSINAR" swimlane="Secretaria">
+        <task name="(SG) Certidão de decurso de prazo - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -135,7 +135,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) É alvará?" name="(SG) É alvará?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Certidão de trânsito em julgado - EXPEDIR">
-        <task name="(SG) Certidão de trânsito em julgado - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Certidão de trânsito em julgado - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_certidao_transito_julgado" mapped-name="textEditCombo:minuta_certidao_transito_julgado" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -166,7 +166,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Apagar minuta não assinada de trânsito em julgado" name="Cancelar e sair da tarefa"/>
         <transition to="(SG) Certidão de trânsito em julgado - ASSINAR" name=" Encaminhar para assinatura"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento',70)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','70')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="task-end">
@@ -183,7 +183,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Certidão de trânsito em julgado - ASSINAR">
-        <task name="(SG) Certidão de trânsito em julgado - ASSINAR" swimlane="Secretaria">
+        <task name="(SG) Certidão de trânsito em julgado - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -237,7 +237,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Verificar pendência de cumprimentos" name="(SG) Verificar pendência de cumprimentos"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Alvará - EXPEDIR">
-        <task name="(SG) Alvará - EXPEDIR" swimlane="Secretaria">
+        <task name="(SG) Alvará - EXPEDIR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_alvara" mapped-name="textEditCombo:minuta_alvara" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -262,7 +262,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Alvará - ASSINAR" name="Encaminhar para assinatura"/>
         <transition to="(SG) Apagar minuta não assinada de alvará" name="Cancelar e sair da tarefa"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento', 91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','91')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_alvara'))}"/>
@@ -278,7 +278,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Alvará - ASSINAR">
-        <task name="(SG) Alvará - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Alvará - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -348,7 +348,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de documentos">
-        <task name="Nó de Desvio - (SG) Expedição de documentos" swimlane="Nó de Desvio - (SG) Expedição de documentos"/>
+        <task name="Nó de Desvio - (SG) Expedição de documentos" swimlane="Nó de Desvio - (SG) Expedição de documentos" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Certidão de decurso de prazo - EXPEDIR" name="(SG) Certidão de decurso de prazo - EXPEDIR"/>
         <transition to="(SG) Certidão de trânsito em julgado - EXPEDIR" name="(SG) Certidão de trânsito em julgado - EXPEDIR"/>

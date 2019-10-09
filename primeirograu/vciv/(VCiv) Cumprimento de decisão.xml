@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Cumprimento de decisão">
-    <description><![CDATA[Fluxo para cumprimento de determinações do magistrado e outras providências da Secretaria..]]></description>  
+    <description><![CDATA[Fluxo para cumprimento de determinações do magistrado e outras providências da Secretaria.....]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (VCiv) Cumprimento de decisão">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    <swimlane name="Secretaria e Servidor de cálculo">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,5:5891')}"/>
     </swimlane>
     <swimlane name="Conciliação">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,7:5197,7:5886,6:1469')}"/>
@@ -12,8 +12,8 @@
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>
-    <swimlane name="Secretaria e Servidor de cálculo">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,5:5891')}"/>
+    <swimlane name="Nó de Desvio - (VCiv) Cumprimento de decisão">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -144,7 +144,7 @@
         <event type="node-enter">
             <action name="upd" expression="#{entityManager.createNativeQuery('update tb_processo_trf set in_outra_instancia = true where id_processo_trf = :idProcesso').setParameter('idProcesso',tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf() ).executeUpdate()}"/>
         </event>
-    </node> 
+    </node>
     <task-node end-tasks="true" name="(VCiv) Remetido a outro juízo">
         <task name="(VCiv) Remetido a outro juízo" swimlane="Secretaria">
             <controller/>
@@ -242,15 +242,15 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Ignorar envio para instância superior eletronicamente"/>
-        <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Aguardando julgamento da instância superior - eletronicamente')}"/>
+        <event type="task-start">
+            <action expression="#{taskInstanceUtil.setVariable('comboMotivoRemessa','18;37,38,39,40,90')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar envio para instância superior eletronicamente')}"/>
         </event>
         <event type="task-end">
             <action name="upd" expression="#{intercomunicacaoRemessaHome.permiteCancelarRemessa()}"/>
         </event>
-        <event type="task-start">
-            <action expression="#{taskInstanceUtil.setVariable('comboMotivoRemessa','18;37,38,39,40,90')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar envio para instância superior eletronicamente')}"/>
+        <event type="task-create">
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Aguardando julgamento da instância superior - eletronicamente')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando julgamento da instância superior - eletronicamente">
@@ -266,11 +266,12 @@
             <condition expression="#{ parametroUtil.getParametro('pje:tjrn:processosMovimentacaoManualAguardaRemessa').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso).concat('_')) }"/>
         </transition>
         <transition to="(VCiv) Processos devolvidos pela instância superior" name="(VCiv) Processos devolvidos pela instância superior"/>
-        <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('instância superior').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
-        </event>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Processos devolvidos pela instância superior')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:mni:aguardaRemessa','true')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('instância superior').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos devolvidos pela instância superior">
@@ -625,17 +626,17 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Processos devolvidos pela COJUD" name="(VCiv) Processos devolvidos pela COJUD"/>
+        <event type="task-end">
+            <action expression="#{preencherMovimento.deCodigo(980).comComplementoDeCodigo(7).preencherComTexto('juízo de orgem').lancarMovimento()}"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguarda_cojud')}&quot;/&gt;"/>
+        </event>
         <event type="task-create">
             <action expression="#{preencherMovimento.deCodigo(979).lancarMovimento()}"/>
             <action expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo', 'false')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguarda_cojud', 'true')}"/>
             <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(VCiv) Processos devolvidos pela COJUD')}&quot;/&gt;"/>
             <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'COJUD_FBG', 111, 270, null, true,processInstance.contextInstance.variables)}"/>
-        </event>
-        <event type="task-end">
-            <action expression="#{preencherMovimento.deCodigo(980).comComplementoDeCodigo(7).preencherComTexto('juízo de orgem').lancarMovimento()}"/>
-            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}&quot;/&gt;"/>
-            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguarda_cojud')}&quot;/&gt;"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando COJUD">
@@ -651,16 +652,16 @@
         <transition to="(VCiv) Processos devolvidos pela COJUD" name="Devolver para a secretaria">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-end">
+            <action expression="#{preencherMovimento.deCodigo(980).comComplementoDeCodigo(7).preencherComTexto('juízo de origem').lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
+        </event>
         <event type="task-create">
             <action expression="#{preencherMovimento.deCodigo(979).lancarMovimento()}"/>
             <action expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo', 'false')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguarda_cojud', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Devolver para a secretaria')}"/>
             <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'COJUD_FBG', 111, 270, null, true,processInstance.contextInstance.variables)}"/>
-        </event>
-        <event type="task-end">
-            <action expression="#{preencherMovimento.deCodigo(980).comComplementoDeCodigo(7).preencherComTexto('juízo de origem').lancarMovimento()}"/>
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos devolvidos pela central de cálculos">
@@ -890,22 +891,49 @@
     <process-state name="(VCiv) Registrar SERASAJUD">
         <sub-process name="(VCiv) Registrar SERASAJUD" binding="late"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:registrar_serasajud','true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:tjrn:registrar_serasajud')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:registrar_serasajud','true')}"/>
         </event>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:registrar_serasajud') ? '(VCiv) Registrar SERASAJUD' : '(VCiv) Junção em cumprimento de decisão'}" name="(VCiv) Serasajud?">
         <transition to="(VCiv) Registrar SERASAJUD" name="(VCiv) Registrar SERASAJUD"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
-    </decision> 
+    </decision>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -914,40 +942,13 @@
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PP) Preparar ato judicial">
-    <description><![CDATA[Código do fluxo: PP_PAJ
-
+    <description><![CDATA[Código do fluxo: PP_PAJ
+
 Descrição: Fluxo destinado ao controle de atos judicias.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (PP) Preparar ato judicial">

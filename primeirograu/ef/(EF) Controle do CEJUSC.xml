@@ -63,7 +63,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(CEJUSC) Realização da audiência" name="Realizar Audiência">
-            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) != null}"/>
+            <condition expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) != null}"/>
         </transition>
         <transition to="(CEJUSC) Designar audiência" name="Designar/Cancelar audiência">
             <condition expression="#{!authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;DPVAT&quot;)}"/>
@@ -321,7 +321,7 @@
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('Processo_Fluxo_revisarMinuta',34,57)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,57')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('Processo_Fluxo_revisarMinutaTipoProcessoDocumento')}"/>
@@ -387,7 +387,7 @@
    Tipo: Aviso
 
 5. Variável: ef_magistrado_dje
-   Label: #{pessoaMagistradoDAO.magistradoPorOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador)}
+   Label: #{pessoaMagistradoDAO.magistradoPorOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador, false)})}
    Escrita: Sim
    Obrig.: Não
    Tipo: Combo de objetos

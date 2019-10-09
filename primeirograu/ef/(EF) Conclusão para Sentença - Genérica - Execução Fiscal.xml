@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Conclusão para Sentença - Genérica - Execução Fiscal">
-    <description><![CDATA[Código do fluxo: EF_PAJ_EXEF_SENT_GEN
-
+    <description><![CDATA[Código do fluxo: EF_PAJ_EXEF_SENT_GEN.
+
 Descrição: Fluxo destinado ao preparo de atos judiciais de decisões genéricas.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
@@ -113,7 +113,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões genéricas.]]
         <transition to="Término" name="Término"/>
     </task-node>
     <process-state name="(EF) Encaminhar para sentenciados">
-        <sub-process name="(EF) Autos recebidos do gabinete - Genérica" binding="late"/>
+        <sub-process name="(EF) Autos recebidos do gabinete - Genérico" binding="late"/>
         <transition to="Término" name="Término"/>
     </process-state>
     <node name="(EF) Selecionar outro tipo de conclusão">

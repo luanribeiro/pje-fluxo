@@ -28,12 +28,12 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR" name="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR">
-        <task name="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -65,7 +65,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Concluso para decisão de admissibilidade de recurso - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
         <transition to="(SG) Gravar variável de cancelamento de conclusão" name="Alterar escolha do tipo de conclusão"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento',63,64)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="task-end">
@@ -80,7 +80,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de admissibilidade de recurso - CONFIRMAR">
-        <task name="(SG) Concluso para decisão de admissibilidade de recurso - CONFIRMAR" swimlane="Assessoria">
+        <task name="(SG) Concluso para decisão de admissibilidade de recurso - CONFIRMAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -128,7 +128,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão de admissibilidade de recurso - ASSINAR">
-        <task name="(SG) Concluso para decisão de admissibilidade de recurso - ASSINAR" swimlane="Magistrado">
+        <task name="(SG) Concluso para decisão de admissibilidade de recurso - ASSINAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -187,7 +187,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão de admissibilidade de recurso">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de admissibilidade de recurso" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de admissibilidade de recurso"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão de admissibilidade de recurso" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão de admissibilidade de recurso" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR" name="(SG) Concluso para decisão de admissibilidade de recurso - MINUTAR"/>
         <transition to="(SG) Concluso para decisão de admissibilidade de recurso - CONFIRMAR" name="(SG) Concluso para decisão de admissibilidade de recurso - CONFIRMAR"/>

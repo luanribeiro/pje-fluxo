@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Remessa à instância superior">
-    <description><![CDATA[Código do fluxo: EF_REM_INST_SUP.
-
-Descrição: Fluxo responsável pela remessa à instância superior.
-
-Raia        Localização   Papel
-Secretaria  Secretaria    Chefe de Secretaria
+    <description><![CDATA[Código do fluxo: EF_REM_INST_SUP
+
+Descrição: Fluxo responsável pela remessa à instância superior
+
+Raia        Localização   Papel
+Secretaria  Secretaria    Chefe de Secretaria
 Secretaria  Gabinete      Magistrado]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">
@@ -51,16 +51,22 @@ Secretaria  Gabinete      Magistrado]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Ignorar envio para instância superior eletronicamente"/>
-        <transition to="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR" name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR">
+        <transition to="(EF) Remessa pendente de julgamento da instância superior - eletronicamente" name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
             <action expression="#{taskInstanceUtil.setVariable('comboMotivoRemessa','18;37,38,39,40,90')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Remessa pendente de julgamento da instância superior - eletronicamente')}"/>
         </event>
     </task-node>
+    <node name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente">
+        <transition to="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR" name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR"/>
+        <event type="node-enter">
+            <action name="upd" expression="#{entityManager.createNativeQuery('update tb_processo_trf set in_outra_instancia = true where id_processo_trf = :idProcesso').setParameter('idProcesso',tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf() ).executeUpdate()}"/>
+        </event>
+    </node>
     <task-node end-tasks="true" name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR">
         <task name="(EF) Remessa pendente de julgamento da instância superior - eletronicamente - AGUARDAR" swimlane="Secretaria">
             <controller/>
@@ -76,6 +82,7 @@ Secretaria  Gabinete      Magistrado]]></description>
         </transition>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(EF) Remessa - processos devolvidos pela instância superior - ANALISAR')}"/>
+	    <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:mni:aguardaRemessa','true')}"/>
         </event>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('Turma Recursal').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>

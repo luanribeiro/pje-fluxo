@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(COJUD)  Fluxo bÃ¡sico geral da COJUD">
-    <description><![CDATA[Fluxo bÃ¡sico geral para Contadoria Judicial..]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(COJUD)  Fluxo básico geral da COJUD">
+    <description><![CDATA[Fluxo básico geral para Contadoria Judicial..]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="NÃ³ de Desvio - (COJUD)  Fluxo bÃ¡sico geral da COJUD">
+    <swimlane name="Nó de Desvio - (COJUD)  Fluxo básico geral da COJUD">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
-    <swimlane name="Secretaria e Servidor de cÃ¡lculo">
+    <swimlane name="Secretaria e Servidor de cálculo">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,5:5891')}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="InÃ­cio">
+    <start-state name="Início">
         <task name="Tarefa inicial"/>
         <transition to="(COJUD) Deslocar COJUD" name="(COJUD) Deslocar COJUD"/>
     </start-state>  
     <!-- NODES -->
     <node name="(COJUD) Deslocar COJUD">
-        <transition to="(COJUD) Juntar cÃ¡lculo judicial" name="(COJUD) Juntar cÃ¡lculo judicial"/>
+        <transition to="(COJUD) Juntar cálculo judicial" name="(COJUD) Juntar cálculo judicial"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', 111)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', 270)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(processInstance.contextInstance.getVariable('processo'))}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(COJUD) Juntar cÃ¡lculo judicial">
-        <task name="(COJUD) Juntar cÃ¡lculo judicial" swimlane="Secretaria e Servidor de cÃ¡lculo">
+    <task-node end-tasks="true" name="(COJUD) Juntar cálculo judicial">
+        <task name="(COJUD) Juntar cálculo judicial" swimlane="Secretaria e Servidor de cálculo">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[aviso: "Para juntar o cÃ¡lculo, clique no nÃºmero do processo e o anexe atravÃ©s do menu INCLUIR PETIÃ‡Ã•ES E DOCUMENTOS."]]></description>
-        <transition to="NÃ³ de Desvio - (COJUD)  Fluxo bÃ¡sico geral da COJUD" name="NÃ³ de Desvio - (COJUD) Fluxo bÃ¡sico geral da COJUD">
+        <description><![CDATA[aviso: "Para juntar o cálculo, clique no número do processo e o anexe através do menu INCLUIR PETIÇÕES E DOCUMENTOS."]]></description>
+        <transition to="Nó de Desvio - (COJUD)  Fluxo básico geral da COJUD" name="Nó de Desvio - (COJUD) Fluxo básico geral da COJUD">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(COJUD) Deslocar OrgÃ£o Julgador e sinalizar" name="Finalizar e sair da tarefa"/>
+        <transition to="(COJUD) Deslocar Orgão Julgador e sinalizar" name="Finalizar e sair da tarefa"/>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo', 'false')}"/>
         </event>
     </task-node>
-    <node name="(COJUD) Deslocar OrgÃ£o Julgador e sinalizar">
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+    <node name="(COJUD) Deslocar Orgão Julgador e sinalizar">
+        <transition to="Término" name="Término"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino')}"/>
-            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
             <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), 'pje:aguarda_cojud', true, false, true)};"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="NÃ³ de Desvio - (COJUD)  Fluxo bÃ¡sico geral da COJUD">
-        <task name="NÃ³ de Desvio - (COJUD)  Fluxo bÃ¡sico geral da COJUD" swimlane="NÃ³ de Desvio - (COJUD)  Fluxo bÃ¡sico geral da COJUD"/>
-        <transition to="TÃ©rmino" name="TÃ©rmino"/>
-        <transition to="(COJUD) Juntar cÃ¡lculo judicial" name="(COJUD) Juntar cÃ¡lculo judicial"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (COJUD)  Fluxo básico geral da COJUD">
+        <task name="Nó de Desvio - (COJUD)  Fluxo básico geral da COJUD" swimlane="Nó de Desvio - (COJUD)  Fluxo básico geral da COJUD"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(COJUD) Juntar cálculo judicial" name="(COJUD) Juntar cálculo judicial"/>
     </task-node>
-    <end-state name="TÃ©rmino"/>  
+    <end-state name="Término"/>  
     <!-- PROCESS-EVENTS -->
     <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>

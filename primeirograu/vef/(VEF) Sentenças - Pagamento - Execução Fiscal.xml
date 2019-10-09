@@ -22,7 +22,6 @@
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[]]></description>
         <transition to="Nó de Desvio - (VEF) Sentenças - Pagamento - Execução Fiscal" name="Nó de Desvio - (VEF) Sentenças - Pagamento - Execução Fiscal">
             <condition expression="#{true}"/>
         </transition>

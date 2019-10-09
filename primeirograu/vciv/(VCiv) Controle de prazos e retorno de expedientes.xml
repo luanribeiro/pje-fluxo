@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de prazos e retorno de expedientes">
-    <description><![CDATA[Controla prazos e retorno de expedientes.
-
-(VCiv) Aguardando devolução do AR - avisoHaExpedientes - #{tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') != null ? tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') : ''}
-
-(VCiv) Aguardando devolução do AR - WEB-INF_xhtml_flx_exped_controleCorreios - Inserir informação de AR.]]></description>  
+    <description><![CDATA[Controla prazos e retorno de expedientes.
+
+(VCiv) Aguardando devolução do AR - avisoHaExpedientes - #{tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') != null ? tramitacaoProcessualService.recuperaVariavel('avisoHaExpedientes') : ''}
+
+(VCiv) Aguardando devolução do AR - WEB-INF_xhtml_flx_exped_controleCorreios - Inserir informação de AR....]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
@@ -38,9 +38,9 @@
         </transition>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
     </task-node>
-    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:correios') ? '(VCiv) Aguardando devolução do AR' : '(VCiv) É via mandado?'}" name="(VCiv) É via correios?">
-        <transition to="(VCiv) Aguardando devolução do AR" name="(VCiv) Aguardando devolução do AR"/>
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:correios') ? '(VCiv) Há expediente AR em aberto?' : '(VCiv) É via mandado?'}" name="(VCiv) É via correios?">
         <transition to="(VCiv) É via mandado?" name="(VCiv) É via mandado?"/>
+        <transition to="(VCiv) Há expediente AR em aberto?" name="(VCiv) Há expediente AR em aberto?"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aguardando devolução do AR">
         <task name="(VCiv) Aguardando devolução do AR" swimlane="Secretaria">
@@ -54,9 +54,6 @@
         </transition>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
         <transition to="(VCiv) Há expedientes em aberto?" name="Registrar devolução do AR"/>
-        <event type="task-assign">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
-        </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:correios:registroCiencia', false)}"/>
         </event>
@@ -64,6 +61,9 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('avisoHaExpedientes')}"/>
             <action expression="#{atoComunicacaoService.getAtosComunicacaoAbertos(processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))) &gt; 0 || processoParteExpedienteManager.getAtosComunicacaoSemPrazo(0, processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))).size() &gt; 0  ? tramitacaoProcessualService.apagaVariavel('avisoHaExpedientes') : tramitacaoProcessualService.gravaVariavel('avisoHaExpedientes', 'Todos os expedientes estão fechados. Por favor clicar em &quot;Cancelar e sair da tarefa&quot;') }"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('textAlert:avisoHaExpedientes')}"/>
+        </event>
+        <event type="task-assign">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes', entityManager.createNativeQuery(&quot;select string_agg(cast(pe.id_processo_expediente as text), ',') from tb_processo_expediente pe where pe.in_meio_expedicao_expediente = 'C' and pe.id_processo_trf = &quot;.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult().toString())}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Registrar devolução do AR">
@@ -75,8 +75,8 @@
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Aguardando devolução do AR" name="Retornar para aguardar devolução do AR"/>
         <transition to="(VCiv) Existe citação?" name="Finalizar e sair da tarefa"/>
+        <transition to="(VCiv) Há expediente AR em aberto?" name="Retornar para aguardar devolução do AR"/>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:correios:edicaoNumeroAR',false)}"/>
         </event>
@@ -152,12 +152,12 @@
         <transition to="(VCiv) Prazos continuam em aberto MP?" name="Verificar existência de prazo em aberto">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
+        </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Verificar existência de prazo em aberto')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', 'true')}"/>
-        </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
         </event>
     </task-node>
     <decision expression="#{atoComunicacaoService.getAtosComunicacaoAbertos(processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))) &gt; 0 ? '(VCiv) Aguardando manifestação do MP' : '(VCiv) Processos com prazo decorrido para manifestação do MP'}" name="(VCiv) Prazos continuam em aberto MP?">
@@ -196,14 +196,14 @@
         <transition to="(VCiv) Prazos continuam em aberto?" name="Verificar existência de prazo em aberto">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaCiencia')}"/>
+        </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Verificar existência de prazo em aberto')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaPeticao', 'true')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:aguardaCiencia', 'true')}"/>
-        </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaPeticao')}"/>
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:aguardaCiencia')}"/>
         </event>
     </task-node>
     <decision expression="#{atoComunicacaoService.getAtosComunicacaoAbertos(processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))) &gt; 0 ? '(VCiv) Processos com prazo em curso' : '(VCiv) Processos com prazos decorridos'}" name="(VCiv) Prazos continuam em aberto?">
@@ -291,10 +291,37 @@
         </event>
     </node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -303,40 +330,13 @@
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 

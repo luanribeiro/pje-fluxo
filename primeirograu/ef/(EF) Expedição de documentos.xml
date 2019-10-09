@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(EF) Expedição de documentos">
-    <description><![CDATA[Código do fluxo: EF_EXPDOC
-
-Descrição: Fluxo responsável pela expedição de documentos.
-
-Raia        Localização              Papel
-Secretaria  Secretaria    Chefe de Secretaria
-Secretaria  Gabinete      Magistrado
-Secretaria  Corregedoria  Servidor Corregedoria
-Secretaria  Corregedoria  Magistrado Corregedor
-Magistrado  Secretaria    Chefe de Secretaria
-Magistrado  Gabinete      Magistrado
-Magistrado  Corregedoria  Servidor Corregedoria
-Magistrado  Corregedoria  Magistrado Corregedor
+    <description><![CDATA[Código do fluxo: EF_EXPDOC
+Descrição: Fluxo responsável pela expedição de documentos.
+Raia        Localização              Papel
+Secretaria  Secretaria    Chefe de Secretaria
+Secretaria  Gabinete      Magistrado
+Secretaria  Corregedoria  Servidor Corregedoria
+Secretaria  Corregedoria  Magistrado Corregedor
+Magistrado  Secretaria    Chefe de Secretaria
+Magistrado  Gabinete      Magistrado
+Magistrado  Corregedoria  Servidor Corregedoria
+Magistrado  Corregedoria  Magistrado Corregedor
 Magistrado  Gabinete      Magistrado Gabinete]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
@@ -43,13 +41,11 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: minuta_certidao_decurso_prazo
    Label: Minuta em elaboração de certidão de decurso de prazo
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -65,7 +61,7 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
         </transition>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-            <action expression="#{tipoDocumento.set('TipoDocumento',167)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '167')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_certidao_decurso_prazo'))}"/>
@@ -88,19 +84,16 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 3. Variável: assinaturaLote
    Label: 
    Escrita: Sim
@@ -141,13 +134,11 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: minuta_certidao_transito_julgado
    Label: Minuta em elaboração de certidão de trânsito em julgado
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -159,7 +150,7 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
         <transition to="(EF) Apagar minuta não assinada de trânsito em julgado" name="Cancelar e sair da tarefa"/>
         <transition to="(EF) Certidão de trânsito em julgado - ASSINAR" name=" Encaminhar para assinatura"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento',70)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '70')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('condicaoLancamentoMovimentosTemporario', '${true}')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
@@ -185,19 +176,16 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 3. Variável: assinaturaLote
    Label: 
    Escrita: Sim
@@ -236,13 +224,10 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: aviso_valor_recuperado_1
    Label: #{tramitacaoProcessualService.recuperaVariavel('aviso_erro_valor_recuperado') != null ? tramitacaoProcessualService.recuperaVariavel('aviso_erro_valor_recuperado') : ''}
-
 2. Variável: ef_valor_recuperado
    Label: Informe o valor recuperado (Formato: 9.999,99):
-
 3. Variável: aviso_valor_recuperado_2
    Label: O valor recuperado deve ser informado para cumprimento da meta 5 do CNJ.]]></description>
         <transition to="Nó de Desvio - (EF) Expedição de documentos" name="Nó de Desvio - (EF) Expedição de documentos">
@@ -283,13 +268,11 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: minuta_alvara
    Label: Minuta em elaboração de alvará
    Escrita: Sim
    Obrig.: Sim
    Tipo: Editor
-
 2. Variável: minutarLote
    Label: 
    Escrita: Sim
@@ -301,7 +284,7 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
         <transition to="(EF) Alvará - ASSINAR" name="Encaminhar para assinatura"/>
         <transition to="(EF) Apagar minuta não assinada de alvará" name="Cancelar e sair da tarefa"/>
         <event type="task-start">
-            <action expression="#{tipoDocumento.set('TipoDocumento', 91)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_alvara'))}"/>
@@ -324,19 +307,16 @@ Magistrado  Gabinete      Magistrado Gabinete]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: Processo_Fluxo_revisarMinuta
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Frame
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 3. Variável: assinaturaLote
    Label: 
    Escrita: Sim

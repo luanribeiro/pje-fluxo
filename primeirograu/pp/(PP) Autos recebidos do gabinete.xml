@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(PP) Autos recebidos do gabinete">
-    <description><![CDATA[Código do fluxo: PP_AUT_REC_GAB
-
-Descrição: Fluxo destinado à análise de processos devolvidos do gabinete para a secretaria.
-
-Raia        Localização              Papel
-Secretaria  Secretaria               Chefe de Secretaria
-            Gabinete                 Magistrado
+    <description><![CDATA[Código do fluxo: PP_AUT_REC_GAB
+
+Descrição: Fluxo destinado à análise de processos devolvidos do gabinete para a secretaria.
+
+Raia        Localização              Papel
+Secretaria  Secretaria               Chefe de Secretaria
+            Gabinete                 Magistrado
             Assessoria               Assessor]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (PP) Autos recebidos do gabinete">

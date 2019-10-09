@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Preparar Ato de Comunicação - Audiências">
-    <description><![CDATA[Fluxo destinado a permitir a realização de atos de comunicação relacionados à audiências......]]></description>  
+    <description><![CDATA[Fluxo destinado a permitir a realização de atos de comunicação relacionados à audiências.......]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,5:5483,6:1469,8:5852,8:5853,7:5197,6:5901')}" actor-id="#{actor.id}"/>
@@ -38,13 +38,13 @@
         <transition to="(VCiv) Lançar movimentações" name="(VCiv) Lançar movimentações">
             <condition expression="#{true}"/>
         </transition>
-        <event type="node-enter">
-            <action name="upd" expression="#{modeloDocumento.set('Processo_Fluxo_prepararExpediente',80)}"/>
-        </event>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Lançar movimentações')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,71')}"/>
             <action name="upd" expression="#{preparaAtoComunicacaoAction.setMeiosComunicacao('E,C,S,D')}"/>
+        </event>
+        <event type="node-enter">
+            <action name="upd" expression="#{modeloDocumento.set('Processo_Fluxo_prepararExpediente',80)}"/>
         </event>
     </task-node>
     <decision expression="#{(processoTrfHome.possuiCompetencia(3) || processoTrfHome.possuiCompetencia(10)) || ((comunicacaoProcessualAction.getExpedientesEletronico().size() == 0 &amp;&amp; comunicacaoProcessualAction.getExpedientesCorreios().size() == 0 &amp;&amp; comunicacaoProcessualAction.getExpedientesEdital().size() == 0) &amp;&amp; comunicacaoProcessualAction.getExpedientesPessoal().size() &gt; 0) ? '(VCiv) Separação em controle de prazo' : '(VCiv) Publicacao DJe'}" name="(VCiv) É competência de Fazenda?">
@@ -68,14 +68,14 @@
         <transition to="Nó de Desvio - (VCiv) Preparar Ato de Comunicação - Audiências" name="Nó de Desvio - (VCiv) Preparar Ato de Comunicação - Audiências">
             <condition expression="#{true}"/>
         </transition>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv_conteudo_dje')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('magistrado_dje_temp', tramitacaoProcessualService.recuperaVariavelTarefa('combo_objetos:vciv_magistrado_dje').getIdUsuario())}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('combo_objetos:vciv_magistrado_dje')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('conteudo_dje_temp', tramitacaoProcessualService.strToBase64(tramitacaoProcessualService.recuperaVariavelTarefa('text:vciv_conteudo_dje')))}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('text:vciv_conteudo_dje')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv_conteudo_dje')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Ignorar conteúdo DJe">
@@ -165,11 +165,11 @@
     <process-state name="(VCiv) Controlar prazos via mandado">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="Término" name="Término"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:mandado','true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:mandado')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:mandado','true')}"/>
         </event>
     </process-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Preparar Ato de Comunicação - Audiências">
@@ -197,11 +197,11 @@
     <process-state name="(VCiv) Controlar prazos via correios">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="(VCiv) Junção em controle de prazo" name="(VCiv) Junção em controle de prazo"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:correios','true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:correios')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:correios','true')}"/>
         </event>
     </process-state>
     <decision expression="#{comunicacaoProcessualAction.getExpedientesCorreios().size() &gt; 0 ? '(VCiv) Controlar prazos via correios' : '(VCiv) Junção em controle de prazo'}" name="(VCiv) Possiu correios ?">
@@ -215,11 +215,11 @@
     <process-state name="(VCiv) Controlar prazos via sistema">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="(VCiv) Junção em controle de prazo" name="(VCiv) Junção em controle de prazo"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:sistema','true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:sistema')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:sistema','true')}"/>
         </event>
     </process-state>
     <fork name="(VCiv) Separação em controle de prazo">
@@ -237,18 +237,45 @@
     <process-state name="(VCiv) Controlar prazos via pessoalmente">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="(VCiv) Junção em controle de prazo" name="(VCiv) Junção em controle de prazo"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:pessoalmente','true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:pessoalmente')}"/>
         </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:pessoalmente','true')}"/>
+        </event>
     </process-state>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -257,40 +284,13 @@
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 
