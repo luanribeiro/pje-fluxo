@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de Audiência">
-    <description><![CDATA[Fluxo responsável por controlar as audiências.............]]></description>  
+    <description><![CDATA[Fluxo responsável por controlar as audiências...........]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469')}"/>
@@ -14,7 +14,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Limpar variáveis de audiência" name="(VCiv) Limpar variáveis de audiência"/>
     </start-state>  
     <!-- NODES -->
@@ -29,7 +29,7 @@
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aguardar audiência">
-        <task name="(VCiv) Aguardar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Aguardar audiência" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <description><![CDATA[Tarefa de aguardar audiência.]]></description>
@@ -44,7 +44,7 @@
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Cancelar audiência">
-        <task name="(VCiv) Cancelar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Cancelar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -61,7 +61,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Converter audiência em diligência">
-        <task name="(VCiv) Converter audiência em diligência" swimlane="Secretaria">
+        <task name="(VCiv) Converter audiência em diligência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -78,7 +78,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Designar audiência">
-        <task name="(VCiv) Designar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Designar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -107,7 +107,7 @@
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Minutar ata de audiência">
-        <task name="(VCiv) Minutar ata de audiência" swimlane="Secretaria">
+        <task name="(VCiv) Minutar ata de audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="minuta_audiencia" mapped-name="textEditCombo:minuta_audiencia" access="read,write"/>
@@ -142,7 +142,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(VCiv) Realizar audiência">
-        <task name="(VCiv) Realizar audiência" swimlane="Secretaria"/>
+        <task name="(VCiv) Realizar audiência" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Minutar ata de audiência" name="Minutar ata de audiência"/>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de Audiência" name="Nó de Desvio - (VCiv) Controle de Audiência">
@@ -162,7 +162,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo magistrado">
-        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -178,6 +178,7 @@
         <transition to="(VCiv) Deslocar secretaria unificada magistrado" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Intimar da audiência')}"/>
@@ -191,7 +192,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Informar dados da audiência">
-        <task name="(VCiv) Informar dados da audiência" swimlane="Secretaria">
+        <task name="(VCiv) Informar dados da audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="ProcessoAudiencia_informarDadosAudiencia" mapped-name="frame:ProcessoAudiencia_informarDadosAudiencia" access="read,write"/>
@@ -217,7 +218,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Informar movimentação">
-        <task name="(VCiv) Informar movimentação" swimlane="Secretaria">
+        <task name="(VCiv) Informar movimentação" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -236,7 +237,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência com ato judicial">
-        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -255,6 +256,7 @@
         <transition to="(VCiv) Deslocar secretaria unificada" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
@@ -269,7 +271,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo conciliador">
-        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -297,7 +299,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Redesignar audiência">
-        <task name="(VCiv) Redesignar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Redesignar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -331,7 +333,7 @@
         <transition to="Término" name="Término"/>
     </process-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Controle de Audiência">
-        <task name="Nó de Desvio - (VCiv) Controle de Audiência" swimlane="Nó de Desvio - (VCiv) Controle de Audiência"/>
+        <task name="Nó de Desvio - (VCiv) Controle de Audiência" swimlane="Nó de Desvio - (VCiv) Controle de Audiência" priority="3"/>
         <transition to="(VCiv) Aguardar audiência" name="(VCiv) Aguardar audiência"/>
         <transition to="(VCiv) Cancelar audiência" name="(VCiv) Cancelar audiência"/>
         <transition to="(VCiv) Converter audiência em diligência" name="(VCiv) Converter audiência em diligência"/>
@@ -387,7 +389,7 @@
         </event>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Selecionar opção de intimação">
-        <task name="(VCiv) Selecionar opção de intimação" swimlane="Secretaria">
+        <task name="(VCiv) Selecionar opção de intimação" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <description><![CDATA[aviso: Ao clicar no botão Concluir controle de audiência o processo será encaminhado para Análise da secretaria]]></description>
