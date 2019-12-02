@@ -24,7 +24,7 @@
             <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ = :nomeVariavelAudiencia order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).setParameter('nomeVariavelAudiencia', 'pje:fluxo:audienciaSelecionada').executeUpdate()}"/>
         </event>
     </node>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(VCiv) Designar audiência' : '(VCiv) Aguardar audiência'}" name="(VCiv) Verifica se existe audiência designada">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? '(VCiv) Designar audiência' : '(VCiv) Aguardar audiência'}" name="(VCiv) Verifica se existe audiência designada">
         <transition to="(VCiv) Aguardar audiência" name="(VCiv) Aguardar audiência"/>
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
@@ -102,7 +102,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:aud:citar_intimar_aud', true)}"/>
         </event>
     </process-state>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(VCiv) Designar audiência' : '(VCiv) Realizar audiência'}" name="(VCiv) Existe audiência designada?">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? ''(VCiv) Designar audiência'' : ''(VCiv) Realizar audiência''}" name="(VCiv) Existe audiência designada?">
         <transition to="(VCiv) Realizar audiência" name="(VCiv) Realizar audiência"/>
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
