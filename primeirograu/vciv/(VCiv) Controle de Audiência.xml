@@ -102,7 +102,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:aud:citar_intimar_aud', true)}"/>
         </event>
     </process-state>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? ''(VCiv) Designar audiência'' : ''(VCiv) Realizar audiência''}" name="(VCiv) Existe audiência designada?">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? '(VCiv) Designar audiência' : '(VCiv) Realizar audiência'}" name="(VCiv) Existe audiência designada?">
         <transition to="(VCiv) Realizar audiência" name="(VCiv) Realizar audiência"/>
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
