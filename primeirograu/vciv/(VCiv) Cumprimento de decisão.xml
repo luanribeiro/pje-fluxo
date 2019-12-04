@@ -280,6 +280,9 @@
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
         </transition>
+    <event type="task-create">
+            <action expression="#{preencherMovimento.deCodigo(132).lancarMovimento()}"/>        
+    </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Encaminhar para instância superior - fisicamente">
         <task name="(VCiv) Encaminhar para instância superior - fisicamente" swimlane="Secretaria"/>
