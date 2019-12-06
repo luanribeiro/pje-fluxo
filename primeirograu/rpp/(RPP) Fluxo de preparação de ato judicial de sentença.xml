@@ -1,82 +1,87 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml">
-    <description><![CDATA[..]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de ato judicial de sentença">
+    <description><![CDATA[Cód: RPP_FLX_PREP_ATO_JUD_SENT.
+
+Descrição:
+Fluxo de preparação de ato judicial de sentença]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('7:5197,5:1338,6:1469')}"/>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>
-    <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('7:5197,5:1338,6:1469')}" actor-id="#{actor.id}"/>
-    </swimlane>
-    <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml">
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Gabinete">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,7:5197')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
-        <transition to="(RPP) Lançar movimento de conclusos para decisão" name="(RPP) Lançar movimento de conclusos para decisão"/>
+        <task name="Tarefa inicial" priority="3"/>
+        <transition to="(RPP) Conclusos para sentença - MINUTAR" name="(RPP) Conclusos para sentença - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
-    <node name="(RPP) Lançar movimento de conclusos para decisão">
-        <transition to="(RPP) Conclusos para decisão sobre reativação - MINUTAR" name="(RPP) Conclusos para decisão sobre reativação - MINUTAR"/>
-        <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(51).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(6).lancarMovimento()}"/>
-        </event>
-    </node>
-    <task-node end-tasks="true" name="(RPP) Conclusos para decisão sobre reativação - MINUTAR">
-        <task name="(RPP) Conclusos para decisão sobre reativação - MINUTAR" swimlane="Assessoria" priority="3">
+    <task-node end-tasks="true" name="(RPP) Conclusos para sentença - MINUTAR">
+        <task name="(RPP) Conclusos para sentença - MINUTAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minutaAtoJudicial" mapped-name="textEditSignature:minutaAtoJudicial" access="read,write"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml">
+        <transition to="(RPP) Conclusos para sentença - ASSINAR" name="Encaminhar para assinatura"/>
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [sentença]" name="(RPP) Subfluxo Autos recebidos do gabinete [sentença]">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(RPP) Conclusos para decisão sobre reativação - ASSINAR" name="Encaminhar para assinatura"/>
-        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="(RPP) Subfluxo de Análise da Secretaria" name="Retornar para secretaria"/>
         <event type="task-end">
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditSignature:minutaAtoJudicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditSignature:minutaAtoJudicial')) : ''}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [sentença]')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', false)}"/>
             <action expression="#{(processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios) ? lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}') : ''}"/>
             <action expression="#{(processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios) ? tramitacaoProcessualService.gravaVariavel('pje:atoProferido', tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')) : ''}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [sentença]')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Retornar para secretaria')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(RPP) Conclusos para decisão sobre reativação - ASSINAR">
-        <task name="(RPP) Conclusos para decisão sobre reativação - ASSINAR" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(RPP) Conclusos para sentença - ASSINAR">
+        <task name="(RPP) Conclusos para sentença - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
-                <variable name="assinarLote" mapped-name="assinarLote:assinarLote" access="read,write"/>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml">
+        <transition to="(RPP) Conclusos para sentença - MINUTAR" name="Retornar para minutar"/>
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [sentença]" name="(RPP) Subfluxo Autos recebidos do gabinete [sentença]">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(RPP) Conclusos para decisão sobre reativação - MINUTAR" name="Retornar para minutar"/>
-        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]">
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão sobre reativação]')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [sentença]')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
         </event>
     </task-node>
-    <process-state name="(RPP) Subfluxo de autos recebidos do gabinete [decisão sobre reativação]">
-        <sub-process name="(RPP) Fluxo de autos recebidos do gabinete [decisão sobre reativação]" binding="late"/>
+    <process-state name="(RPP) Subfluxo de Análise da Secretaria">
+        <sub-process name="(RPP) Fluxo básico geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:rpp:sinalizacao', 'true')}"/>
+        </event>
+    </process-state>
+    <process-state name="(RPP) Subfluxo de autos recebidos do gabinete [sentença]">
+        <sub-process name="(RPP) Fluxo de autos recebidos do gabinete" binding="late"/>
         <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
     </process-state>
     <node name="(RPP) Apagar variáveis do fluxo">
@@ -90,11 +95,11 @@
         </event>
     </node>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml">
-        <task name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" swimlane="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" priority="3"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença">
+        <task name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença" swimlane="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de sentença" priority="3"/>
+        <transition to="(RPP) Conclusos para sentença - MINUTAR" name="(RPP) Conclusos para sentença - MINUTAR"/>
+        <transition to="(RPP) Conclusos para sentença - ASSINAR" name="(RPP) Conclusos para sentença - ASSINAR"/>
         <transition to="Término" name="Término"/>
-        <transition to="(RPP) Conclusos para decisão sobre reativação - MINUTAR" name="(RPP) Conclusos para decisão sobre reativação - MINUTAR"/>
-        <transition to="(RPP) Conclusos para decisão sobre reativação - ASSINAR" name="(RPP) Conclusos para decisão sobre reativação - ASSINAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">

@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo básico geral">
-    <description><![CDATA[Código do fluxo: CPP_FBG
-
-Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></description>  
+    <description><![CDATA[Código do fluxo: CPP_FBG.
+
+Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (RPP) Fluxo básico geral">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial"/>
-        <transition to="(RPP) Autos recebidos da autuação - ANALISAR" name="(RPP) Autos recebidos da autuação - ANALISAR"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(RPP) É inicial?" name="(RPP) É inicial?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:rpp:sinalizacao') ? '(RPP) Secretaria - ANALISAR' : '(RPP) Autos recebidos da autuação - ANALISAR'}" name="(RPP) É inicial?">
+        <transition to="(RPP) Autos recebidos da autuação - ANALISAR" name="(RPP) Autos recebidos da autuação - ANALISAR"/>
+        <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
+    </decision>
     <task-node end-tasks="true" name="(RPP) Autos recebidos da autuação - ANALISAR">
-        <task name="(RPP) Autos recebidos da autuação - ANALISAR" swimlane="Secretaria">
+        <task name="(RPP) Autos recebidos da autuação - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="(RPP) Existe audiência pendente?" name="Prosseguir"/>
+        <transition to="(RPP) Existe audiência pendente?" name="Designar audiência"/>
+        <transition to="(RPP) Secretaria - ANALISAR" name="Encaminhar para outras providências"/>
         <transition to="Nó de Desvio - (RPP) Fluxo básico geral" name="Nó de Desvio - (RPP) Fluxo básico geral">
             <condition expression="#{true}"/>
         </transition>
@@ -46,31 +51,78 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
         <sub-process name="(RPP) Fluxo de controle de audiência" binding="late"/>
         <transition to="(RPP) Evolução de classe foi realizada?" name="(RPP) Evolução de classe foi realizada?"/>
     </process-state>
+    <process-state name="(RPP) Subfluxo para enviar concluso para sentença">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de sentença" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <process-state name="(RPP) Subfluxo para enviar concluso para decisão">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de decisão" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <process-state name="(RPP) Subfluxo para enviar concluso para despacho">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de despacho" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:cpp:sinalizacao') == 'evolucaoClasseConfirmada' ? 'Término' : '(RPP) Secretaria - ANALISAR'}" name="(RPP) Evolução de classe foi realizada?">
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
-        <transition to="Término" name="Término"/>
+        <transition to="(RPP) Subfluxo Autos recebidos da evolução" name="Término"/>
     </decision>
+    <process-state name="(RPP) Subfluxo Autos recebidos da evolução">
+        <sub-process name="(RPP) Fluxo de autos recebidos da evolução de classe" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
     <process-state name="(RPP) Subfluxo de preparação de carta convite">
         <sub-process name="(RPP) Fluxo de preparação de carta convite" binding="late"/>
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
     </process-state>
     <task-node end-tasks="true" name="(RPP) Secretaria - ANALISAR">
-        <task name="(RPP) Secretaria - ANALISAR" swimlane="Secretaria">
+        <task name="(RPP) Secretaria - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
         </task>
         <transition to="(RPP) Subfluxo Controle de audência" name="Controlar audiência"/>
         <transition to="(RPP) Subfluxo de preparação de carta convite" name="Preparar carta convite"/>
+        <transition to="(RPP) Subfluxo Arquivamento" name="Arquivar processo"/>
+        <transition to="(RPP) Fluxo de evolução de classe" name="Evolução de classe"/>
         <transition to="Nó de Desvio - (RPP) Fluxo básico geral" name="Nó de Desvio - (RPP) Fluxo básico geral">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(RPP) Subfluxo Arquivamento" name="Arquivar processo"/>
-        <transition to="(RPP) Fluxo de evolução de classe" name="Evolução de classe"/>
+        <transition to="(RPP) Subfluxo para enviar concluso para sentença" name="Enviar concluso para sentença"/>
+        <transition to="(RPP) Subfluxo para enviar concluso para decisão" name="Enviar concluso para decisão"/>
+        <transition to="(RPP) Subfluxo para enviar concluso para despacho" name="Enviar concluso para despacho"/>
+        <transition to="(RPP) Subfluxo elaborar documentos" name="Elaborar documentos"/>
+        <transition to="(RPP) Subfluxo Controlar retorno de expediente" name="Controlar retorno de expediente"/>
+        <transition to="(RPP) Encerrar prazo" name="Encerrar prazo"/>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
+    <task-node end-tasks="true" name="(RPP) Encerrar prazo">
+        <task name="(RPP) Encerrar prazo" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" mapped-name="frame:WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(RPP) Secretaria - ANALISAR" name="Finalizar tarefa"/>
+        <transition to="Nó de Desvio - (RPP) Fluxo básico geral" name="Nó de Desvio - (RPP) Fluxo básico geral">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <process-state name="(RPP) Subfluxo Controlar retorno de expediente">
+        <sub-process name="(RPP) Fluxo de controle de retorno de expediente" binding="late"/>
+        <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('rpp:cpre')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('rpp:cpre', true)}"/>
+        </event>
+    </process-state>
+    <process-state name="(RPP) Subfluxo elaborar documentos">
+        <sub-process name="(RPP) Fluxo de preparação de elaborar documento" binding="late"/>
+        <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
+    </process-state>
     <process-state name="(RPP) Subfluxo Arquivamento">
         <sub-process name="(RPP) Fluxo de arquivamento" binding="late"/>
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
@@ -81,16 +133,44 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo básico geral">
-        <task name="Nó de Desvio - (RPP) Fluxo básico geral" swimlane="Nó de Desvio - (RPP) Fluxo básico geral"/>
-        <transition to="Término" name="Término"/>
+        <task name="Nó de Desvio - (RPP) Fluxo básico geral" swimlane="Nó de Desvio - (RPP) Fluxo básico geral" priority="3"/>
         <transition to="(RPP) Autos recebidos da autuação - ANALISAR" name="(RPP) Autos recebidos da autuação - ANALISAR"/>
         <transition to="(RPP) Secretaria - ANALISAR" name="(RPP) Secretaria - ANALISAR"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(RPP) Encerrar prazo" name="(RPP) Encerrar prazo"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -99,40 +179,13 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual..]]></descript
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event> 
 </process-definition>
