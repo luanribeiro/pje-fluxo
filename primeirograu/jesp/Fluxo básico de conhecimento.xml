@@ -121,7 +121,7 @@
     <task-node end-tasks="true" name="Expedir alvará judicial">
         <task name="Expedir alvará judicial" swimlane="Secretaria">
             <controller>
-                <variable name="minutaEmElaboracao" mapped-name="textEditSecretariaJT:minutaEmElaboracao" access="read,write"/>
+                <variable name="minutaEmElaboracao" mapped-name="textEditCombo:minutaEmElaboracao" access="read,write"/>
             </controller>
         </task>
         <transition to="Nó de Desvio - Fluxo básico de conhecimento" name="Nó de Desvio - Fluxo básico de conhecimento">
