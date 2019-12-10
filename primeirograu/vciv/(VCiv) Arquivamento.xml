@@ -196,7 +196,7 @@
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Lançar movimento de Arquivo Definitivo" name="Manter arquivado.">
+        <transition to="(VCiv) Arquivo definitivo" name="Manter arquivado.">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Lançar movimento de Reativação" name="Reativar o processo"/>
@@ -207,10 +207,10 @@
         <transition to="(VCiv) Retornar para qual arquivo?" name="Manter arquivado"/>
     </task-node>
     <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('sg:tjrn:TipoArquivo') ? tramitacaoProcessualService.recuperaVariavel('sg:tjrn:TipoArquivo') : '(VCiv) Arquivo definitivo'}" name="(VCiv) Retornar para qual arquivo?">
-        <transition to="(VCiv) Arquivo definitivo" name="(VCiv) Arquivo definitivo"/>
-        <transition to="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens" name="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens"/>
-        <transition to="(VCiv) Arquivado - Processos com custas pendentes" name="(VCiv) Arquivado - Processos com custas pendentes"/>
-        <transition to="(VCiv) Arquivado - Reunião de processos" name="(VCiv) Arquivado - Reunião de processos"/>
+        <transition to="(VCiv) Lançar movimento de Arquivo Definitivo" name="(VCiv) Arquivo definitivo"/>
+        <transition to="(VCiv) Lançar movimento de Execuções fiscais aguardando a localização do devedor ou de bens" name="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens"/>
+        <transition to="(VCiv) Lançar movimento de arquivamento de processos com custas pendentes" name="(VCiv) Arquivado - Processos com custas pendentes"/>
+        <transition to="(VCiv) Lançar movimentação arquivamento reunião de processos" name="(VCiv) Arquivado - Reunião de processos"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:tjrn:TipoArquivo')}"/>
         </event>
