@@ -196,7 +196,7 @@
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Arquivo definitivo" name="Manter arquivado.">
+        <transition to="(VCiv) Lançar movimento de Arquivo Definitivo" name="Manter arquivado.">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Lançar movimento de Reativação" name="Reativar o processo"/>
