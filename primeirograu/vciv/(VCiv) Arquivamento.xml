@@ -208,9 +208,9 @@
     </task-node>
     <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('sg:tjrn:TipoArquivo') ? tramitacaoProcessualService.recuperaVariavel('sg:tjrn:TipoArquivo') : '(VCiv) Arquivo definitivo'}" name="(VCiv) Retornar para qual arquivo?">
         <transition to="(VCiv) Lançar movimento de Arquivo Definitivo" name="(VCiv) Arquivo definitivo"/>
-        <transition to="(VCiv) Lançar movimento de Execuções fiscais aguardando a localização do devedor ou de bens" name="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens"/>
-        <transition to="(VCiv) Lançar movimento de arquivamento de processos com custas pendentes" name="(VCiv) Arquivado - Processos com custas pendentes"/>
-        <transition to="(VCiv) Lançar movimentação arquivamento reunião de processos" name="(VCiv) Arquivado - Reunião de processos"/>
+        <transition to="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens" name="(VCiv) Arquivado - Execuções fiscais aguardando a localização do devedor ou de bens"/>
+        <transition to="(VCiv) Arquivado - Processos com custas pendentes" name="(VCiv) Arquivado - Processos com custas pendentes"/>
+        <transition to="(VCiv) Arquivado - Reunião de processos" name="(VCiv) Arquivado - Reunião de processos"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:tjrn:TipoArquivo')}"/>
         </event>
