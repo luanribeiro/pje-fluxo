@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Redirecionamento de fluxo">
+    <description><![CDATA[Código do fluxo: REDIREC
+Descrição: Fluxo destinado ao teste de fluxo entre às Turmas Recursais e Segundo Grau.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Redirecionamento de fluxo">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="É TR?" name="É TR?"/>
+        <transition to="É Digitalização??" name="É Digitalização??"/>
+    </start-state>  
+    <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().importadoSistemaLegado == true ? 'Encaminhar para Processos Digitalizados' : 'É TR?'}" name="É Digitalização??">
+        <transition to="É TR?" name="É TR?"/>
+        <transition to="Encaminhar para Processos Digitalizados" name="Entcaminhar para Processos Digitalizados"/>
+    </decision>
+    <process-state name="Encaminhar para Processos Digitalizados">
+        <sub-process name="Processos Digitalizados do Segundo Grau" binding="late"/>
+        <transition to="É TR?" name="É TR?"/>
+    </process-state>
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? 'Encaminhar para fluxo TR' : 'Encaminhar para fluxo SG'}" name="É TR?">
+        <transition to="Encaminhar para fluxo TR" name="Encaminhar para fluxo TR"/>
+        <transition to="Encaminhar para fluxo SG" name="Encaminhar para fluxo SG"/>
+    </decision>
+    <process-state name="Encaminhar para fluxo TR">
+        <sub-process name="(TR) Fluxo Básico Geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <process-state name="Encaminhar para fluxo SG">
+        <sub-process name="(SG) Fluxo básico geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Redirecionamento de fluxo">
+        <task name="Nó de Desvio - Redirecionamento de fluxo" swimlane="Nó de Desvio - Redirecionamento de fluxo" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
