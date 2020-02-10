@@ -154,7 +154,7 @@
         </transition>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <event type="task-start">
-            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('a outro juízo').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(40).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('outro Tribunal).comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(90).lancarMovimento()}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:certificar_decurso') ? '(VCiv) Certificação de decurso de prazo' : '(VCiv) Junção em cumprimento de decisão'}" name="(VCiv) Certificar decurso de prazo?">
