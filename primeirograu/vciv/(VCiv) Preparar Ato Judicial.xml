@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Preparar Ato Judicial">
-    <description><![CDATA[Fluxo para controle de elaboração de atos judiciais (decisões, despachos e sentenças).]]></description>  
+    <description><![CDATA[Fluxo para controle de elaboração de atos judiciais (decisões, despachos e sentenças)..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,5:1338,7:5197,8:5852,8:5853,6:5901')}"/>
@@ -180,6 +180,9 @@
         <transition to="(VCiv) Junção de despacho" name="Documento já assinado! Encaminhar para secretaria">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Encaminhar para Análise da Secretaria" name="(VCiv) Encaminhar para Análise da Secretaria">
+            <condition expression="#{parametroUtil.getParametro(''pje:tjrn:processo:sairtarefa'').contains('' ''.concat(tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).concat('' ''))}"/>
+        </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
@@ -191,6 +194,14 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
+    <node name="(VCiv) Encaminhar para Análise da Secretaria">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel(''vciv:fbc:redistribuir'', true)}"/>
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), ''VCiv_FBC'', processInstance.contextInstance.variables)}"/>
+            <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo(''minutaEmElaboracao'')}"/>
+        </event>
+    </node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:despacho') ? '(VCiv) Lançar movimento concluso para despacho' : '(VCiv) Junção de atos judiciais'}" name="(VCiv) É despacho?">
         <transition to="(VCiv) Lançar movimento concluso para despacho" name="(VCiv) Lançar movimento concluso para despacho"/>
         <transition to="(VCiv) Junção de atos judiciais" name="(VCiv) Junção de atos judiciais"/>
