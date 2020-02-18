@@ -2,7 +2,7 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Redirecionamento de fluxo">
     <description><![CDATA[Código do fluxo: REDIREC
-Descrição: Fluxo destinado ao teste de fluxo entre às Turmas Recursais e Segundo Grau.]]></description>  
+Descrição: Fluxo destinado ao teste de fluxo entre às Turmas Recursais e Segundo Grau..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - Redirecionamento de fluxo">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
@@ -13,7 +13,6 @@ Descrição: Fluxo destinado ao teste de fluxo entre às Turmas Recursais e Segu
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
-        <transition to="É TR?" name="É TR?"/>
         <transition to="É Digitalização??" name="É Digitalização??"/>
     </start-state>  
     <!-- NODES -->
@@ -22,7 +21,7 @@ Descrição: Fluxo destinado ao teste de fluxo entre às Turmas Recursais e Segu
         <transition to="Encaminhar para Processos Digitalizados" name="Entcaminhar para Processos Digitalizados"/>
     </decision>
     <process-state name="Encaminhar para Processos Digitalizados">
-        <sub-process name="Processos Digitalizados do Segundo Grau" binding="late"/>
+        <sub-process name="(SG) Processos Digitalizados" binding="late"/>
         <transition to="É TR?" name="É TR?"/>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? 'Encaminhar para fluxo TR' : 'Encaminhar para fluxo SG'}" name="É TR?">
