@@ -286,6 +286,7 @@
         <transition to="(VCiv) Selecionar opção de intimação" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Intimar da audiência')}"/>
