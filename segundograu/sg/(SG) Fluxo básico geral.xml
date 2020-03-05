@@ -17,21 +17,21 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Direciona diretamente para secretaria?" name="(SG) Direciona diretamente para secretaria?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) Secretaria - ANALISAR' : '(SG) Acrescentar situação do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+        <transition to="(SG) Acrescentar situação do processo em andamento" name="(SG) Acrescentar situação do processo em andamento"/>
+    </decision>
     <node name="(SG) Acrescentar situação do processo em andamento">
         <transition to="(SG) É apelação?" name="(SG) É apelação?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:andamento')}"/>
         </event>
     </node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) Secretaria - ANALISAR' : '(SG) Acrescentar situação do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
-        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
-        <transition to="(SG) Acrescentar situação do processo em andamento" name="(SG) Acrescentar situação do processo em andamento"/>
-    </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 198 ? '(SG) Preparação de despacho inicial' : '(SG) Tem pedido de urgência?'}" name="(SG) É apelação?">
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(SG) Preparação de despacho inicial' : '(SG) Tem pedido de urgência?'}" name="(SG) É apelação?">
         <transition to="(SG) Tem pedido de urgência?" name="(SG) Tem pedido de urgência?"/>
         <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
     </decision>
@@ -64,7 +64,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </event>
     </process-state>
     <task-node end-tasks="true" name="(SG) Secretaria - ANALISAR">
-        <task name="(SG) Secretaria - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Secretaria - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
@@ -304,7 +304,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Secretaria - AGUARDAR">
-        <task name="(SG) Secretaria - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Secretaria - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
@@ -761,7 +761,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR">
-        <task name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -833,7 +833,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Fluxo básico geral">
-        <task name="Nó de Desvio - (SG) Fluxo básico geral" swimlane="Nó de Desvio - (SG) Fluxo básico geral"/>
+        <task name="Nó de Desvio - (SG) Fluxo básico geral" swimlane="Nó de Desvio - (SG) Fluxo básico geral" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <transition to="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR"/>
