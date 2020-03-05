@@ -209,6 +209,7 @@
         <transition to="(VCiv) Ajustar audiência e movimentação" name="Gerar movimentação e ajustar audiência">
             <condition expression="#{tramitacaoProcessualService.recuperaVariavel('processo') == 156177}"/>
         </transition>
+        <transition to="(VCiv) Apagar minuta em elaboração" name="Cancelar e sair da tarefa"/>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:audienciaSelecionada') eq null ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada',processoJudicialManager.getProximaAudienciaDesignada(processoTrfHome.instance)) : ''}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
