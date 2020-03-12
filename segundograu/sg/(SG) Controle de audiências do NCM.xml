@@ -134,7 +134,7 @@ Núcleo de Conciliação e Mediação  Secretaria Segundo Grau  Chefe de Secretaria]]
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:ncm:sub_fluxo_unico', '(SG) Gravar variavel de devolução à secretaria')}"/>
         </event>
     </node>
-    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa not like all (array['(SG) Documentos não lidos [Ministério Público] - ANALISAR','(SG) Documentos não lidos - ANALISAR','(SG) Audiência - ANALISAR']) AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Gravar mensagem não pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('sg:ncm:sub_fluxo_unico')}" name="(SG) Pode ir para subfluxo único?">
+    <decision expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sg:ncm:consulta:verificarExistenciaOutrasTarefasParalelas')).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Gravar mensagem não pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('sg:ncm:sub_fluxo_unico')}" name="(SG) Pode ir para subfluxo único?">
         <transition to="(SG) Apagar variáveis do fluxo" name="(SG) Apagar variáveis do fluxo"/>
         <transition to="(SG) Gravar variavel de devolução à secretaria" name="(SG) Gravar variavel de devolução à secretaria"/>
         <transition to="(SG) Gravar mensagem não pode entrar no fluxo" name="(SG) Gravar mensagem não pode entrar no fluxo"/>
