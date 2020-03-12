@@ -142,7 +142,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     <node name="(SG) Encaminhar à PGJ sem prazo">
         <transition to="(SG) Enviar autos à secretaria" name="(SG) Enviar autos à secretaria"/>
         <event type="node-enter">
-            <action expression="#{atoComunicacaoService.intimarEletronicamenteTJRN(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, empty tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') or tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') == 0 ? 'S' : 'D', empty tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') or tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') == 0 ? null : tramitacaoProcessualService.recuperaVariavel('prazoIntimacao'), tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'), 4266)}"/>
+            <action expression="#{atoComunicacaoService.intimarEletronicamenteTJRN(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 'D', 15, tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'), 4266)}"/>
         </event>
     </node>
     <process-state name="(SG) Enviar autos à secretaria">
