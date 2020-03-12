@@ -18,7 +18,7 @@ Secretaria  Secretaria               Chefe de Secretaria
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(PP) Efetuou evolução?" name="(PP) Efetuou evolução?"/>
     </start-state>  
     <!-- NODES -->
@@ -35,7 +35,7 @@ Secretaria  Secretaria               Chefe de Secretaria
         <transition to="(PP) Evolução de classe" name="(PP) Evolução de classe"/>
     </process-state>
     <task-node end-tasks="true" name="(PP) Secretaria - ANALISAR">
-        <task name="(PP) Secretaria - ANALISAR" swimlane="Secretaria">
+        <task name="(PP) Secretaria - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
@@ -57,17 +57,14 @@ Secretaria  Secretaria               Chefe de Secretaria
         <transition to="(PP) Preparação de sentença genérica" name="03 - Enviar concluso para sentença"/>
         <transition to="(PP) Preparação para arquivamento" name="04 - Arquivar o processo"/>
         <transition to="(PP) Controle de audiências" name="01 - Enviar para controle de audiências"/>
-        <transition to="(PP) Fluxo básico de conhecimento" name="05 - Retornar para o fluxo básico de conhecimento">
-            <condition expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador != 112}"/>
-        </transition>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('pp:evolucao:cancelada')}"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pp:evolucao:cancelada')}"/>
         </event>
     </task-node>
     <process-state name="(PP) Preparação para arquivamento">
@@ -78,9 +75,10 @@ Secretaria  Secretaria               Chefe de Secretaria
         <sub-process name="(PP) Evolução de classe" binding="late"/>
         <transition to="(PP) Cancelou evolução?" name="(PP) Cancelou evolução?"/>
     </process-state>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:cancelada') == true ? '(PP) Secretaria - ANALISAR' : 'Término'}" name="(PP) Cancelou evolução?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:cancelada') == true ? '(PP) Secretaria - ANALISAR' : '(PP) Efetuou evolução?'}" name="(PP) Cancelou evolução?">
         <transition to="(PP) Secretaria - ANALISAR" name="(PP) Secretaria - ANALISAR"/>
         <transition to="Término" name="Término"/>
+        <transition to="(PP) Efetuou evolução?" name="(PP) Efetuou evolução?"/>
     </decision>
     <process-state name="(PP) Preparação de sentença genérica">
         <sub-process name="(PP) Preparar ato judicial" binding="late"/>
@@ -105,7 +103,7 @@ Secretaria  Secretaria               Chefe de Secretaria
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (PP) Fluxo básico geral">
-        <task name="Nó de Desvio - (PP) Fluxo básico geral" swimlane="Nó de Desvio - (PP) Fluxo básico geral"/>
+        <task name="Nó de Desvio - (PP) Fluxo básico geral" swimlane="Nó de Desvio - (PP) Fluxo básico geral" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(PP) Secretaria - ANALISAR" name="(PP) Secretaria - ANALISAR"/>
     </task-node>  
