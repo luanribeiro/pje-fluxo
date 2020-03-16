@@ -22,7 +22,7 @@ Secretaria  Secretaria               Chefe de Secretaria
         <transition to="(PP) Verificar evolução" name="(PP) Verificar evolução"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:cancelada') == true ? '(PP) Secretaria - ANALISAR' : '(PP) Efetuou evolução?'}" name="(PP) Verificar evolução">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pp:evolucao:sair') == true ? '(PP) Secretaria - ANALISAR' : '(PP) Efetuou evolução?'}" name="(PP) Verificar evolução">
         <transition to="(PP) Secretaria - ANALISAR" name="(PP) Secretaria - ANALISAR"/>
         <transition to="(PP) Efetuou evolução?" name="(PP) Efetuou evolução?"/>
     </decision>
