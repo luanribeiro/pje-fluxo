@@ -17,7 +17,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <description><![CDATA[]]></description>
         <transition to="(VCiv) Separação em cumprimento de decisão" name="(VCiv) Separação em cumprimento de decisão"/>
     </start-state>  
@@ -87,7 +87,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Redistribuir">
-        <task name="(VCiv) Redistribuir" swimlane="Secretaria">
+        <task name="(VCiv) Redistribuir" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
@@ -107,7 +107,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Retornar para análise da secretaria"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Redistribuir eletronicamente">
-        <task name="(VCiv) Redistribuir eletronicamente" swimlane="Secretaria">
+        <task name="(VCiv) Redistribuir eletronicamente" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaRedistribuicaoProcesso" mapped-name="frame:Processo_Fluxo_abaRedistribuicaoProcesso" access="read,write"/>
             </controller>
@@ -128,7 +128,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Redistribuir fisicamente">
-        <task name="(VCiv) Redistribuir fisicamente" swimlane="Secretaria">
+        <task name="(VCiv) Redistribuir fisicamente" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -146,7 +146,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(VCiv) Remetido a outro juízo">
-        <task name="(VCiv) Remetido a outro juízo" swimlane="Secretaria">
+        <task name="(VCiv) Remetido a outro juízo" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
@@ -154,7 +154,7 @@
         </transition>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <event type="task-start">
-            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('outro Tribunal).comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(90).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('a outro juízo').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(40).lancarMovimento()}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:certificar_decurso') ? '(VCiv) Certificação de decurso de prazo' : '(VCiv) Junção em cumprimento de decisão'}" name="(VCiv) Certificar decurso de prazo?">
@@ -200,7 +200,7 @@
         <transition to="(VCiv) Aguardando Perícia, Laudo Técnico ou Outros" name="(VCiv) Aguardando Perícia, Laudo Técnico ou Outros"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aguardando Perícia, Laudo Técnico ou Outros">
-        <task name="(VCiv) Aguardando Perícia, Laudo Técnico ou Outros" swimlane="Secretaria">
+        <task name="(VCiv) Aguardando Perícia, Laudo Técnico ou Outros" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -215,7 +215,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Encaminhar para instância superior">
-        <task name="(VCiv) Encaminhar para instância superior" swimlane="Secretaria">
+        <task name="(VCiv) Encaminhar para instância superior" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
@@ -230,7 +230,7 @@
         <transition to="(VCiv) Encaminhar para instância superior - fisicamente" name="Encaminhar para instância superior - fisicamente"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Encaminhar para instância superior - eletronicamente">
-        <task name="(VCiv) Encaminhar para instância superior - eletronicamente" swimlane="Secretaria">
+        <task name="(VCiv) Encaminhar para instância superior - eletronicamente" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Intercomunicacao_RetificacaoAutuacao_updateRetificacaoAutuacao" mapped-name="frame:Intercomunicacao_RetificacaoAutuacao_updateRetificacaoAutuacao" access="read,write"/>
             </controller>
@@ -254,7 +254,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando julgamento da instância superior - eletronicamente">
-        <task name="(VCiv) Aguardando julgamento da instância superior - eletronicamente" swimlane="Secretaria">
+        <task name="(VCiv) Aguardando julgamento da instância superior - eletronicamente" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -275,24 +275,24 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos devolvidos pela instância superior">
-        <task name="(VCiv) Processos devolvidos pela instância superior" swimlane="Secretaria"/>
+        <task name="(VCiv) Processos devolvidos pela instância superior" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Cancelar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
         </transition>
-    <event type="task-create">
-            <action expression="#{preencherMovimento.deCodigo(132).lancarMovimento()}"/>        
-    </event>
+        <event type="task-create">
+            <action expression="#{preencherMovimento.deCodigo(132).lancarMovimento()}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Encaminhar para instância superior - fisicamente">
-        <task name="(VCiv) Encaminhar para instância superior - fisicamente" swimlane="Secretaria"/>
+        <task name="(VCiv) Encaminhar para instância superior - fisicamente" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Aguardando julgamento da instância superior - fisicamente" name="Aguardar julgamento da instância superior - fisicamente"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando julgamento da instância superior - fisicamente">
-        <task name="(VCiv) Aguardando julgamento da instância superior - fisicamente" swimlane="Secretaria"/>
+        <task name="(VCiv) Aguardando julgamento da instância superior - fisicamente" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
@@ -306,7 +306,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Retificar autuação">
-        <task name="(VCiv) Retificar autuação" swimlane="Secretaria">
+        <task name="(VCiv) Retificar autuação" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_RetificacaoAutuacao_updateRetificacaoAutuacao" mapped-name="page:Processo_RetificacaoAutuacao_updateRetificacaoAutuacao" access="read,write"/>
             </controller>
@@ -324,7 +324,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Calcular custas">
-        <task name="(VCiv) Calcular custas" swimlane="Secretaria">
+        <task name="(VCiv) Calcular custas" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -339,7 +339,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Apensar processo">
-        <task name="(VCiv) Apensar processo" swimlane="Secretaria">
+        <task name="(VCiv) Apensar processo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_associarProcessos" mapped-name="frame:Processo_Fluxo_associarProcessos" access="read,write"/>
             </controller>
@@ -386,7 +386,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <process-state name="(VCiv) Expedição de outros documentos">
-        <sub-process name="(VCiv) Elaborar Documentos" binding="late"/>
+        <sub-process name="(VCiv) Encaminhar para preparação de documentos" binding="late"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cumpridec:expedir_outros_documentos', true)}"/>
@@ -451,7 +451,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Bacenjud - Minutar bloqueio ou desbloqueio">
-        <task name="(VCiv) Bacenjud - Minutar bloqueio ou desbloqueio" swimlane="Secretaria">
+        <task name="(VCiv) Bacenjud - Minutar bloqueio ou desbloqueio" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -463,7 +463,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Bacenjud - Aguardando resposta">
-        <task name="(VCiv) Bacenjud - Aguardando resposta" swimlane="Secretaria">
+        <task name="(VCiv) Bacenjud - Aguardando resposta" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -475,7 +475,7 @@
         <transition to="(VCiv) Bacenjud - Minutar transferência" name="Minutar transferência"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Bacenjud - Minutar transferência">
-        <task name="(VCiv) Bacenjud - Minutar transferência" swimlane="Secretaria">
+        <task name="(VCiv) Bacenjud - Minutar transferência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -487,7 +487,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Bacenjud - Aguardando resposta de transferência">
-        <task name="(VCiv) Bacenjud - Aguardando resposta de transferência" swimlane="Secretaria">
+        <task name="(VCiv) Bacenjud - Aguardando resposta de transferência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -502,7 +502,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Renajud - Consultar">
-        <task name="(VCiv) Renajud - Consultar" swimlane="Secretaria">
+        <task name="(VCiv) Renajud - Consultar" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -518,7 +518,7 @@
         <transition to="(VCiv) Infojud, Infoseg ou TRE - Consultar" name="(VCiv) Infojud, Infoseg ou TRE - Consultar"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Infojud, Infoseg ou TRE - Consultar">
-        <task name="(VCiv) Infojud, Infoseg ou TRE - Consultar" swimlane="Secretaria">
+        <task name="(VCiv) Infojud, Infoseg ou TRE - Consultar" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -530,7 +530,7 @@
         <transition to="(VCiv) Infojud, Infoseg ou TRE - Aguardando resposta" name="Aguardar resposta"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Infojud, Infoseg ou TRE - Aguardando resposta">
-        <task name="(VCiv) Infojud, Infoseg ou TRE - Aguardando resposta" swimlane="Secretaria">
+        <task name="(VCiv) Infojud, Infoseg ou TRE - Aguardando resposta" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -572,7 +572,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Cancelar distribuição">
-        <task name="(VCiv) Cancelar distribuição" swimlane="Secretaria"/>
+        <task name="(VCiv) Cancelar distribuição" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Processos com distribuição cancelada" name="Efetuar cancelamento da distribuição"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Ignorar cancelamento da distribuição"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
@@ -580,7 +580,7 @@
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos com distribuição cancelada">
-        <task name="(VCiv) Processos com distribuição cancelada" swimlane="Secretaria"/>
+        <task name="(VCiv) Processos com distribuição cancelada" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Abortar cancelamento da distribuição"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
@@ -619,7 +619,7 @@
         <transition to="(VCiv) Aguardando COJUD" name="(VCiv) Aguardando COJUD"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aguardando central de cálculos">
-        <task name="(VCiv) Aguardando central de cálculos" swimlane="Secretaria e Servidor de cálculo">
+        <task name="(VCiv) Aguardando central de cálculos" swimlane="Secretaria e Servidor de cálculo" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -643,7 +643,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando COJUD">
-        <task name="(VCiv) Aguardando COJUD" swimlane="Secretaria">
+        <task name="(VCiv) Aguardando COJUD" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -668,14 +668,14 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos devolvidos pela central de cálculos">
-        <task name="(VCiv) Processos devolvidos pela central de cálculos" swimlane="Secretaria"/>
+        <task name="(VCiv) Processos devolvidos pela central de cálculos" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos devolvidos pela COJUD">
-        <task name="(VCiv) Processos devolvidos pela COJUD" swimlane="Secretaria"/>
+        <task name="(VCiv) Processos devolvidos pela COJUD" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
@@ -694,7 +694,7 @@
         <transition to="(VCiv) Expedir precatório e(ou) RPV" name="(VCiv) Expedir precatório e(ou) RPV"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Expedir precatório e(ou) RPV">
-        <task name="(VCiv) Expedir precatório e(ou) RPV" swimlane="Secretaria"/>
+        <task name="(VCiv) Expedir precatório e(ou) RPV" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (VCiv) Cumprimento de decisão" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
             <condition expression="#{true}"/>
         </transition>
@@ -713,7 +713,7 @@
         <transition to="(VCiv) Encerrar prazo" name="(VCiv) Encerrar prazo"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Encerrar prazo">
-        <task name="(VCiv) Encerrar prazo" swimlane="Secretaria">
+        <task name="(VCiv) Encerrar prazo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" mapped-name="frame:WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" access="read,write"/>
             </controller>
@@ -738,7 +738,7 @@
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Cumprimento de decisão">
-        <task name="Nó de Desvio - (VCiv) Cumprimento de decisão" swimlane="Nó de Desvio - (VCiv) Cumprimento de decisão"/>
+        <task name="Nó de Desvio - (VCiv) Cumprimento de decisão" swimlane="Nó de Desvio - (VCiv) Cumprimento de decisão" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(VCiv) Processos suspensos" name="(VCiv) Processos suspensos"/>
         <transition to="(VCiv) Redistribuir" name="(VCiv) Redistribuir"/>
@@ -777,7 +777,7 @@
         <transition to="(VCiv) Processos devolvidos pela COJUD" name="(VCiv) Processos devolvidos pela COJUD"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos suspensos">
-        <task name="(VCiv) Processos suspensos" swimlane="Secretaria">
+        <task name="(VCiv) Processos suspensos" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -788,7 +788,7 @@
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardar Laudo Técnico">
-        <task name="(VCiv) Aguardar Laudo Técnico" swimlane="Secretaria">
+        <task name="(VCiv) Aguardar Laudo Técnico" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -803,7 +803,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Designar audiência - Fluxo antigo">
-        <task name="(VCiv) Designar audiência - Fluxo antigo" swimlane="Conciliação">
+        <task name="(VCiv) Designar audiência - Fluxo antigo" swimlane="Conciliação" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -823,7 +823,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="(VCiv) Junção em cumprimento de decisão"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Audiência designada">
-        <task name="(VCiv) Audiência designada" swimlane="Conciliação">
+        <task name="(VCiv) Audiência designada" swimlane="Conciliação" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -836,7 +836,7 @@
         <transition to="(VCiv) Controlar audiência" name="Encaminhar para o novo fluxo de controle de audiência"/>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Infojud ou Infoseg - Consultar">
-        <task name="(VCiv) Infojud ou Infoseg - Consultar" swimlane="Secretaria">
+        <task name="(VCiv) Infojud ou Infoseg - Consultar" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -864,7 +864,7 @@
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar e sair da tarefa"/>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Aviso CEJUSC">
-        <task name="(VCiv) Aviso CEJUSC" swimlane="Secretaria">
+        <task name="(VCiv) Aviso CEJUSC" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>

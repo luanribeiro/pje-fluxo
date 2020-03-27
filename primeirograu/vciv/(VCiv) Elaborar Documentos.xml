@@ -23,6 +23,8 @@ Parâmetros
     <!-- NODES -->
     <end-state name="Término">
         <event type="node-enter">
+            <action expression="#{ entityManager.createNativeQuery('select count(1) from client.vs_situacao_processo_new where nm_fluxo = \'(VCiv) Elaborar Documentos\' and id_processo_trf = '.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult() &gt; 1 ? '' : ( processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), 'pje:tjrn:fluxo:var:sair_tarefa_expedir_documentos', true, false, true) )}"/>
+    <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>

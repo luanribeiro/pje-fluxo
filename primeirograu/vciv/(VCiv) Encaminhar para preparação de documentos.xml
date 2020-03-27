@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Encaminhar para preparação de documentos">
+    <description><![CDATA[.......]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" priority="3"/>
+        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(VCiv) Informar quantidade de documentos">
+        <task name="(VCiv) Informar quantidade de documentos" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="quantidadeDocumentos" mapped-name="number:quantidadeDocumentos" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos" name="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(VCiv) Apagar variaveis de fluxo" name="Cancelar e sair da tarefa"/>
+        <transition to="(VCiv) Quantidade de documentos está vazio?" name="Enviar para elaboração de documentos"/>
+        <event type="task-start">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:quantDoc', 0)}"/>
+        </event>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar e sair da tarefa')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <decision expression="#{(not empty tramitacaoProcessualService.recuperaVariavel('quantidadeDocumentos') and tramitacaoProcessualService.recuperaVariavel('quantidadeDocumentos') != 0 and tramitacaoProcessualService.recuperaVariavel('quantidadeDocumentos') &lt; 100) ? '(VCiv) Enviar para elaboração de documentos?' : '(VCiv) Informar quantidade de documentos'}" name="(VCiv) Quantidade de documentos está vazio?">
+        <transition to="(VCiv) Informar quantidade de documentos" name="(VCiv) Informar quantidade de documentos"/>
+        <transition to="(VCiv) Enviar para elaboração de documentos?" name="(VCiv) Enviar para elaboração de documentos?"/>
+    </decision>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:quantDoc') == (tramitacaoProcessualService.recuperaVariavel('quantidadeDocumentos') ) ? '(VCiv) Aguardando expedição de outros documentos': '(VCiv) Encaminhar para elaboração de documentos'}" name="(VCiv) Enviar para elaboração de documentos?">
+        <transition to="(VCiv) Encaminhar para elaboração de documentos" name="(VCiv) Encaminhar para elaboração de documentos"/>
+        <transition to="(VCiv) Aguardando expedição de outros documentos" name="(VCiv) Aguardando expedição de outros documentos"/>
+    </decision>
+    <node name="(VCiv) Encaminhar para elaboração de documentos">
+        <transition to="(VCiv) Enviar para elaboração de documentos?" name="(VCiv) Enviar para elaboração de documentos?"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:quantDoc', tramitacaoProcessualService.recuperaVariavel('pje:fluxo:quantDoc')+1)}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_ELABDOC', processInstance.contextInstance.variables)}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="(VCiv) Aguardando expedição de outros documentos">
+        <task name="(VCiv) Aguardando expedição de outros documentos" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[Vari?veis:1 - AvisoLabel: O processo foi encaminhado para duas tarefas distintas. Para expedir documentos, o usuário deverá acessar (VCiv) Expedir Outros Documentos.]]></description>
+        <transition to="(VCiv) Informar quantidade de documentos" name="Expedir outro(s) documentos(s)"/>
+        <transition to="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos" name="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Encaminhar para análise de secretaria"/>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:fluxo:var:sair_tarefa_expedir_documentos', 'true')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransitino', 'Encaminhar para análise de secretaria')}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:quantDoc')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('quantidadeDocumentos')}"/>
+        </event>
+    </task-node>
+    <node name="(VCiv) Apagar variaveis de fluxo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:quantDoc')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('quantidadeDocumentos')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos">
+        <task name="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(VCiv) Informar quantidade de documentos" name="(VCiv) Informar quantidade de documentos"/>
+        <transition to="(VCiv) Aguardando expedição de outros documentos" name="(VCiv) Aguardando expedição de outros documentos"/>
+    </task-node>
+    <process-state name="(VCiv) Deslocar secretaria unificada">
+        <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
+        <transition to="(VCiv) Informar quantidade de documentos" name="(VCiv) Informar quantidade de documentos"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
+            <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ in (\'pje:fluxo:deslocamento:orgaoCargoDestino,pje:fluxo:deslocamento:orgaoDestino\') order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
+        </event>
+    </process-state>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
