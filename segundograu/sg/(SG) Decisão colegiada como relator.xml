@@ -170,7 +170,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Voto, relatório e ementa - VALIDAR">
-        <task name="(SG) Voto, relatório e ementa - VALIDAR" swimlane="Magistrado" priority="4">
+        <task name="(SG) Voto, relatório e ementa - VALIDAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoColegiado" mapped-name="frame:WEB-INF_xhtml_flx_votacaoColegiado" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -409,7 +409,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Retirar aptidão para julgamento" name="retiradoJulgamento"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Retirado de pauta - ANALISAR">
-        <task name="(SG) Retirado de pauta - ANALISAR" swimlane="Magistrado" priority="4">
+        <task name="(SG) Retirado de pauta - ANALISAR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_votacaoVogal" mapped-name="frame:WEB-INF_xhtml_flx_votacaoVogal" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
