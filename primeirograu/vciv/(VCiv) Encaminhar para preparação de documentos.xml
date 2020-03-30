@@ -66,7 +66,7 @@
         <transition to="Término" name="Encaminhar para análise de secretaria"/>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:fluxo:var:sair_tarefa_expedir_documentos', 'true')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransitino', 'Encaminhar para análise de secretaria')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Encaminhar para análise de secretaria')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:quantDoc')}"/>
