@@ -96,7 +96,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de urgência inicial">
-        <task name="(TR) Assinar decisão de urgência inicial" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de urgência inicial" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -157,7 +157,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de urgência">
-        <task name="(TR) Assinar decisão de urgência" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de urgência" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -221,7 +221,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão">
-        <task name="(TR) Assinar decisão" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -285,7 +285,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de agravo regimental">
-        <task name="(TR) Assinar decisão de agravo regimental" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de agravo regimental" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -349,7 +349,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de agravo interno">
-        <task name="(TR) Assinar decisão de agravo interno" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de agravo interno" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -413,7 +413,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de extinção">
-        <task name="(TR) Assinar decisão de extinção" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de extinção" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -477,7 +477,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de reativação">
-        <task name="(TR) Assinar decisão de reativação" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de reativação" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -541,7 +541,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar decisão de embargos de declaração">
-        <task name="(TR) Assinar decisão de embargos de declaração" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar decisão de embargos de declaração" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -621,7 +621,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar despacho inicial">
-        <task name="(TR) Assinar despacho inicial" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar despacho inicial" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -680,7 +680,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(TR) Assinar despacho">
-        <task name="(TR) Assinar despacho" swimlane="Magistrado" priority="3">
+        <task name="(TR) Assinar despacho" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
