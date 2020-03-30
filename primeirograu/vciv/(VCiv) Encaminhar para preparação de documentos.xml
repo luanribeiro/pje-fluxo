@@ -58,7 +58,7 @@
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[Variáveis:1 - AvisoLabel: O processo foi encaminhado para duas tarefas distintas. Para expedir documentos, o usuário deverá acessar "(VCiv) Expedir Outros Documentos".]]></description>
+        <description><![CDATA[Variáveis:1 - AvisoLabel: O processo foi encaminhado para duas tarefas distintas. Para expedir documentos, o usuário deverá acessar "(VCiv) Expedir outros documentos".]]></description>
         <transition to="(VCiv) Informar quantidade de documentos" name="Expedir outro(s) documentos(s)"/>
         <transition to="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos" name="Nó de Desvio - (VCiv) Encaminhar para preparação de documentos">
             <condition expression="#{true}"/>
