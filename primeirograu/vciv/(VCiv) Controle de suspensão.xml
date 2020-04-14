@@ -11,12 +11,38 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(VCiv) Suspender processo" name="(VCiv) Suspender processo"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(Vciv) Possui movimentação de suspensão pelo gabinete?" name="(Vciv) Possui movimentação de suspensão pelo gabinete?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.temMovimentoDoGrupo(49) ? '(VCiv) Suspender processo' : '(Vciv) Sem movimentação de suspensão do gabinete'}" name="(Vciv) Possui movimentação de suspensão pelo gabinete?">
+        <transition to="(VCiv) Suspender processo" name="(VCiv) Suspender processo"/>
+        <transition to="(Vciv) Sem movimentação de suspensão do gabinete" name="(Vciv) Sem movimentação de suspensão do gabinete"/>
+    </decision>
+    <task-node end-tasks="true" name="(Vciv) Sem movimentação de suspensão do gabinete">
+        <task name="(Vciv) Sem movimentação de suspensão do gabinete" swimlane="Nó de Desvio - (VCiv) Controle de suspensão" priority="3">
+            <controller>
+                <variable name="aviso_susp_sem_mov" mapped-name="textAlert:aviso_susp_sem_mov" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Cancelar e Sair da Tarefa"/>
+        <transition to="Nó de Desvio - (VCiv) Controle de suspensão" name="Nó de Desvio - (VCiv) Controle de suspensão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(Vciv) Enviar para concluso para decisão de suspensão" name="(Vciv) Enviar para concluso para decisão de suspensão"/>
+    </task-node>
+    <process-state name="(Vciv) Enviar para concluso para decisão de suspensão">
+        <sub-process name="(VCiv) Preparar Ato Judicial" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbc:decisao_suspensao')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao_suspensao', 'true')}"/>
+        </event>
+    </process-state>
     <task-node end-tasks="true" name="(VCiv) Suspender processo">
-        <task name="(VCiv) Suspender processo" swimlane="Secretaria">
+        <task name="(VCiv) Suspender processo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="vciv_cs_data_limite_suspensao" mapped-name="date:vciv_cs_data_limite_suspensao" access="read,write"/>
             </controller>
@@ -26,16 +52,16 @@
         <transition to="Nó de Desvio - (VCiv) Controle de suspensão" name="Nó de Desvio - (VCiv) Controle de suspensão">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('dls', tramitacaoProcessualService.recuperaVariavelTarefa('date:vciv_cs_data_limite_suspensao'))}"/>
+        </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('date:vciv_cs_data_limite_suspensao')}"/>
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
-        <event type="task-end">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('dls', tramitacaoProcessualService.recuperaVariavelTarefa('date:vciv_cs_data_limite_suspensao'))}"/>
-        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Confirmar suspensão do processo">
-        <task name="(VCiv) Confirmar suspensão do processo" swimlane="Secretaria">
+        <task name="(VCiv) Confirmar suspensão do processo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso_susp1" mapped-name="textAlert:aviso_susp1" access="read,write"/>
                 <variable name="aviso_susp2" mapped-name="textAlert:aviso_susp2" access="read,write"/>
@@ -53,7 +79,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos suspensos - art. 40">
-        <task name="(VCiv) Processos suspensos - art. 40" swimlane="Secretaria">
+        <task name="(VCiv) Processos suspensos - art. 40" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso_susp1" mapped-name="textAlert:aviso_susp1" access="read,write"/>
                 <variable name="aviso_susp2" mapped-name="textAlert:aviso_susp2" access="read,write"/>
@@ -64,15 +90,15 @@
         </transition>
         <transition to="(VCiv) Conclusão para decisão sobre encerramento da suspensão" name="Enviar concluso para decisão sobre encerramento da suspensão"/>
         <transition to="(VCiv) Lançar movimento de encerramento da suspensão" name="Encerrar suspensão do processo"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
-        </event>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cs:suspensao_art40', 'true')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos suspensos - parcelamento">
-        <task name="(VCiv) Processos suspensos - parcelamento" swimlane="Secretaria">
+        <task name="(VCiv) Processos suspensos - parcelamento" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso_susp1" mapped-name="textAlert:aviso_susp1" access="read,write"/>
                 <variable name="aviso_susp2" mapped-name="textAlert:aviso_susp2" access="read,write"/>
@@ -83,11 +109,11 @@
         </transition>
         <transition to="(VCiv) Conclusão para decisão sobre encerramento da suspensão" name="Enviar concluso para decisão sobre encerramento da suspensão"/>
         <transition to="(VCiv) Lançar movimento de encerramento da suspensão" name="Encerrar suspensão do processo"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
-        </event>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cs:suspensao_parcelamento', 'true')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('dls') != null  ? '(VCiv) Processos suspensos - com prazo' : '(VCiv) Processos suspensos - sem prazo'}" name="(VCiv) Houve data limite de suspensão?">
@@ -95,7 +121,7 @@
         <transition to="(VCiv) Processos suspensos - sem prazo" name="(VCiv) Processos suspensos - sem prazo"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Processos suspensos - com prazo">
-        <task name="(VCiv) Processos suspensos - com prazo" swimlane="Secretaria">
+        <task name="(VCiv) Processos suspensos - com prazo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso_susp1" mapped-name="textAlert:aviso_susp1" access="read,write"/>
                 <variable name="aviso_susp2" mapped-name="textAlert:aviso_susp2" access="read,write"/>
@@ -106,15 +132,15 @@
         </transition>
         <transition to="(VCiv) Conclusão para decisão sobre encerramento da suspensão" name="Enviar concluso para decisão sobre encerramento da suspensão"/>
         <transition to="(VCiv) Lançar movimento de encerramento da suspensão" name="Encerrar suspensão do processo"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
-        </event>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cs:suspensao_com_prazo', 'true')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Processos suspensos - sem prazo">
-        <task name="(VCiv) Processos suspensos - sem prazo" swimlane="Secretaria">
+        <task name="(VCiv) Processos suspensos - sem prazo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso_susp1" mapped-name="textAlert:aviso_susp1" access="read,write"/>
             </controller>
@@ -124,27 +150,27 @@
         </transition>
         <transition to="(VCiv) Conclusão para decisão sobre encerramento da suspensão" name="Enviar concluso para decisão sobre encerramento da suspensão"/>
         <transition to="(VCiv) Lançar movimento de encerramento da suspensão" name="Encerrar suspensão do processo"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
-        </event>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cs:suspensao_sem_prazo', 'true')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:suspenso')}"/>
         </event>
     </task-node>
     <process-state name="(VCiv) Conclusão para decisão sobre encerramento da suspensão">
         <sub-process name="(VCiv) Preparar Ato Judicial" binding="late"/>
         <transition to="(VCiv) Despachados sobre encerramento da suspensão" name="(VCiv) Despachados sobre encerramento da suspensão"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao', 'true')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao_generica', 'true')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbc:decisao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbc:decisao_generica')}"/>
         </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao', 'true')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao_generica', 'true')}"/>
+        </event>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Despachados sobre encerramento da suspensão">
-        <task name="(VCiv) Despachados sobre encerramento da suspensão" swimlane="Secretaria">
+        <task name="(VCiv) Despachados sobre encerramento da suspensão" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
@@ -175,7 +201,7 @@
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Controle de suspensão">
-        <task name="Nó de Desvio - (VCiv) Controle de suspensão" swimlane="Nó de Desvio - (VCiv) Controle de suspensão">
+        <task name="Nó de Desvio - (VCiv) Controle de suspensão" swimlane="Nó de Desvio - (VCiv) Controle de suspensão" priority="3">
             <controller>
                 <variable name="" mapped-name="null:" access="read,write"/>
             </controller>
@@ -188,12 +214,40 @@
         <transition to="Término" name="Término"/>
         <transition to="(VCiv) Despachados sobre encerramento da suspensão" name="(VCiv) Despachados sobre encerramento da suspensão"/>
         <transition to="(VCiv) Confirmar suspensão do processo" name="(VCiv) Confirmar suspensão do processo"/>
+        <transition to="(Vciv) Sem movimentação de suspensão do gabinete" name="(Vciv) Sem movimentação de suspensão do gabinete"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -202,40 +256,13 @@
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 
