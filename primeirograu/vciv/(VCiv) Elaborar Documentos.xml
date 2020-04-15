@@ -610,9 +610,13 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) Informa valor recuperado?">
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) SubProcesso - Aguardar devolução de ofício'}" name="(VCiv) Informa valor recuperado?">
         <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
+        <transition to="(VCiv) SubProcesso - Aguardar devolução de ofício" name="(VCiv) SubProcesso - Aguardar devolução de ofício"/>
+        <event type="node-leave">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:certidao', true)}"/>
+        </event>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Informar valor recuperado">
         <task name="(VCiv) Informar valor recuperado" swimlane="Secretaria" priority="3">
@@ -637,9 +641,9 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
             <action expression="#tramitacaoProcessualService.apagaVariavel('aviso_erro_valor_recuperado')"/>
         </event>
     </task-node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel(&quot;valor_recuperado&quot;).toString().matches(&quot;^\\d{1,3}(?:\\.\\d{3})*,\\d{2}$&quot;) ? '(VCiv) Junção em Elaborar Documentos':'(VCiv) Aviso valor inválido'}" name="(VCiv) Valor válido ?">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel(&quot;valor_recuperado&quot;).toString().matches(&quot;^\\d{1,3}(?:\\.\\d{3})*,\\d{2}$&quot;) ? '(VCiv) SubProcesso - Aguardar devolução de ofício':'(VCiv) Aviso valor inválido'}" name="(VCiv) Valor válido ?">
         <transition to="(VCiv) Aviso valor inválido" name="(VCiv) Aviso valor inválido"/>
+        <transition to="(VCiv) SubProcesso - Aguardar devolução de ofício" name="(VCiv) SubProcesso - Aguardar devolução de ofício"/>
     </decision>
     <node name="(VCiv) Aviso valor inválido">
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
