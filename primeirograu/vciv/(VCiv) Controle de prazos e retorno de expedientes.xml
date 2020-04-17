@@ -16,9 +16,13 @@
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(VCiv) É via ofício?" name="(VCiv) É via ofício?"/>
+        <transition to="(VCiv) É via Análise da Secretaria?" name="(VCiv) É via Análise da Secretaria?"/>
     </start-state>  
     <!-- NODES -->
+	<decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:controlar_retorno_expediente') ? '(VCiv) Controlar retorno de expediente' : '(VCiv) É via ofício?'}" name="(VCiv) É via Análise da Secretaria?">
+        <transition to="(VCiv) Controlar retorno de expediente" name="(VCiv) Controlar retorno de expediente"/>
+        <transition to="(VCiv) É via ofício?" name="(VCiv) É via ofício?"/>
+    </decision>
     <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:oficio') ? '(VCiv) Aguardando devolução de ofício' : '(VCiv) É via correios?'}" name="(VCiv) É via ofício?">
         <transition to="(VCiv) É via correios?" name="(VCiv) É via correios?"/>
         <transition to="(VCiv) Aguardando devolução de ofício" name="(VCiv) Aguardando devolução de ofício"/>
@@ -30,6 +34,9 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Aguardando resposta de ofício" name="Encarminhar para aguardar resposta de ofício"/>
+		<event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:oficio')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Aguardando resposta de ofício">
         <task name="(VCiv) Aguardando resposta de ofício" swimlane="Secretaria"/>
@@ -37,6 +44,9 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
+		<event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:oficio')}"/>
+        </event>
     </task-node>
     <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:correios') ? '(VCiv) Há expediente AR em aberto?' : '(VCiv) É via mandado?'}" name="(VCiv) É via correios?">
         <transition to="(VCiv) É via mandado?" name="(VCiv) É via mandado?"/>
