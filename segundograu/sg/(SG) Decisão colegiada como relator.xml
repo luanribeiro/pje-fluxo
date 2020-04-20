@@ -266,7 +266,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Sinalizar manualmente o julgamento" name="Encaminhar manualmente para preparação do acórdão">
-            <condition expression="#{sessaoPautaProcessoTrfManager.isProcessoJulgadoUltimaSessao(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')))}"/>
+            <condition expression="#{parametroUtil.getParametro(''pje:tjrn:processo:encaminhrarcordao'').contains('' ''.concat(tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).concat('' ''))}"/>
         </transition>
         <transition to="(SG) Pode solicitar inclusão em pauta?" name="Solicitar inclusão em pauta">
             <condition expression="#{not processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')).selecionadoPauta}"/>
