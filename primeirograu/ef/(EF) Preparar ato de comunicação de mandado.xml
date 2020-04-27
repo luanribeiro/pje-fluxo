@@ -29,12 +29,12 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(EF) Mandado genérico - EXPEDIR" name="(EF) Mandado genérico - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(EF) Mandado genérico - EXPEDIR">
-        <task name="(EF) Mandado genérico - EXPEDIR" swimlane="Magistrado">
+        <task name="(EF) Mandado genérico - EXPEDIR" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_prepararExpediente" mapped-name="frame:Processo_Fluxo_prepararExpediente" access="read,write"/>
                 <variable name="Aviso1" mapped-name="textAlert:Aviso1" access="read,write"/>
@@ -67,6 +67,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         <transition to="Nó de Desvio - (EF) Preparar ato de comunicação de mandado" name="Nó de Desvio - (EF) Preparar ato de comunicação de mandado">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="(EF) Apagar variáveis do fluxo" name="Finalizar e sair da tarefa"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
@@ -95,7 +96,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado genérico [chefe de secretaria] - ASSINAR">
-        <task name="(EF) Mandado genérico [chefe de secretaria] - ASSINAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico [chefe de secretaria] - ASSINAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_prepararExpediente" mapped-name="frame:Processo_Fluxo_prepararExpediente" access="read,write"/>
             </controller>
@@ -159,7 +160,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         <transition to="(EF) Lançar movimento de Expedição de Mandado" name="(EF) Lançar movimento de Expedição de Mandado"/>
     </decision>
     <task-node end-tasks="true" name="(EF) Mandado genérico [Central de mandados] - SELECIONAR">
-        <task name="(EF) Mandado genérico [Central de mandados] - SELECIONAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico [Central de mandados] - SELECIONAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_expedientes_centralmandados" mapped-name="frame:Processo_Fluxo_expedientes_centralmandados" access="read,write"/>
             </controller>
@@ -187,7 +188,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </node>
     <task-node end-tasks="true" name="(EF) Mandado genérico pendente de devolução - AGUARDAR">
-        <task name="(EF) Mandado genérico pendente de devolução - AGUARDAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico pendente de devolução - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
             </controller>
@@ -225,7 +226,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado genérico pendente de devolução [030 dias] - AGUARDAR">
-        <task name="(EF) Mandado genérico pendente de devolução [030 dias] - AGUARDAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico pendente de devolução [030 dias] - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
             </controller>
@@ -263,7 +264,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado genérico pendente de devolução [060 dias] - AGUARDAR">
-        <task name="(EF) Mandado genérico pendente de devolução [060 dias] - AGUARDAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico pendente de devolução [060 dias] - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
             </controller>
@@ -301,7 +302,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandado genérico pendente de devolução [100 dias ou mais] - AGUARDAR">
-        <task name="(EF) Mandado genérico pendente de devolução [100 dias ou mais] - AGUARDAR" swimlane="Secretaria">
+        <task name="(EF) Mandado genérico pendente de devolução [100 dias ou mais] - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
             </controller>
@@ -334,7 +335,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(EF) Mandados genéricos devolvidos - ANALISAR">
-        <task name="(EF) Mandados genéricos devolvidos - ANALISAR" swimlane="Secretaria">
+        <task name="(EF) Mandados genéricos devolvidos - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
             </controller>
@@ -375,7 +376,7 @@ Magistrado   Corregedoria  Magistrado Corregedor]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (EF) Preparar ato de comunicação de mandado">
-        <task name="Nó de Desvio - (EF) Preparar ato de comunicação de mandado" swimlane="Nó de Desvio - (EF) Preparar ato de comunicação de mandado"/>
+        <task name="Nó de Desvio - (EF) Preparar ato de comunicação de mandado" swimlane="Nó de Desvio - (EF) Preparar ato de comunicação de mandado" priority="3"/>
         <transition to="(EF) Mandado genérico - EXPEDIR" name="(EF) Mandado genérico - EXPEDIR"/>
         <transition to="(EF) Mandado genérico [chefe de secretaria] - ASSINAR" name="(EF) Mandado genérico [chefe de secretaria] - ASSINAR"/>
         <transition to="(EF) Mandado genérico [Central de mandados] - SELECIONAR" name="(EF) Mandado genérico [Central de mandados] - SELECIONAR"/>
