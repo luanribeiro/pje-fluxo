@@ -16,7 +16,7 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Núcleo de Conciliação e Mediação">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,8:1338')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">

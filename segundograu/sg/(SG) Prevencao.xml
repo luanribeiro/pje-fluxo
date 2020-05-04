@@ -7,10 +7,10 @@
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907')}" actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Prevencao">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469,8:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
