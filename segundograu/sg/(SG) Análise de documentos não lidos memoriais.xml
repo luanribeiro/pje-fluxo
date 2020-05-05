@@ -4,7 +4,7 @@
     <description><![CDATA[.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5899,599:1469')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5899,599:1469,5:5899,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
