@@ -14,10 +14,14 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="solicitante"/>
-        <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ? '(SG) É urgencia?' : 'Término') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
+        <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
+        <transition to="Término" name="Término"/>
+    </decision>
     <decision expression="#{ tramitacaoProcessualService.temUrgencia() == true and !(parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':'))) ? '(SG) Prevenção [Urgente] - ANALISAR' : '(SG) Prevenção - ANALISAR' }" name="(SG) É urgencia?">
         <transition to="(SG) Prevenção - ANALISAR" name="(SG) Prevenção - ANALISAR"/>
         <transition to="(SG) Prevenção [Urgente] - ANALISAR" name="(SG) Prevenção [Urgente] - ANALISAR"/>
