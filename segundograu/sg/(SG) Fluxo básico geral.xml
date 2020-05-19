@@ -9,6 +9,17 @@ Raia        Localização              Papel
 Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
 Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>  
     <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (SG) Fluxo básico geral"><?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo básico geral">
+    <description><![CDATA[Código do fluxo: SG_FBG
+.
+Descrição: Fluxo básico geral de entrada dos processos.
+
+Raia        Localização              Papel
+Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
+Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>  
+    <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (SG) Fluxo básico geral">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
@@ -236,6 +247,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Gravar variavel fluxo unico - Devolver ao apoio do relator de origem" name="17 - Devolver ao apoio do relator de origem">
             <condition expression="#{!empty tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj')}"/>
         </transition>
+        <transition to="(SG) Gravar variavel fluxo unico - Encaminhar para analise de prevencao" name="18 - Encaminhar para Análise de Prevenção"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>
@@ -604,6 +616,12 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento à COJUD')}"/>
         </event>
     </node>
+    <node name="(SG) Gravar variavel fluxo unico - Encaminhar para analise de prevencao">
+        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhar para análise de prevenção')}"/>
+        </event>
+    </node>
     <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa not in ('(SG) Secretaria - ANALISAR','(SG) Voto [não relator] - VOTAR','(SG) Sessão de julgamento [outros julgadores] - AGUARDAR','(SG) Voto [não relator] - MINUTAR','(SG) Voto [não relator] - CONFIRMAR','(SG) Voto [não relator] - VALIDAR','(SG) Voto [não relator] - ASSINAR') AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('sg:paj:sub_fluxo_unico')}" name="(SG) Pode ir para subfluxo único?">
         <transition to="(SG) Controlar suspensão de processo" name="(SG) Controlar suspensão de processo"/>
         <transition to="(SG) Preparação de redistribuição" name="(SG) Preparação de redistribuição"/>
@@ -626,6 +644,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Retornar ao apoio do gabinete de origem" name="(SG) Retornar ao apoio do gabinete de origem"/>
         <transition to="(SG) Preparação de remessa para outro juízo" name="(SG) Preparação de remessa para outro juízo"/>
         <transition to="(SG) Encaminhamento à COJUD" name="(SG) Encaminhamento à COJUD"/>
+        <transition to="(SG) Encaminhar para análise de prevenção" name="(SG) Encaminhar para análise de prevenção"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:paj:sub_fluxo_unico')}"/>
         </event>
@@ -830,6 +849,16 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <process-state name="(SG) Encaminhamento à COJUD">
         <sub-process name="(SG) Encaminhamento à COJUD" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+    </process-state>
+    <process-state name="(SG) Encaminhar para análise de prevenção">
+        <sub-process name="(SG) Prevencao" binding="late"/>
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+        <event type="node-leave">
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('sg:prevencao:secretaria')}"/>
+        </event>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('sg:prevencao:secretaria', true)}"/>
+        </event>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Fluxo básico geral">
