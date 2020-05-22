@@ -22,28 +22,18 @@
     <task-node end-tasks="true" name="(VCiv) Sem movimentação de suspensão do gabinete">
         <task name="(VCiv) Sem movimentação de suspensão do gabinete" swimlane="Secretaria" priority="3">
             <controller>
-                <variable name="aviso_susp_sem_mov" mapped-name="textAlert:aviso_susp_sem_mov" access="read,write"/>
+                <variable name="aviso1_susp_sem_mov" mapped-name="textAlert:aviso1_susp_sem_mov" access="read,write"/>
+                <variable name="aviso2_susp_sem_mov" mapped-name="textAlert:aviso2_susp_sem_mov" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[Variáveis:
 
-aviso_susp_sem_mov: Este processo não possui movimentação de suspensão informada pelo gabinete. Assim, encaminhe os autos à tarefa de Concluso para Decisão de Suspensão para o Magistrado determinar a suspensão processual, informando a movimentação de suspensão adequada.]]></description>
+aviso_susp_sem_mov: A suspensão/sobrestamento do processo não poderá ser efetivado(a) até que haja Ato Judicial proferido pelo juiz competente com a movimentação correspondente. Sendo assim, o processo deve ser encaminhado para conclusão e, somente, após assinatura do ato, direcionado para a tarefa de suspensão.]]></description>
         <transition to="Término" name="Cancelar e Sair da Tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de suspensão" name="Nó de Desvio - (VCiv) Controle de suspensão">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Enviar para concluso para decisão de suspensão" name="(VCiv) Enviar para concluso para decisão de suspensão"/>
     </task-node>
-    <process-state name="(VCiv) Enviar para concluso para decisão de suspensão">
-        <sub-process name="(VCiv) Preparar Ato Judicial" binding="late"/>
-        <transition to="Término" name="Término"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbc:decisao_suspensao')}"/>
-        </event>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbc:decisao_suspensao', 'true')}"/>
-        </event>
-    </process-state>
     <task-node end-tasks="true" name="(VCiv) Suspender processo">
         <task name="(VCiv) Suspender processo" swimlane="Secretaria" priority="3">
             <controller>
