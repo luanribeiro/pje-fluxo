@@ -293,7 +293,7 @@ Parâmetros
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
         <event type="node-enter">
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('vciv:cpre:certidao', true)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:certidao', true)}"/>
         </event>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_outros_documentos') ? '(VCiv) Expedir outros documentos' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É outros documentos?">
