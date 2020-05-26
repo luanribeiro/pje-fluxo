@@ -48,12 +48,12 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:cpre:oficio')}"/>
         </event>
     </task-node>
-    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:certidao') ? '(VCiv) Aguardando certidão de trânsito em julgado' : '(VCiv) É via correios?'}" name="(VCiv) É via certidão?">
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('vciv:cpre:certidao') ? '(VCiv) Aguardar trânsito em julgado' : '(VCiv) É via correios?'}" name="(VCiv) É via certidão?">
         <transition to="(VCiv) É via correios?" name="(VCiv) É via correios?"/>
-        <transition to="(VCiv) Aguardando certidão de trânsito em julgado" name="(VCiv) Aguardando certidão de trânsito em julgado"/>
+        <transition to="(VCiv) Aguardar trânsito em julgado" name="(VCiv) Aguardar trânsito em julgado"/>
     </decision>
-    <task-node end-tasks="true" name="(VCiv) Aguardando certidão de trânsito em julgado">
-        <task name="(VCiv) Aguardando certidão de trânsito em julgado" swimlane="Secretaria" priority="3"/>
+    <task-node end-tasks="true" name="(VCiv) Aguardar trânsito em julgado">
+        <task name="(VCiv) Aguardar trânsito em julgado" swimlane="Secretaria" priority="3"/>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
@@ -259,7 +259,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
-        <transition to="(VCiv) Aguardando certidão de trânsito em julgado" name="Aguardando devolução de certidão de trânsito em julgado de trânsito em julgado"/>
+        <transition to="(VCiv) Aguardar trânsito em julgado" name="Aguardando devolução de certidão de trânsito em julgado de trânsito em julgado"/>
     </task-node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
@@ -278,7 +278,7 @@
         <transition to="(VCiv) Processos com prazos decorridos" name="(VCiv) Processos com prazos decorridos"/>
         <transition to="(VCiv) Aguardando devolução de carta precatória ou rogatória" name="(VCiv) Aguardando devolução de carta precatória ou rogatória"/>
         <transition to="(VCiv) Aguardando carta precatória ou rogatória" name="(VCiv) Aguardando carta precatória ou rogatória"/>
-        <transition to="(VCiv) Aguardando certidão de trânsito em julgado" name="(VCiv) Aguardando certidão de trânsito em julgado"/>
+        <transition to="(VCiv) Aguardar trânsito em julgado" name="(VCiv) Aguardar trânsito em julgado"/>
     </task-node>
     <decision expression="#{atoComunicacaoService.getAtosComunicacaoAbertos(processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))) &gt; 0 || processoParteExpedienteManager.getAtosComunicacaoSemPrazo(0, processoJudicialService.findById(org.jboss.seam.bpm.processInstance.contextInstance.getVariable('processo'))).size() &gt; 0 ? '(VCiv) Registrar devolução do AR' : '(VCiv) Controlar retorno de expediente'}" name="(VCiv) Há expediente em aberto?">
         <transition to="(VCiv) Registrar devolução do AR" name="(VCiv) Registrar devolução do AR"/>
