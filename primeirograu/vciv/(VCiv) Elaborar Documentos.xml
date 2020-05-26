@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Elaborar Documentos">
-    <description><![CDATA[Fluxo destinado a elaboração de documentos do tipo Alvará, Ofício e outros..
+    <description><![CDATA[Fluxo destinado a elaboração de documentos do tipo Alvará, Ofício e outros.
 Parâmetros
-1. pje:tjrn:classesValorRecuperado: Classes nas quais deve ser informado o valor recuperado.]]></description>  
+1. pje:tjrn:classesValorRecuperado: Classes nas quais deve ser informado o valor recuperado...]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,5:1338,8:5852,8:5853,6:5901')}"/>
@@ -288,6 +288,13 @@ Parâmetros
     <process-state name="(VCiv) SubProcesso - Aguardar devolução de ofício">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
         <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    </process-state>
+    <process-state name="(VCiv) SubProcesso - Aguardar trânsito em julgado">
+        <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
+        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('vciv:cpre:certidao', true)}"/>
+        </event>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_outros_documentos') ? '(VCiv) Expedir outros documentos' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É outros documentos?">
         <transition to="(VCiv) Expedir outros documentos" name="(VCiv) Expedir outros documentos"/>
@@ -610,9 +617,9 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) Informa valor recuperado?">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) SubProcesso - Aguardar trânsito em julgado'}" name="(VCiv) Informa valor recuperado?">
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
+        <transition to="(VCiv) SubProcesso - Aguardar trânsito em julgado" name="(VCiv) SubProcesso - Aguardar trânsito em julgado"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Informar valor recuperado">
         <task name="(VCiv) Informar valor recuperado" swimlane="Secretaria" priority="3">
