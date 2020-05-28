@@ -34,18 +34,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(SG) Preparação de despacho inicial' : '(SG) Tem pedido de urgência?'}" name="(SG) É apelação?">
         <transition to="(SG) Tem pedido de urgência?" name="(SG) Tem pedido de urgência?"/>
         <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
-        <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </decision>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:NaoPrevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(SG) Gravar variável de ato inicial dos Recursos inominados' : '(SG) Tem pedido de urgência?'}" name="(SG) É recurso inominado?">
-        <transition to="(SG) Tem pedido de urgência?" name="(SG) Tem pedido de urgência?"/>
-        <transition to="(SG) Gravar variável de ato inicial dos Recursos inominados" name="(SG) Gravar variável de ato inicial dos Recursos inominados"/>
-    </decision>
-    <node name="(SG) Gravar variável de ato inicial dos Recursos inominados">
-        <transition to="(SG) Preparação de voto, relatório e ementa" name="(SG) Preparação de voto, relatório e ementa"/>
-        <event type="node-enter">
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:RecIno_Inicial', true)}"/>
-        </event>
-    </node>
     <decision expression="#{tramitacaoProcessualService.temUrgencia() == true ? '(SG) Preparação de decisão de urgência inicial' : '(SG) Preparação de despacho inicial'}" name="(SG) Tem pedido de urgência?">
         <transition to="(SG) Preparação de decisão de urgência inicial" name="(SG) Preparação de decisão de urgência inicial"/>
         <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
