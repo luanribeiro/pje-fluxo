@@ -18,7 +18,7 @@
         <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:NaoPrevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ?  'Término' : '(SG) É urgencia?') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ?  'Término' : '(SG) É urgencia?') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
         <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
         <transition to="Término" name="Término"/>
     </decision>
@@ -27,7 +27,7 @@
         <transition to="(SG) Prevenção [Urgente] - ANALISAR" name="(SG) Prevenção [Urgente] - ANALISAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Prevenção - ANALISAR">
-        <task name="(SG) Prevenção - ANALISAR" swimlane="Assessoria" priority="3">
+        <task name="(SG) Prevenção - ANALISAR" swimlane="Assessoria">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -43,7 +43,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Prevenção [Urgente] - ANALISAR">
-        <task name="(SG) Prevenção [Urgente] - ANALISAR" swimlane="Assessoria" priority="3">
+        <task name="(SG) Prevenção [Urgente] - ANALISAR" swimlane="Assessoria">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -66,7 +66,7 @@
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Prevencao">
-        <task name="Nó de Desvio - (SG) Prevencao" swimlane="Nó de Desvio - (SG) Prevencao" priority="3"/>
+        <task name="Nó de Desvio - (SG) Prevencao" swimlane="Nó de Desvio - (SG) Prevencao"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Prevenção - ANALISAR" name="(SG) Prevenção - ANALISAR"/>
         <transition to="(SG) Prevenção [Urgente] - ANALISAR" name="(SG) Prevenção [Urgente] - ANALISAR"/>
