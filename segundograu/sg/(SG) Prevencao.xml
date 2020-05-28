@@ -18,7 +18,7 @@
         <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ?  'Término' : '(SG) É urgencia?') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ? '(SG) É urgencia?' : 'Término') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
         <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
         <transition to="Término" name="Término"/>
     </decision>
