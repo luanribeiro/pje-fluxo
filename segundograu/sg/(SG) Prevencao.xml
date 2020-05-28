@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Prevencao">
-    <description><![CDATA[Fluxo para analise de prevenção]]></description>  
+    <description><![CDATA[Fluxo para analise de prevenção.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="solicitante">
         <assignment actor-id="#{actor.id}"/>
@@ -18,7 +18,7 @@
         <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().jurisdicao.idJurisdicao == 2 ? (parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:NaoPrevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ?  'Término' : '(SG) É urgencia?') : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:NaoPrevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? 'Término' : '(SG) É urgencia?'}" name="(SG) É recurso inominado?">
         <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
         <transition to="Término" name="Término"/>
     </decision>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Preparar ato judicial">
-    <description><![CDATA[Código do fluxo: SG_PAJ_NOVO
+    <description><![CDATA[Código do fluxo: SG_PAJ_NOVO.
 
 Descrição: Fluxo destinado ao controle de atos judicias.]]></description>  
     <!-- SWIMLANES -->
@@ -10,11 +10,14 @@ Descrição: Fluxo destinado ao controle de atos judicias.]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial"/>
-        <transition to="(SG) Concluso para decisão?" name="(SG) Concluso para decisão?"/>
-        <transition to="Nó de Desvio - (SG) Preparar ato judicial" name="Nó de Desvio - (SG) Preparar ato judicial"/>
+        <task name="Tarefa inicial" priority="3"/>
+        <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:paj:RecIno_Inicial') == true ? '(SG) Preparação de despacho inicial' : '(SG) Concluso para decisão?'}" name="(SG) É recurso inominado?">
+        <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
+        <transition to="(SG) Concluso para decisão?" name="(SG) Concluso para decisão?"/>
+    </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:paj:decisao') == true ? '(SG) Lançar movimento conclusos para decisão' : '(SG) Concluso para despacho?'}" name="(SG) Concluso para decisão?">
         <transition to="(SG) Concluso para despacho?" name="(SG) Concluso para despacho?"/>
         <transition to="(SG) Lançar movimento conclusos para decisão" name="(SG) Lançar movimento conclusos para decisão"/>
@@ -125,7 +128,7 @@ Descrição: Fluxo destinado ao controle de atos judicias.]]></description>
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial">
-        <task name="Nó de Desvio - (SG) Preparar ato judicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial"/>
+        <task name="Nó de Desvio - (SG) Preparar ato judicial" swimlane="Nó de Desvio - (SG) Preparar ato judicial" priority="3"/>
         <transition to="Término" name="Término"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
