@@ -18,10 +18,10 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             Assessoria Segundo Grau  Assessor Geral]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907')}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907')}" actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Preparar ato judicial de despacho inicial">
         <assignment actor-id="#{actor.id}"/>
@@ -29,13 +29,9 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
-        <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
+        <transition to="(SG) Encaminhar para ato ordinatório à PGJ?" name="(SG) Encaminhar para ato ordinatório à PGJ?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:paj:RecIno_Inicial') == true ? '(SG) Encaminhar para preparação do voto, relatório e ementa' : '(SG) Encaminhar para ato ordinatório à PGJ?'}" name="(SG) É recurso inominado?">
-        <transition to="(SG) Encaminhar para preparação do voto, relatório e ementa" name="(SG) Encaminhar para preparação do voto, relatório e ementa"/>
-        <transition to="(SG) Encaminhar para ato ordinatório à PGJ?" name="(SG) Encaminhar para ato ordinatório à PGJ?"/>
-    </decision>
     <decision expression="#{(not empty tramitacaoProcessualService.recuperaVariavel('sg:aog:ato_ord_pgj')) ? '(SG) Expedir ato ordinatório à PGJ' : '(SG) Concluso para despacho inicial - MINUTAR'}" name="(SG) Encaminhar para ato ordinatório à PGJ?">
         <transition to="(SG) Concluso para despacho inicial - MINUTAR" name="(SG) Concluso para despacho inicial - MINUTAR"/>
         <transition to="(SG) Expedir ato ordinatório à PGJ" name="(SG) Expedir ato ordinatório à PGJ"/>
@@ -143,7 +139,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para despacho inicial - ASSINAR">
-        <task name="(SG) Concluso para despacho inicial - ASSINAR" swimlane="Magistrado" priority="3">
+        <task name="(SG) Concluso para despacho inicial - ASSINAR" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
