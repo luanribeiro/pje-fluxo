@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Prevencao">
-    <description><![CDATA[Fluxo para analise de prevenção]]></description>  
+    <description><![CDATA[Fluxo para analise de prevenção.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="solicitante">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('8:1338,602:1338')}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Prevencao">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469,8:1338,1342:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="solicitante"/>
-        <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="(SG) É da secretaria?" name="(SG) É da secretaria?"/>
     </start-state>  
     <!-- NODES -->
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('pje:fbg:prevencao') ? '(SG) Prevenção' : '(SG) É urgencia?'}" name="(SG) É da secretaria?">
+        <transition to="(SG) É urgencia?" name="(SG) É urgencia?"/>
+        <transition to="(SG) Prevenção" name="(SG) Prevenção"/>
+    </decision>
     <decision expression="#{ tramitacaoProcessualService.temUrgencia() == true and !(parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':'))) ? '(SG) Prevenção [Urgente] - ANALISAR' : '(SG) Prevenção - ANALISAR' }" name="(SG) É urgencia?">
         <transition to="(SG) Prevenção - ANALISAR" name="(SG) Prevenção - ANALISAR"/>
         <transition to="(SG) Prevenção [Urgente] - ANALISAR" name="(SG) Prevenção [Urgente] - ANALISAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Prevenção - ANALISAR">
-        <task name="(SG) Prevenção - ANALISAR" swimlane="Assessoria">
+        <task name="(SG) Prevenção - ANALISAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -38,8 +45,26 @@
             <action expression="#{ tramitacaoProcessualService.gravaVariavelTarefa( 'pje:flx:paginaExterna', parametroUtil.getParametro('pje:tjrn:pjeprevencao:link').concat('busca/').concat(authenticator.getUsuarioLogado().getLogin()).concat('/').concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso) ) }"/>
         </event>
     </task-node>
+    <task-node end-tasks="true" name="(SG) Prevenção">
+        <task name="(SG) Prevenção" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - (SG) Prevencao" name="Nó de Desvio - (SG) Prevencao">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbg:prevencao')}"/>
+        </event>
+        <event type="task-assign">
+            <action expression="#{ tramitacaoProcessualService.gravaVariavelTarefa( 'pje:flx:paginaExterna', parametroUtil.getParametro('pje:tjrn:pjeprevencao:link').concat('busca/').concat(authenticator.getUsuarioLogado().getLogin()).concat('/').concat(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso) ) }"/>
+        </event>
+    </task-node>
     <task-node end-tasks="true" name="(SG) Prevenção [Urgente] - ANALISAR">
-        <task name="(SG) Prevenção [Urgente] - ANALISAR" swimlane="Assessoria">
+        <task name="(SG) Prevenção [Urgente] - ANALISAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_paginaExterna" mapped-name="frame:WEB-INF_xhtml_flx_paginaExterna" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -62,10 +87,11 @@
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Prevencao">
-        <task name="Nó de Desvio - (SG) Prevencao" swimlane="Nó de Desvio - (SG) Prevencao"/>
+        <task name="Nó de Desvio - (SG) Prevencao" swimlane="Nó de Desvio - (SG) Prevencao" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Prevenção - ANALISAR" name="(SG) Prevenção - ANALISAR"/>
         <transition to="(SG) Prevenção [Urgente] - ANALISAR" name="(SG) Prevenção [Urgente] - ANALISAR"/>
+        <transition to="(SG) Prevenção" name="(SG) Prevenção"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
