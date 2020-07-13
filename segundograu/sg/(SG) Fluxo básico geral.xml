@@ -2,7 +2,7 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo básico geral">
     <description><![CDATA[Código do fluxo: SG_FBG
-.....
+.......
 Descrição: Fluxo básico geral de entrada dos processos.
 
 Raia        Localização              Papel
@@ -252,6 +252,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         </transition>
         <transition to="(SG) Conclusão para decisão da presidência" name="18 - Conclusão para decisão da presidência"/>
         <transition to="(SG) Conclusão para despacho da presidência" name="19 - Conclusão para despacho da presidência"/>
+        <transition to="(SG) Enviar para a Turma de Uniformização de Jurisprudência" name="20 - Enviar para a Turma de Uniformização de Jurisprudência"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>
@@ -899,7 +900,15 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Secretaria - ANALISAR" name="Cumprir despacho"/>
-    </task-node>  
+    </task-node>
+    <process-state name="(SG) Enviar para a Turma de Uniformização de Jurisprudência">
+        <sub-process name="(TUJ) Fluxo básico geral" binding="late"/>
+        <transition to="(SG) Processos devolvidos da TUJ" name="(SG) Processos devolvidos da TUJ"/>
+    </process-state>
+    <process-state name="(SG) Processos devolvidos da TUJ">
+        <sub-process name="(SG) Processos devolvidos pela TUJ" binding="late"/>
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+    </process-state>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
