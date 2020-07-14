@@ -137,7 +137,7 @@ avisoRetornar: Ao RETORNAR, esta intimação eletrônica não mais ocorrerá e o proc
         </event>
     </node>
     <process-state name="(VCiv) Informar DJe">
-        <sub-process name="(VCiv) Publicações no DJe" binding="late"/>
+        <sub-process name="(PG) Publicações no Dje" binding="late"/>
         <transition to="(VCiv) Controle de Prazo" name="(VCiv) Controle de Prazo"/>
     </process-state>
     <process-state name="(VCiv) Controle de Prazo">

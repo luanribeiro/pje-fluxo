@@ -60,10 +60,14 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:pac:intimar_mp', 'false')}"/>
         </event>
     </fork>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:publicar_dje') ? '(VCiv) Informar conteúdo DJe' : '(VCiv) Junção em Preparar Ato de Comunicação'}" name="(VCiv) É DJE?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:publicar_dje') ? '(PG) Publicações no Dje' : '(VCiv) Junção em Preparar Ato de Comunicação'}" name="(VCiv) É DJE?">
         <transition to="(VCiv) Junção em Preparar Ato de Comunicação" name="(VCiv) Junção em Preparar Ato de Comunicação"/>
-        <transition to="(VCiv) Informar conteúdo DJe" name="(VCiv) Informar conteúdo DJe"/>
+        <transition to="(PG) Publicações no Dje" name="(PG) Publicações no Dje"/>
     </decision>
+    <process-state name="(PG) Publicações no Dje">
+        <sub-process name="(PG) Publicações no Dje" binding="late"/>
+        <transition to="(VCiv) Separação em citação e(ou) intimação" name="(VCiv) Separação em citação e(ou) intimação"/>
+    </process-state>
     <join name="(VCiv) Junção em Preparar Ato de Comunicação">
         <transition to="(VCiv) Apagar variáveis do fluxo" name="Término"/>
     </join>
@@ -220,8 +224,8 @@
         </event>
     </decision>
     <decision expression="#{processoTrfHome.possuiCompetencia(3) || processoTrfHome.possuiCompetencia(10) ? '(VCiv) Separação em citação e(ou) intimação' : '(VCiv) Informar conteúdo DJe'}" name="(VCiv) É competência de Fazenda?">
-        <transition to="(VCiv) Informar conteúdo DJe" name="(VCiv) Informar conteúdo DJe"/>
         <transition to="(VCiv) Separação em citação e(ou) intimação" name="(VCiv) Separação em citação e(ou) intimação"/>
+        <transition to="(PG) Publicações no Dje" name="(PG) Publicações no Dje"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Informar conteúdo DJe">
         <task name="(VCiv) Informar conteúdo DJe" swimlane="Secretaria">
@@ -256,7 +260,6 @@
                 <variable name="Aviso_DJe" mapped-name="textAlert:Aviso_DJe" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Separação em citação e(ou) intimação" name="Sim"/>
         <transition to="Nó de Desvio - (VCiv) Preparar Ato de Comunicação" name="Nó de Desvio - (VCiv) Preparar Ato de Comunicação">
             <condition expression="#{true}"/>
         </transition>
@@ -283,7 +286,6 @@
         <transition to="(VCiv) Gravar Variáveis DJe" name="Enviar para publicação no DJe"/>
     </task-node>
     <node name="(VCiv) Gravar Variáveis DJe">
-        <transition to="(VCiv) Separação em citação e(ou) intimação" name="(VCiv) Separação em citação e(ou) intimação"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:publicar_dje') ? tramitacaoProcessualService.gravaVariavel('conteudo_dje_direto', tramitacaoProcessualService.recuperaVariavel('conteudo_dje_temp')) : tramitacaoProcessualService.gravaVariavel('conteudo_dje', tramitacaoProcessualService.recuperaVariavel('conteudo_dje_temp')) }"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('magistrado_dje', tramitacaoProcessualService.recuperaVariavel('magistrado_dje_temp'))}"/>
