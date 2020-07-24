@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Processos digitalizados">
-    <description><![CDATA[.]]></description>  
+    <description><![CDATA[Fluxo para a digitalização de processos.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Processos digitalizados">
         <assignment actor-id="#{actor.id}"/>
@@ -11,7 +11,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Lançar movimento de recebimento dos autos" name="(VCiv) Lançar movimento de recebimento dos autos"/>
     </start-state>  
     <!-- NODES -->
@@ -22,7 +22,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(VCiv) Autos recebidos de digitalização">
-        <task name="(VCiv) Autos recebidos de digitalização" swimlane="Secretaria">
+        <task name="(VCiv) Autos recebidos de digitalização" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -41,11 +41,51 @@
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote]]></description>
+        <transition to="Nó de Desvio - (VCiv) Processos digitalizados" name="Nó de Desvio - (VCiv) Processos digitalizados">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(VCiv) Autos devem ser retificados?" name="Processeguir para a próxima tarefa"/>
+    </task-node>
+    <decision expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:fluxo:digitalizacao:retificar:mariaFerroPeron')).setParameter('idProcesso', tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).getSingleResult() ? '(VCiv) Autos recebidos de digitalização - Retificar dados' : '(VCiv) Autos recebidos de digitalização - Concluir recebimento'}" name="(VCiv) Autos devem ser retificados?">
+        <transition to="(VCiv) Autos recebidos de digitalização - Retificar dados" name="(VCiv) Autos recebidos de digitalização - Retificar dados"/>
+        <transition to="(VCiv) Autos recebidos de digitalização - Concluir recebimento" name="(VCiv) Autos recebidos de digitalização - Concluir recebimento"/>
+    </decision>
+    <task-node end-tasks="true" name="(VCiv) Autos recebidos de digitalização - Concluir recebimento">
+        <task name="(VCiv) Autos recebidos de digitalização - Concluir recebimento" swimlane="Secretaria" priority="3"/>
+        <transition to="Nó de Desvio - (VCiv) Processos digitalizados" name="Nó de Desvio - (VCiv) Processos digitalizados">
+            <condition expression="#{true}"/>
+        </transition>
         <transition to="Término" name="Encaminhar para análise de secretaria"/>
+        <transition to="(VCiv) Encaminhamento para instância superior" name="Remeter processo à instância superior"/>
+    </task-node>
+    <task-node end-tasks="true" name="(VCiv) Autos recebidos de digitalização - Retificar dados">
+        <task name="(VCiv) Autos recebidos de digitalização - Retificar dados" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso_retificar_dados_1" mapped-name="textAlert:aviso_retificar_dados_1" access="read,write"/>
+                <variable name="aviso_consultar_saj_1" mapped-name="textAlert:aviso_consultar_saj_1" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[*Variáveis*
+
+1. Variável: aviso_retificar_dados_1
+   Label: Para prosseguir no fluxo, se faz necessário inserir os dados (CPF/CNPJ/OAB) corretos da(s) parte(s) assinalada(s) com o nome de Maria Ferro Peron. Por favor, realize o(s) ajuste(s) da(s) parte(s) através da opção “Retificar autuação”.
+
+2. Variável: aviso_consultar_saj_1
+   Label: Se for necessário, acesse o sistema SAJ para obter as informações necessárias da parte.]]></description>
+        <transition to="(VCiv) Autos recebidos de digitalização - Retificar autuação" name="Retificar autuação"/>
         <transition to="Nó de Desvio - (VCiv) Processos digitalizados" name="Nó de Desvio - (VCiv) Processos digitalizados">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Encaminhamento para instância superior" name="Remeter processo à instância superior"/>
+        <transition to="Término" name="Cancelar e sair da tarefa"/>
+    </task-node>
+    <task-node end-tasks="true" name="(VCiv) Autos recebidos de digitalização - Retificar autuação">
+        <task name="(VCiv) Autos recebidos de digitalização - Retificar autuação" swimlane="Secretaria" priority="3"/>
+        <transition to="Término" name="Encaminhar para análise de secretaria"/>
+        <transition to="(VCiv) Encaminhamento para instância superior" name="Remeter processo à instância superior"/>
+        <transition to="Nó de Desvio - (VCiv) Processos digitalizados" name="Nó de Desvio - (VCiv) Processos digitalizados">
+            <condition expression="#{true}"/>
+        </transition>
     </task-node>
     <process-state name="(VCiv) Encaminhamento para instância superior">
         <sub-process name="(VCiv) Cumprimento de decisão" binding="late"/>
@@ -59,9 +99,12 @@
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Processos digitalizados">
-        <task name="Nó de Desvio - (VCiv) Processos digitalizados" swimlane="Nó de Desvio - (VCiv) Processos digitalizados"/>
+        <task name="Nó de Desvio - (VCiv) Processos digitalizados" swimlane="Nó de Desvio - (VCiv) Processos digitalizados" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(VCiv) Autos recebidos de digitalização" name="(VCiv) Autos recebidos de digitalização"/>
+        <transition to="(VCiv) Autos recebidos de digitalização - Retificar dados" name="(VCiv) Autos recebidos de digitalização - Retificar dados"/>
+        <transition to="(VCiv) Autos recebidos de digitalização - Concluir recebimento" name="(VCiv) Autos recebidos de digitalização - Concluir recebimento"/>
+        <transition to="(VCiv) Autos recebidos de digitalização - Retificar autuação" name="(VCiv) Autos recebidos de digitalização - Retificar autuação"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
