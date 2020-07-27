@@ -19,7 +19,7 @@
         <transition to="(SG) É decisão para presidência?" name="(SG) É decisão para presidência?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ) ).getSingleResult() )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
@@ -104,7 +104,7 @@
         <transition to="(SG) Concluso para decisão da presidência" name="(SG) Concluso para decisão da presidência"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ) ).getSingleResult() )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
@@ -188,7 +188,7 @@
         <transition to="(SG) Concluso para despacho da presidência" name="(SG) Concluso para despacho da presidência"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ) ).getSingleResult() )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
