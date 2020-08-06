@@ -354,10 +354,16 @@
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Assinar ata de audiência pelo conciliador' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados audiência - conciliador?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
         <transition to="(VCiv) Assinar ata de audiência pelo conciliador" name="(VCiv) Assinar ata de audiência pelo conciliador"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+        </event>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Deslocar OJ origem magistrado' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados da audiência - magistrado ?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
         <transition to="(VCiv) Deslocar OJ origem magistrado" name="(VCiv) Deslocar OJ origem magistrado"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+        </event>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Informar movimentação' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados da audiência - ato judicial ?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
