@@ -228,6 +228,9 @@
             <condition expression="#{ util.eval(parametroUtil.getParametro('pje:tjrn:vciv:orgaoJulgadorRemessaEletronica')) }"/>
         </transition>
         <transition to="(VCiv) Encaminhar para instância superior - fisicamente" name="Encaminhar para instância superior - fisicamente"/>
+        <event type="task-start">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar envio à instância superior')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Encaminhar para instância superior - eletronicamente">
         <task name="(VCiv) Encaminhar para instância superior - eletronicamente" swimlane="Secretaria" priority="3">
