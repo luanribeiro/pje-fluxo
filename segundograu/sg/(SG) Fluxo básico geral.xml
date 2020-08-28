@@ -231,7 +231,10 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>
         <transition to="(SG) Gravar variavel fluxo unico - Devolver ao apoio do relator de origem" name="17 - Devolver ao apoio do relator de origem">
             <condition expression="#{!empty tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj')}"/>
         </transition>
-        <transition to="(SG) Gravar variavel fluxo unico - Encaminhar para análise de prevenção" name="18 - Encaminhar para análise de prevenção"/>
+        <transition to="(SG) Conclusão para decisão da presidência" name="18 - Conclusão para decisão da presidência"/>
+        <transition to="(SG) Conclusão para despacho da presidência" name="19 - Conclusão para despacho da presidência"/>
+        <transition to="(SG) Enviar para a Turma de Uniformização de Jurisprudência" name="20 - Enviar para a Turma de Uniformização de Jurisprudência"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Encaminhar para análise de prevenção" name="21 - Encaminhar para análise de prevenção"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>
@@ -833,7 +836,60 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <transition to="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR"/>
         <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
-    </task-node>  
+        <transition to="(SG) Despachados pela presidência" name="(SG) Despachados pela presidência"/>
+    </task-node>
+    <process-state name="(SG) Conclusão para decisão da presidência">
+        <sub-process name="(SG) Remessa para a presidência" binding="late"/>
+        <transition to="(SG) Tem certidão sem efeito?" name="(SG) Tem certidão sem efeito?"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:rempre:decisao_presidencia')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:rempre:decisao_presidencia','true')}"/>
+        </event>
+    </process-state>
+    <process-state name="(SG) Conclusão para despacho da presidência">
+        <sub-process name="(SG) Remessa para a presidência" binding="late"/>
+        <transition to="(SG) Tem certidão sem efeito?" name="(SG) Tem certidão sem efeito?"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:rempre:despacho_presidencia')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:rempre:despacho_presidencia','true')}"/>
+        </event>
+    </process-state>
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('pje:rempre:temcertidaosemefeito') ? '(SG) Secretaria - AGUARDAR' : '(SG) Despachados pela presidência'}" name="(SG) Tem certidão sem efeito?">
+        <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
+        <transition to="(SG) Despachados pela presidência" name="(SG) Despachados pela presidência"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:rempre:temcertidaosemefeito')}"/>
+        </event>
+    </decision>
+    <process-state name="(SG) Preparar comunicação da decisão inicial">
+        <sub-process name="(SG) Preparar ato de comunicação" binding="late"/>
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+    </process-state>
+    <task-node end-tasks="true" name="(SG) Despachados pela presidência">
+        <task name="(SG) Despachados pela presidência" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(SG) Preparar comunicação da decisão inicial" name="Preparar comunicação"/>
+        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(SG) Secretaria - ANALISAR" name="Cumprir despacho"/>
+    </task-node>
+    <process-state name="(SG) Enviar para a Turma de Uniformização de Jurisprudência">
+        <sub-process name="(TUJ) Fluxo básico geral" binding="late"/>
+        <transition to="(SG) Processos devolvidos da TUJ" name="(SG) Processos devolvidos da TUJ"/>
+    </process-state>
+    <process-state name="(SG) Processos devolvidos da TUJ">
+        <sub-process name="(SG) Processos devolvidos pela TUJ" binding="late"/>
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+    </process-state>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
