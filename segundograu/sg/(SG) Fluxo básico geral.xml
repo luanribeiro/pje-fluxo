@@ -2,11 +2,12 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo básico geral">
     <description><![CDATA[Código do fluxo: SG_FBG
-.
+.......
 Descrição: Fluxo básico geral de entrada dos processos.
+
 Raia        Localização              Papel
 Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
-Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>  
+Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (SG) Fluxo básico geral">
         <assignment actor-id="#{actor.id}"/>
@@ -101,91 +102,109 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
+
 1. Variável: Processo_Fluxo_visualizarDecisao
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Frame
+
 2. Variável: aviso1
    Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
    Escrita: Sim
    Obrig. Não
    Tipo: Aviso
+
 16. Variável: aviso2
    Label: #{tramitacaoProcessualService.recuperaVariavel('sg:fbg:aviso_secretaria_analisar') ? '' : tramitacaoProcessualService.recuperaVariavel('sg:fbg:aviso_secretaria_analisar')}
    Escrita: Sim
    Obrig. Não
    Tipo: Aviso
+
 3. Variável: sg_fbg_apensar_desapensar
    Label: Apensar / desapensar
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 4. Variável: sg_fbg_certificar_decurso_prazo
    Label: Certificar decurso de prazo
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 5. Variável: sg_fbg_certificar_transito_julgado
    Label: Certificar trânsito em julgado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 6. Variável: sg_fbg_encerrar_expediente
    Label: Encerrar expediente manualmente
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 7. Variável: sg_fbg_expedir_alvara
    Label: Expedir alvará
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 8. Variável: sg_fbg_expedir_carta
    Label: Expedir carta de ordem, precatória ou rogatória
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 9. Variável: sg_fbg_expedir_mandado
    Label: Expedir mandado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 10. Variável: sg_fbg_expedir_oficio
    Label: Expedir ofício
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 11. Variável: sg_fbg_expedir_outros_documentos
    Label: Expedir outros documentos
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 12. Variável: sg_fbg_intimar_citar
    Label: Intimar ou citar via sistema, correios ou edital
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 13. Variável: sg_fbg_intimar_citar_estado
    Label: Intimar ou citar Estado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 14. Variável: sg_fbg_intimar_citar_mp
    Label: Intimar ou citar Ministério Público
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 15. Variável: sg_fbg_retificar_tipo_documento
    Label: Retificar tipo de documento
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 16. Variável: sg_fbg_publicar_dje
    Label: Publicar no Diário da Justiça Eletrônico
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 17. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
@@ -325,81 +344,97 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
+
 1. Variável: Processo_Fluxo_visualizarDecisao
    Label: 
    Escrita: Sim
    Obrig. Não
    Tipo: Frame
+
 2. Variável: aviso1
    Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
    Escrita: Sim
    Obrig. Não
    Tipo: Aviso
+
 3. Variável: sg_fbg_apensar_desapensar
    Label: Apensar / desapensar
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 4. Variável: sg_fbg_certificar_decurso_prazo
    Label: Certificar decurso de prazo
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 5. Variável: sg_fbg_certificar_transito_julgado
    Label: Certificar trânsito em julgado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 6. Variável: sg_fbg_encerrar_expediente
    Label: Encerrar expediente manualmente
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 7. Variável: sg_fbg_expedir_alvara
    Label: Expedir alvará
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 8. Variável: sg_fbg_expedir_carta
    Label: Expedir carta de ordem, precatória ou rogatória
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 9. Variável: sg_fbg_expedir_mandado
    Label: Expedir mandado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 10. Variável: sg_fbg_expedir_oficio
    Label: Expedir ofício
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 11. Variável: sg_fbg_expedir_outros_documentos
    Label: Expedir outros documentos
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 12. Variável: sg_fbg_intimar_citar
    Label: Intimar ou citar via sistema, correios ou edital
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 13. Variável: sg_fbg_intimar_citar_estado
    Label: Intimar ou citar Estado
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 14. Variável: sg_fbg_intimar_citar_mp
    Label: Intimar ou citar Ministério Público
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 15. Variável: sg_fbg_retificar_tipo_documento
    Label: Retificar tipo de documento
    Escrita: Sim
    Obrig. Não
    Tipo: Checkbox
+
 16. Variável: sg_fbg_publicar_dje
    Label: Publicar no Diário da Justiça Eletrônico
    Escrita: Sim
@@ -758,11 +793,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral..]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
+
 1. Variável: aviso1
    Label: Processo recebido da análise de admissibilidade. Clique em Prosseguir para seguir normalmente no fluxo.
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso
+
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
