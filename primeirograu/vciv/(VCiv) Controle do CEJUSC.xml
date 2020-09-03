@@ -45,10 +45,7 @@ Aviso2 -> ATENÇÃO 02: Caso a intimação seja apenas para o advogado do polo ativo
 
 expressão p/ quando ativar parnamirim:
 
-#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("NATAL") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 105) :       (authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("MOSSOR") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 99) :  authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("PARNAMIRIM") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 110) : null)}]]>
-    
-
-</description>
+#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("NATAL") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 105) :       (authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("MOSSOR") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 99) :  authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains("PARNAMIRIM") ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 110) : null)}]]></description>
         <transition to="Nó de Desvio - (VCiv) Controle do CEJUSC" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
             <condition expression="#{true}"/>
         </transition>
@@ -57,8 +54,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Elaborar documento" name="Expedir Ato Ordinatório"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idTipoAudiencia', '23,24,25,21')}"/>
-            <action name="upd" expression="#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NATAL&quot;) ? (authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;FAZENDA&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 365) : tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 105)) : (authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;MOSSOR&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 99) :  authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;PARNAMIRIM&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 110) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;CAIC&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 268) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NOVOS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 310) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;FERROS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 309) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;JARDIM DE PIRANHAS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 318) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;AREIA BRANCA&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 355) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;ASSU&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 356) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;APODI&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 357) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;CEARÁ-MIRIM&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 358) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;MACAÍBA&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 359) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NOVA CRUZ&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 360) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;SANTA CRUZ&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 361) : 
-            authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;SÃO GONÇALO DO AMARANTE&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 362) : null)}"/>
+            <action name="upd" expression="#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NATAL&quot;) ?  ( authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;FAZENDA&quot;) || not empty tramitacaoProcessualService.recuperaVariavel('pje:tjrn:NaoEspecializado') ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 363) : tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 105)) :       (authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;MOSSOR&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 99) :  authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;PARNAMIRIM&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 110) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;CAIC&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 268) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NOVOS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 310) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;FERROS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 309) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;JARDIM DE PIRANHAS&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 318) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;AREIA BRANCA&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 355) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;ASSU&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 356) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;APODI&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 357) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;CEARÁ-MIRIM&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 358) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;MACAÍBA&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 359) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NOVA CRUZ&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 360) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;SANTA CRUZ&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 361) : authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;SÃO GONÇALO DO AMARANTE&quot;) ? tramitacaoProcessualService.gravaVariavelTarefa('pje:tjrn:idOrgaoJulgador', 362) : null)}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Análise do CEJUSC">
@@ -111,7 +107,7 @@ expressão p/ quando ativar parnamirim:
         </transition>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(CEJUSC) Separação preparação intimação')}"/>
-            <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,71')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,229,71')}"/>
             <action name="upd" expression="#{preparaAtoComunicacaoAction.setMeiosComunicacao('E,C,S,D,M,L,N,T')}"/>
         </event>
         <event type="node-enter">
@@ -133,7 +129,7 @@ expressão p/ quando ativar parnamirim:
         </transition>
         <event type="task-create">
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(CEJUSC) Separação preparação intimação')}"/>
-            <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,71')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,229,71')}"/>
             <action name="upd" expression="#{preparaAtoComunicacaoAction.setMeiosComunicacao('E,C,S,D,M,L,N,T')}"/>
         </event>
         <event type="node-enter">
@@ -598,13 +594,22 @@ expressão p/ quando ativar parnamirim:
 aviso2:A opção "CEJUSC" encaminhará o processo para a marcação de audiência de conciliação cível ou família, bem como mediação cível ou família.
 aviso3:A opção "CEJUSC - DPVAT" encaminhará o processo para a marcação de audiência de conciliação específica do DPVAT.
 aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realização de perícias referentes ao DPVAT.]]></description>
-        <transition to="(CEJUSC) Designar audiência" name="CEJUSC"/>
         <transition to="Nó de Desvio - (VCiv) Controle do CEJUSC" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(CEJUSC) É NATAL ?" name="CEJUSC - DPVAT"/>
         <transition to="(CEJUSC) É NATAL DPVAT PERÍCIA ?" name="CEJUSC - DPVAT - PERÍCIA"/>
+        <transition to="(CEJUSC) É CEJUSC SAÚDE?" name="CEJUSC SAÚDE">
+            <condition expression="#{authenticator.getOrgaoJulgadorAtual().getJurisdicao().getIdJurisdicao() == 8}"/>
+        </transition>
+        <transition to="(CEJUSC) Designar audiência" name="CEJUSC"/>
     </task-node>
+    <node name="(CEJUSC) É CEJUSC SAÚDE?">
+        <transition to="(CEJUSC) Designar audiência" name="CEJUSC SAÚDE"/>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:NaoEspecializado', true) }"/>
+        </event>
+    </node>
     <decision expression="#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;NATAL&quot;) || authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;MOSSOR&quot;) || authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;PARNAMIRIM&quot;) ? '(CEJUSC) Selecionar CEJUSC' : '(CEJUSC) Designar audiência'}" name="(CEJUSC) É Natal Mossoró Ou Parnamirim ?">
         <transition to="(CEJUSC) Selecionar CEJUSC" name="(CEJUSC) Selecionar CEJUSC"/>
         <transition to="(CEJUSC) Designar audiência" name="(CEJUSC) Designar audiência"/>
