@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo básico geral">
-    <description><![CDATA[Código do fluxo: SG_FBG
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Fluxo bÃ¡sico geral">
+    <description><![CDATA[CÃ³digo do fluxo: SG_FBG
 .......
-Descrição: Fluxo básico geral de entrada dos processos.
+DescriÃ§Ã£o: Fluxo bÃ¡sico geral de entrada dos processos.
 
-Raia        Localização              Papel
+Raia        LocalizaÃ§Ã£o              Papel
 Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
 Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (SG) Fluxo básico geral">
+    <swimlane name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5483,8:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="Início">
+    <start-state name="InÃ­cio">
         <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Direciona diretamente para secretaria?" name="(SG) Direciona diretamente para secretaria?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) Secretaria - ANALISAR' : '(SG) Acrescentar situação do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) Secretaria - ANALISAR' : '(SG) Acrescentar situaÃ§Ã£o do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
-        <transition to="(SG) Acrescentar situação do processo em andamento" name="(SG) Acrescentar situação do processo em andamento"/>
+        <transition to="(SG) Acrescentar situaÃ§Ã£o do processo em andamento" name="(SG) Acrescentar situaÃ§Ã£o do processo em andamento"/>
     </decision>
-    <node name="(SG) Acrescentar situação do processo em andamento">
-        <transition to="(SG) É apelação?" name="(SG) É apelação?"/>
+    <node name="(SG) Acrescentar situaÃ§Ã£o do processo em andamento">
+        <transition to="(SG) Ã‰ apelaÃ§Ã£o?" name="(SG) Ã‰ apelaÃ§Ã£o?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:andamento')}"/>
         </event>
     </node>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(SG) Preparação de despacho inicial' : '(SG) É recurso inominado?'}" name="(SG) É apelação?">
-        <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
-        <transition to="(SG) É recurso inominado?" name="(SG) É recurso inominado?"/>
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:Prevencao').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(SG) PreparaÃ§Ã£o de despacho inicial' : '(SG) Ã‰ recurso inominado?'}" name="(SG) Ã‰ apelaÃ§Ã£o?">
+        <transition to="(SG) PreparaÃ§Ã£o de despacho inicial" name="(SG) PreparaÃ§Ã£o de despacho inicial"/>
+        <transition to="(SG) Ã‰ recurso inominado?" name="(SG) Ã‰ recurso inominado?"/>
     </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ? '(SG) Lançar movimento concluso para julgamento' : '(SG) Tem pedido de urgência?'}" name="(SG) É recurso inominado?">
-        <transition to="(SG) Tem pedido de urgência?" name="(SG) Tem pedido de urgência?"/>
-        <transition to="(SG) Lançar movimento concluso para julgamento" name="(SG) Lançar movimento concluso para julgamento"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial == 460 ? '(SG) LanÃ§ar movimento concluso para julgamento' : '(SG) Tem pedido de urgÃªncia?'}" name="(SG) Ã‰ recurso inominado?">
+        <transition to="(SG) Tem pedido de urgÃªncia?" name="(SG) Tem pedido de urgÃªncia?"/>
+        <transition to="(SG) LanÃ§ar movimento concluso para julgamento" name="(SG) LanÃ§ar movimento concluso para julgamento"/>
     </decision>
-    <node name="(SG) Lançar movimento concluso para julgamento">
-        <transition to="(SG) Enviar para decisão colegiada" name="(SG) Enviar para decisão colegiada"/>
+    <node name="(SG) LanÃ§ar movimento concluso para julgamento">
+        <transition to="(SG) Enviar para decisÃ£o colegiada" name="(SG) Enviar para decisÃ£o colegiada"/>
         <event type="node-enter">
             <action name="upd" expression="#{preencherMovimento.deCodigo(51).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(36).lancarMovimento()}"/>
         </event>
     </node>
-    <process-state name="(SG) Enviar para decisão colegiada">
-        <sub-process name="(SG) Decisão colegiada como relator" binding="late"/>
+    <process-state name="(SG) Enviar para decisÃ£o colegiada">
+        <sub-process name="(SG) DecisÃ£o colegiada como relator" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <decision expression="#{tramitacaoProcessualService.temUrgencia() == true ? '(SG) Preparação de decisão de urgência inicial' : '(SG) Preparação de despacho inicial'}" name="(SG) Tem pedido de urgência?">
-        <transition to="(SG) Preparação de decisão de urgência inicial" name="(SG) Preparação de decisão de urgência inicial"/>
-        <transition to="(SG) Preparação de despacho inicial" name="(SG) Preparação de despacho inicial"/>
+    <decision expression="#{tramitacaoProcessualService.temUrgencia() == true ? '(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia inicial' : '(SG) PreparaÃ§Ã£o de despacho inicial'}" name="(SG) Tem pedido de urgÃªncia?">
+        <transition to="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia inicial" name="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia inicial"/>
+        <transition to="(SG) PreparaÃ§Ã£o de despacho inicial" name="(SG) PreparaÃ§Ã£o de despacho inicial"/>
     </decision>
-    <process-state name="(SG) Preparação de decisão de urgência inicial">
+    <process-state name="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia inicial">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -65,7 +65,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:decisao_urgencia_inicial', true)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de despacho inicial">
+    <process-state name="(SG) PreparaÃ§Ã£o de despacho inicial">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -101,158 +101,159 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
+        <description><![CDATA[*VariÃ¡veis*
 
-1. Variável: Processo_Fluxo_visualizarDecisao
+1. VariÃ¡vel: Processo_Fluxo_visualizarDecisao
    Label: 
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Frame
 
-2. Variável: aviso1
-   Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
+2. VariÃ¡vel: aviso1
+   Label: Marque a(s) opÃ§Ã£o(Ãµes) de cumprimento abaixo, em seguida, clique em "PrÃ³xima aÃ§Ã£o: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opÃ§Ãµes de cumprimento desmarcadas e escolha a "PrÃ³xima aÃ§Ã£o" desejada.
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Aviso
 
-16. Variável: aviso2
+16. VariÃ¡vel: aviso2
    Label: #{tramitacaoProcessualService.recuperaVariavel('sg:fbg:aviso_secretaria_analisar') ? '' : tramitacaoProcessualService.recuperaVariavel('sg:fbg:aviso_secretaria_analisar')}
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Aviso
 
-3. Variável: sg_fbg_apensar_desapensar
+3. VariÃ¡vel: sg_fbg_apensar_desapensar
    Label: Apensar / desapensar
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-4. Variável: sg_fbg_certificar_decurso_prazo
+4. VariÃ¡vel: sg_fbg_certificar_decurso_prazo
    Label: Certificar decurso de prazo
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-5. Variável: sg_fbg_certificar_transito_julgado
-   Label: Certificar trânsito em julgado
+5. VariÃ¡vel: sg_fbg_certificar_transito_julgado
+   Label: Certificar trÃ¢nsito em julgado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-6. Variável: sg_fbg_encerrar_expediente
+6. VariÃ¡vel: sg_fbg_encerrar_expediente
    Label: Encerrar expediente manualmente
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-7. Variável: sg_fbg_expedir_alvara
-   Label: Expedir alvará
+7. VariÃ¡vel: sg_fbg_expedir_alvara
+   Label: Expedir alvarÃ¡
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-8. Variável: sg_fbg_expedir_carta
-   Label: Expedir carta de ordem, precatória ou rogatória
+8. VariÃ¡vel: sg_fbg_expedir_carta
+   Label: Expedir carta de ordem, precatÃ³ria ou rogatÃ³ria
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-9. Variável: sg_fbg_expedir_mandado
+9. VariÃ¡vel: sg_fbg_expedir_mandado
    Label: Expedir mandado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-10. Variável: sg_fbg_expedir_oficio
-   Label: Expedir ofício
+10. VariÃ¡vel: sg_fbg_expedir_oficio
+   Label: Expedir ofÃ­cio
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-11. Variável: sg_fbg_expedir_outros_documentos
+11. VariÃ¡vel: sg_fbg_expedir_outros_documentos
    Label: Expedir outros documentos
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-12. Variável: sg_fbg_intimar_citar
+12. VariÃ¡vel: sg_fbg_intimar_citar
    Label: Intimar ou citar via sistema, correios ou edital
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-13. Variável: sg_fbg_intimar_citar_estado
+13. VariÃ¡vel: sg_fbg_intimar_citar_estado
    Label: Intimar ou citar Estado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-14. Variável: sg_fbg_intimar_citar_mp
-   Label: Intimar ou citar Ministério Público
+14. VariÃ¡vel: sg_fbg_intimar_citar_mp
+   Label: Intimar ou citar MinistÃ©rio PÃºblico
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-15. Variável: sg_fbg_retificar_tipo_documento
+15. VariÃ¡vel: sg_fbg_retificar_tipo_documento
    Label: Retificar tipo de documento
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-16. Variável: sg_fbg_publicar_dje
-   Label: Publicar no Diário da Justiça Eletrônico
+16. VariÃ¡vel: sg_fbg_publicar_dje
+   Label: Publicar no DiÃ¡rio da JustiÃ§a EletrÃ´nico
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-17. Variável: movimentacaoLote
+17. VariÃ¡vel: movimentacaoLote
    Label: 
    Escrita: Sim
-   Obrig. Não
-   Tipo: Habilitar Movimentação em Lote]]></description>
-        <transition to="Término" name="Término">
+   Obrig. NÃ£o
+   Tipo: Habilitar MovimentaÃ§Ã£o em Lote]]></description>
+        <transition to="TÃ©rmino" name="TÃ©rmino">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+        <transition to="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Lançar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s)"/>
+        <transition to="(SG) LanÃ§ar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s)"/>
         <transition to="(SG) Gravar variavel fluxo unico - Suspender o processo" name="02 - Suspender o processo"/>
         <transition to="(SG) Gravar variavel fluxo unico - Redistribuir" name="03 - Redistribuir"/>
         <transition to="(SG) Gravar variavel fluxo unico - Arquivar o processo" name="04 - Arquivar o processo"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Remeter para instância superior" name="05 - Remeter para instância superior"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Remeter para instÃ¢ncia superior" name="05 - Remeter para instÃ¢ncia superior"/>
         <transition to="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau" name="06 - Remeter para o primeiro grau">
             <condition expression="#{ parametroUtil.getParametro('pje:tjrn:remessa:pg:classeJudicial').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) }"/>
         </transition>
-        <transition to="(SG) Gravar variavel fluxo unico - Cancelar distribuição" name="07 - Cancelar distribuição"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Cancelar distribuiÃ§Ã£o" name="07 - Cancelar distribuiÃ§Ã£o"/>
         <transition to="(SG) Gravar variavel fluxo unico - Controlar retorno de expediente" name="08 - Controlar retorno de expediente">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Gravar variavel fluxo unico - Enviar concluso para decisão" name="08 - Enviar concluso para decisão"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Enviar concluso para decisão de urgência" name="09 - Enviar concluso para decisão de urgência"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o" name="08 - Enviar concluso para decisÃ£o"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o de urgÃªncia" name="09 - Enviar concluso para decisÃ£o de urgÃªncia"/>
         <transition to="(SG) Gravar variavel fluxo unico - Enviar concluso para despacho" name="10 - Enviar concluso para despacho"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Enviar para preparação do voto, relatório e ementa" name="11 - Enviar concluso para julgamento"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Enviar para preparaÃ§Ã£o do voto, relatÃ³rio e ementa" name="11 - Enviar concluso para julgamento"/>
         <transition to="(SG) Gravar variavel fluxo unico - Encaminhar processo para outro gabinete" name="12 - Encaminhar processo para outro gabinete">
             <condition expression="#{empty tramitacaoProcessualService.recuperaVariavel('sg:encgab:idOjOrigem')}"/>
         </transition>
         <transition to="(SG) Gravar variavel fluxo unico - Devolver ao relator de origem do encaminhamento" name="12 - Devolver ao relator de origem do encaminhamento">
             <condition expression="#{!empty tramitacaoProcessualService.recuperaVariavel('sg:encgab:idOjOrigem')}"/>
         </transition>
-        <transition to="(SG) Gravar variavel fluxo unico - Enviar para análise de admissibilidade" name="13 - Enviar para análise de admissibilidade">
+        <transition to="(SG) Gravar variavel fluxo unico - Enviar para anÃ¡lise de admissibilidade" name="13 - Enviar para anÃ¡lise de admissibilidade">
             <condition expression="#{empty tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj') and !orgaoJulgadorManager.orgaosPorColegiado(authenticator.getOrgaoJulgadorColegiadoAtual()).contains(orgaoJulgadorService.findById(32))}"/>
         </transition>
         <transition to="(SG) Gravar variavel fluxo unico - Devolver ao relator de origem" name="13 - Devolver ao relator de origem">
             <condition expression="#{!empty tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj')}"/>
         </transition>
-        <transition to="(SG) Gravar variavel fluxo unico - Encaminhamento ao núcleo de conciliação e mediação" name="14 - Encaminhar ao núcleo de conciliação e mediação"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Remeter para outro juízo" name="15 - Remeter para outro juízo"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Encaminhamento à COJUD" name="16 - Encaminhar à COJUD"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o" name="14 - Encaminhar ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Remeter para outro juÃ­zo" name="15 - Remeter para outro juÃ­zo"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Encaminhamento Ã  COJUD" name="16 - Encaminhar Ã  COJUD"/>
         <transition to="(SG) Gravar variavel fluxo unico - Devolver ao apoio do relator de origem" name="17 - Devolver ao apoio do relator de origem">
             <condition expression="#{!empty tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj')}"/>
         </transition>
-        <transition to="(SG) Conclusão para decisão da presidência" name="18 - Conclusão para decisão da presidência"/>
-        <transition to="(SG) Conclusão para despacho da presidência" name="19 - Conclusão para despacho da presidência"/>
-        <transition to="(SG) Enviar para a Turma de Uniformização de Jurisprudência" name="20 - Enviar para a Turma de Uniformização de Jurisprudência"/>
+        <transition to="(SG) ConclusÃ£o para decisÃ£o da presidÃªncia" name="18 - ConclusÃ£o para decisÃ£o da presidÃªncia"/>
+        <transition to="(SG) ConclusÃ£o para despacho da presidÃªncia" name="19 - ConclusÃ£o para despacho da presidÃªncia"/>
+        <transition to="(SG) Enviar para a Turma de UniformizaÃ§Ã£o de JurisprudÃªncia" name="20 - Enviar para a Turma de UniformizaÃ§Ã£o de JurisprudÃªncia"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Encaminhar para anÃ¡lise de prevenÃ§Ã£o" name="21 - Encaminhar para anÃ¡lise de prevenÃ§Ã£o"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>
@@ -309,14 +310,14 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg_fbg_controlar_retorno_expediente')}"/>
         </event>
     </task-node>
-    <process-state name="(SG) Lançar fluxos">
-        <sub-process name="(SG) Lançador de fluxo" binding="late"/>
+    <process-state name="(SG) LanÃ§ar fluxos">
+        <sub-process name="(SG) LanÃ§ador de fluxo" binding="late"/>
         <transition to="(SG) Encaminhar para aguardar cumprimentos?" name="(SG) Encaminhar para aguardar cumprimentos?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:aviso_secretaria_analisar', 'Processo enviado com sucesso para as tarefas selecionadas.')}"/>
         </event>
     </process-state>
-    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa not in ('(SG) Secretaria - ANALISAR','(SG) Secretaria - AGUARDAR','(SG) Voto [não relator] - VOTAR','(SG) Sessão de gamento [outros julgadores] - AGUARDAR','(SG) Voto [não relator] - MINUTAR','(SG) Voto [não relator] - CONFIRMAR','(SG) Voto [não relator] - VALIDAR','(SG) Voto [não relator] - ASSINAR') AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Secretaria - AGUARDAR' : '(SG) Secretaria - ANALISAR'}" name="(SG) Encaminhar para aguardar cumprimentos?">
+    <decision expression="#{entityManager.createQuery(&quot;SELECT COUNT(*) FROM SituacaoProcesso AS s WHERE s.nomeTarefa not in ('(SG) Secretaria - ANALISAR','(SG) Secretaria - AGUARDAR','(SG) Voto [nÃ£o relator] - VOTAR','(SG) SessÃ£o de gamento [outros julgadores] - AGUARDAR','(SG) Voto [nÃ£o relator] - MINUTAR','(SG) Voto [nÃ£o relator] - CONFIRMAR','(SG) Voto [nÃ£o relator] - VALIDAR','(SG) Voto [nÃ£o relator] - ASSINAR') AND s.processoTrf.idProcessoTrf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Secretaria - AGUARDAR' : '(SG) Secretaria - ANALISAR'}" name="(SG) Encaminhar para aguardar cumprimentos?">
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
     </decision>
@@ -342,108 +343,108 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
                 <variable name="sg_fbg_publicar_dje" mapped-name="sim_nao:sg_fbg_publicar_dje" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
+        <description><![CDATA[*VariÃ¡veis*
 
-1. Variável: Processo_Fluxo_visualizarDecisao
+1. VariÃ¡vel: Processo_Fluxo_visualizarDecisao
    Label: 
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Frame
 
-2. Variável: aviso1
-   Label: Marque a(s) opção(ões) de cumprimento abaixo, em seguida, clique em "Próxima ação: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opções de cumprimento desmarcadas e escolha a "Próxima ação" desejada.
+2. VariÃ¡vel: aviso1
+   Label: Marque a(s) opÃ§Ã£o(Ãµes) de cumprimento abaixo, em seguida, clique em "PrÃ³xima aÃ§Ã£o: 01 - Prosseguir na(s) tarefa(s) acima selecionada(s)". Ou se preferir, deixe as opÃ§Ãµes de cumprimento desmarcadas e escolha a "PrÃ³xima aÃ§Ã£o" desejada.
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Aviso
 
-3. Variável: sg_fbg_apensar_desapensar
+3. VariÃ¡vel: sg_fbg_apensar_desapensar
    Label: Apensar / desapensar
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-4. Variável: sg_fbg_certificar_decurso_prazo
+4. VariÃ¡vel: sg_fbg_certificar_decurso_prazo
    Label: Certificar decurso de prazo
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-5. Variável: sg_fbg_certificar_transito_julgado
-   Label: Certificar trânsito em julgado
+5. VariÃ¡vel: sg_fbg_certificar_transito_julgado
+   Label: Certificar trÃ¢nsito em julgado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-6. Variável: sg_fbg_encerrar_expediente
+6. VariÃ¡vel: sg_fbg_encerrar_expediente
    Label: Encerrar expediente manualmente
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-7. Variável: sg_fbg_expedir_alvara
-   Label: Expedir alvará
+7. VariÃ¡vel: sg_fbg_expedir_alvara
+   Label: Expedir alvarÃ¡
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-8. Variável: sg_fbg_expedir_carta
-   Label: Expedir carta de ordem, precatória ou rogatória
+8. VariÃ¡vel: sg_fbg_expedir_carta
+   Label: Expedir carta de ordem, precatÃ³ria ou rogatÃ³ria
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-9. Variável: sg_fbg_expedir_mandado
+9. VariÃ¡vel: sg_fbg_expedir_mandado
    Label: Expedir mandado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-10. Variável: sg_fbg_expedir_oficio
-   Label: Expedir ofício
+10. VariÃ¡vel: sg_fbg_expedir_oficio
+   Label: Expedir ofÃ­cio
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-11. Variável: sg_fbg_expedir_outros_documentos
+11. VariÃ¡vel: sg_fbg_expedir_outros_documentos
    Label: Expedir outros documentos
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-12. Variável: sg_fbg_intimar_citar
+12. VariÃ¡vel: sg_fbg_intimar_citar
    Label: Intimar ou citar via sistema, correios ou edital
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-13. Variável: sg_fbg_intimar_citar_estado
+13. VariÃ¡vel: sg_fbg_intimar_citar_estado
    Label: Intimar ou citar Estado
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-14. Variável: sg_fbg_intimar_citar_mp
-   Label: Intimar ou citar Ministério Público
+14. VariÃ¡vel: sg_fbg_intimar_citar_mp
+   Label: Intimar ou citar MinistÃ©rio PÃºblico
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-15. Variável: sg_fbg_retificar_tipo_documento
+15. VariÃ¡vel: sg_fbg_retificar_tipo_documento
    Label: Retificar tipo de documento
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox
 
-16. Variável: sg_fbg_publicar_dje
-   Label: Publicar no Diário da Justiça Eletrônico
+16. VariÃ¡vel: sg_fbg_publicar_dje
+   Label: Publicar no DiÃ¡rio da JustiÃ§a EletrÃ´nico
    Escrita: Sim
-   Obrig. Não
+   Obrig. NÃ£o
    Tipo: Checkbox]]></description>
         <transition to="(SG) Secretaria - ANALISAR" name="Encaminhar para (SG) Secretaria - ANALISAR"/>
-        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+        <transition to="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Lançar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s)"/>
+        <transition to="(SG) LanÃ§ar fluxos" name="01 - Prosseguir na(s) tarefa(s) acima selecionada(s)"/>
         <transition to="(SG) Encaminhar para aguardar cumprimentos?" name="(SG) Encaminhar para aguardar cumprimentos?">
             <condition expression="#{true}"/>
         </transition>
@@ -508,141 +509,148 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         </event>
     </task-node>
     <node name="(SG) Gravar variavel fluxo unico - Suspender o processo">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Controlar suspensão de processo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Controlar suspensÃ£o de processo')}"/>
+        </event>
+    </node>
+    <node name="(SG) Gravar variavel fluxo unico - Encaminhar para anÃ¡lise de prevenÃ§Ã£o">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Prevencao')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Redistribuir">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de redistribuição')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de redistribuiÃ§Ã£o')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Arquivar o processo">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação para arquivamento')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o para arquivamento')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Remeter para instância superior">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Remeter para instÃ¢ncia superior">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de remessa para instância superior')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de remessa para instÃ¢ncia superior')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de remessa para o primeiro grau')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de remessa para o primeiro grau')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Cancelar distribuição">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Cancelar distribuiÃ§Ã£o">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Confirmar cancelamento da distribuição')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Confirmar cancelamento da distribuiÃ§Ã£o')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Controlar retorno de expediente">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Controle de retorno de expediente')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Enviar concluso para decisão">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de decisão genérica')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de decisÃ£o genÃ©rica')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Enviar concluso para decisão de urgência">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Enviar concluso para decisÃ£o de urgÃªncia">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de decisão de urgência')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Enviar concluso para despacho">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de despacho genérico')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de despacho genÃ©rico')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Enviar para preparação do voto, relatório e ementa">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Enviar para preparaÃ§Ã£o do voto, relatÃ³rio e ementa">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de voto, relatório e ementa')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de voto, relatÃ³rio e ementa')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Enviar para análise de admissibilidade">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Enviar para anÃ¡lise de admissibilidade">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de remessa para admissibilidade de recurso')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de remessa para admissibilidade de recurso')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Encaminhar processo para outro gabinete">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento para outro gabinete')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Devolver ao relator de origem do encaminhamento">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Retornar ao gabinete de origem do encaminhamento')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Devolver ao relator de origem">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Retornar ao gabinete de origem')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variavel fluxo unico - Devolver ao apoio do relator de origem">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Retornar ao apoio do gabinete de origem')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Encaminhamento ao núcleo de conciliação e mediação">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento ao núcleo de conciliação e mediação')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Remeter para outro juízo">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Remeter para outro juÃ­zo">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Preparação de remessa para outro juízo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) PreparaÃ§Ã£o de remessa para outro juÃ­zo')}"/>
         </event>
     </node>
-    <node name="(SG) Gravar variavel fluxo unico - Encaminhamento à COJUD">
-        <transition to="(SG) Pode ir para subfluxo único?" name="(SG) Pode ir para subfluxo único?"/>
+    <node name="(SG) Gravar variavel fluxo unico - Encaminhamento Ã  COJUD">
+        <transition to="(SG) Pode ir para subfluxo Ãºnico?" name="(SG) Pode ir para subfluxo Ãºnico?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento à COJUD')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:sub_fluxo_unico', '(SG) Encaminhamento Ã  COJUD')}"/>
         </event>
     </node>
-    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa not in ('(SG) Secretaria - ANALISAR','(SG) Voto [não relator] - VOTAR','(SG) Sessão de julgamento [outros julgadores] - AGUARDAR','(SG) Voto [não relator] - MINUTAR','(SG) Voto [não relator] - CONFIRMAR','(SG) Voto [não relator] - VALIDAR','(SG) Voto [não relator] - ASSINAR') AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('sg:paj:sub_fluxo_unico')}" name="(SG) Pode ir para subfluxo único?">
-        <transition to="(SG) Controlar suspensão de processo" name="(SG) Controlar suspensão de processo"/>
-        <transition to="(SG) Preparação de redistribuição" name="(SG) Preparação de redistribuição"/>
-        <transition to="(SG) Preparação para arquivamento" name="(SG) Preparação para arquivamento"/>
-        <transition to="(SG) Preparação de remessa para instância superior" name="(SG) Preparação de remessa para instância superior"/>
-        <transition to="(SG) Preparação de remessa para o primeiro grau" name="(SG) Preparação de remessa para o primeiro grau"/>
-        <transition to="(SG) Confirmar cancelamento da distribuição" name="(SG) Confirmar cancelamento da distribuição"/>
+    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa not in ('(SG) Secretaria - ANALISAR','(SG) Voto [nÃ£o relator] - VOTAR','(SG) SessÃ£o de julgamento [outros julgadores] - AGUARDAR','(SG) Voto [nÃ£o relator] - MINUTAR','(SG) Voto [nÃ£o relator] - CONFIRMAR','(SG) Voto [nÃ£o relator] - VALIDAR','(SG) Voto [nÃ£o relator] - ASSINAR') AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(SG) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('sg:paj:sub_fluxo_unico')}" name="(SG) Pode ir para subfluxo Ãºnico?">
+        <transition to="(SG) Controlar suspensÃ£o de processo" name="(SG) Controlar suspensÃ£o de processo"/>
+        <transition to="(SG) PreparaÃ§Ã£o de redistribuiÃ§Ã£o" name="(SG) PreparaÃ§Ã£o de redistribuiÃ§Ã£o"/>
+        <transition to="(SG) PreparaÃ§Ã£o para arquivamento" name="(SG) PreparaÃ§Ã£o para arquivamento"/>
+        <transition to="(SG) PreparaÃ§Ã£o de remessa para instÃ¢ncia superior" name="(SG) PreparaÃ§Ã£o de remessa para instÃ¢ncia superior"/>
+        <transition to="(SG) PreparaÃ§Ã£o de remessa para o primeiro grau" name="(SG) PreparaÃ§Ã£o de remessa para o primeiro grau"/>
+        <transition to="(SG) Confirmar cancelamento da distribuiÃ§Ã£o" name="(SG) Confirmar cancelamento da distribuiÃ§Ã£o"/>
         <transition to="(SG) Controle de retorno de expediente" name="(SG) Controle de retorno de expediente"/>
-        <transition to="(SG) Preparação de decisão genérica" name="(SG) Preparação de decisão genérica"/>
-        <transition to="(SG) Preparação de decisão de urgência" name="(SG) Preparação de decisão de urgência"/>
-        <transition to="(SG) Preparação de decisão de embargos de declaração" name="(SG) Preparação de decisão de embargos de declaração"/>
-        <transition to="(SG) Preparação de despacho genérico" name="(SG) Preparação de despacho genérico"/>
-        <transition to="(SG) Preparação de remessa para admissibilidade de recurso" name="(SG) Preparação de remessa para admissibilidade de recurso"/>
+        <transition to="(SG) PreparaÃ§Ã£o de decisÃ£o genÃ©rica" name="(SG) PreparaÃ§Ã£o de decisÃ£o genÃ©rica"/>
+        <transition to="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia" name="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia"/>
+        <transition to="(SG) PreparaÃ§Ã£o de decisÃ£o de embargos de declaraÃ§Ã£o" name="(SG) PreparaÃ§Ã£o de decisÃ£o de embargos de declaraÃ§Ã£o"/>
+        <transition to="(SG) PreparaÃ§Ã£o de despacho genÃ©rico" name="(SG) PreparaÃ§Ã£o de despacho genÃ©rico"/>
+        <transition to="(SG) PreparaÃ§Ã£o de remessa para admissibilidade de recurso" name="(SG) PreparaÃ§Ã£o de remessa para admissibilidade de recurso"/>
         <transition to="(SG) Retornar ao gabinete de origem" name="(SG) Retornar ao gabinete de origem"/>
         <transition to="(SG) Encaminhamento para outro gabinete" name="(SG) Encaminhamento para outro gabinete"/>
-        <transition to="(SG) Preparação de voto, relatório e ementa" name="(SG) Preparação de voto, relatório e ementa"/>
+        <transition to="(SG) PreparaÃ§Ã£o de voto, relatÃ³rio e ementa" name="(SG) PreparaÃ§Ã£o de voto, relatÃ³rio e ementa"/>
         <transition to="(SG) Retornar ao gabinete de origem do encaminhamento" name="(SG) Retornar ao gabinete de origem do encaminhamento"/>
         <transition to="(SG) Gravar mensagem nao pode entrar no fluxo" name="(SG) Gravar mensagem nao pode entrar no fluxo"/>
-        <transition to="(SG) Encaminhamento ao núcleo de conciliação e mediação" name="(SG) Encaminhamento ao núcleo de conciliação e mediação"/>
+        <transition to="(SG) Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o" name="(SG) Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o"/>
         <transition to="(SG) Retornar ao apoio do gabinete de origem" name="(SG) Retornar ao apoio do gabinete de origem"/>
-        <transition to="(SG) Preparação de remessa para outro juízo" name="(SG) Preparação de remessa para outro juízo"/>
-        <transition to="(SG) Encaminhamento à COJUD" name="(SG) Encaminhamento à COJUD"/>
+        <transition to="(SG) PreparaÃ§Ã£o de remessa para outro juÃ­zo" name="(SG) PreparaÃ§Ã£o de remessa para outro juÃ­zo"/>
+        <transition to="(SG) Encaminhamento Ã  COJUD" name="(SG) Encaminhamento Ã  COJUD"/>
+        <transition to="(SG) Prevencao" name="(SG) Prevencao"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:paj:sub_fluxo_unico')}"/>
         </event>
@@ -650,10 +658,10 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
     <node name="(SG) Gravar mensagem nao pode entrar no fluxo">
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:aviso_secretaria_analisar', 'O processo não pôde ser movimentado pois há ações sendo efetuadas em outras tarefas. Para movimentá-lo, é necessário finalizar os procedimentos nas demais caixas e deixá-lo, apenas, em &quot;(SG) Secretaria - ANALISAR&quot;.')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:aviso_secretaria_analisar', 'O processo nÃ£o pÃ´de ser movimentado pois hÃ¡ aÃ§Ãµes sendo efetuadas em outras tarefas. Para movimentÃ¡-lo, Ã© necessÃ¡rio finalizar os procedimentos nas demais caixas e deixÃ¡-lo, apenas, em &quot;(SG) Secretaria - ANALISAR&quot;.')}"/>
         </event>
     </node>
-    <process-state name="(SG) Preparação de decisão genérica">
+    <process-state name="(SG) PreparaÃ§Ã£o de decisÃ£o genÃ©rica">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -665,7 +673,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:urgente', false)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de decisão de urgência">
+    <process-state name="(SG) PreparaÃ§Ã£o de decisÃ£o de urgÃªncia">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -677,7 +685,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:urgente', true)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de decisão de embargos de declaração">
+    <process-state name="(SG) PreparaÃ§Ã£o de decisÃ£o de embargos de declaraÃ§Ã£o">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -689,7 +697,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:urgente', false)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de despacho genérico">
+    <process-state name="(SG) PreparaÃ§Ã£o de despacho genÃ©rico">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -701,20 +709,20 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:urgente', false)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de redistribuição">
-        <sub-process name="(SG) Redistribuição" binding="late"/>
+    <process-state name="(SG) PreparaÃ§Ã£o de redistribuiÃ§Ã£o">
+        <sub-process name="(SG) RedistribuiÃ§Ã£o" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Controlar suspensão de processo">
-        <sub-process name="(SG) Controle de suspensão" binding="late"/>
+    <process-state name="(SG) Controlar suspensÃ£o de processo">
+        <sub-process name="(SG) Controle de suspensÃ£o" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Preparação para arquivamento">
+    <process-state name="(SG) PreparaÃ§Ã£o para arquivamento">
         <sub-process name="(SG) Arquivamento" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Preparação de remessa para instância superior">
-        <sub-process name="(SG) Remessa para outra instância" binding="late"/>
+    <process-state name="(SG) PreparaÃ§Ã£o de remessa para instÃ¢ncia superior">
+        <sub-process name="(SG) Remessa para outra instÃ¢ncia" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:reminst:remessa_instancia_superior')}"/>
@@ -723,8 +731,8 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:reminst:remessa_instancia_superior', true)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de remessa para o primeiro grau">
-        <sub-process name="(SG) Remessa para outra instância" binding="late"/>
+    <process-state name="(SG) PreparaÃ§Ã£o de remessa para o primeiro grau">
+        <sub-process name="(SG) Remessa para outra instÃ¢ncia" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:reminst:remessa_primeiro_grau')}"/>
@@ -733,15 +741,15 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:reminst:remessa_primeiro_grau', true)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Confirmar cancelamento da distribuição">
-        <sub-process name="(SG) Cancelamento da distribuição" binding="late"/>
+    <process-state name="(SG) Confirmar cancelamento da distribuiÃ§Ã£o">
+        <sub-process name="(SG) Cancelamento da distribuiÃ§Ã£o" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
     <process-state name="(SG) Controle de retorno de expediente">
         <sub-process name="(SG) Controle de Retorno de Expediente" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Preparação de voto, relatório e ementa">
+    <process-state name="(SG) PreparaÃ§Ã£o de voto, relatÃ³rio e ementa">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -751,12 +759,12 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:julgamento', true)}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Preparação de remessa para admissibilidade de recurso">
+    <process-state name="(SG) PreparaÃ§Ã£o de remessa para admissibilidade de recurso">
         <sub-process name="(SG) Remessa para admissibilidade de recurso" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
     <node name="(SG) Retornar ao gabinete de origem">
-        <transition to="(SG) Preparação de decisão sobre reexame de acórdão" name="(SG) Preparação de decisão sobre reexame de acórdão"/>
+        <transition to="(SG) PreparaÃ§Ã£o de decisÃ£o sobre reexame de acÃ³rdÃ£o" name="(SG) PreparaÃ§Ã£o de decisÃ£o sobre reexame de acÃ³rdÃ£o"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('relatoria de origem').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(200002).lancarMovimento()}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj'), tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOjCargo'), tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOjColegiado'))}"/>
@@ -767,7 +775,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         </event>
     </node>
     <node name="(SG) Retornar ao apoio do gabinete de origem">
-        <transition to="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR"/>
+        <transition to="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('relatoria de origem').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(200003).lancarMovimento()}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOj'), tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOjCargo'), tramitacaoProcessualService.recuperaVariavel('sg:remadmrec:idOjColegiado'))}"/>
@@ -777,28 +785,28 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:remadmrec:idOjColegiado')}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR">
-        <task name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR">
+        <task name="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
+        <description><![CDATA[*VariÃ¡veis*
 
-1. Variável: aviso1
-   Label: Processo recebido da análise de admissibilidade. Clique em Prosseguir para seguir normalmente no fluxo.
+1. VariÃ¡vel: aviso1
+   Label: Processo recebido da anÃ¡lise de admissibilidade. Clique em Prosseguir para seguir normalmente no fluxo.
    Escrita: Sim
-   Obrig.: Não
+   Obrig.: NÃ£o
    Tipo: Aviso
 
-2. Variável: movimentacaoLote
+2. VariÃ¡vel: movimentacaoLote
    Label: 
    Escrita: Sim
-   Obrig.: Não
-   Tipo: Habilitar movimentação em lote]]></description>
+   Obrig.: NÃ£o
+   Tipo: Habilitar movimentaÃ§Ã£o em lote]]></description>
         <transition to="(SG) Secretaria - ANALISAR" name="Prosseguir"/>
-        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+        <transition to="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-end">
@@ -808,7 +816,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
-    <process-state name="(SG) Preparação de decisão sobre reexame de acórdão">
+    <process-state name="(SG) PreparaÃ§Ã£o de decisÃ£o sobre reexame de acÃ³rdÃ£o">
         <sub-process name="(SG) Preparar ato judicial" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
         <event type="node-leave">
@@ -824,9 +832,19 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         <sub-process name="(SG) Encaminhamento para outro gabinete" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Encaminhamento ao núcleo de conciliação e mediação">
+    <process-state name="(SG) Encaminhamento ao nÃºcleo de conciliaÃ§Ã£o e mediaÃ§Ã£o">
         <sub-process name="(SG) Controle do NCM" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+    </process-state>
+    <process-state name="(SG) Prevencao">
+        <sub-process name="(SG) Prevencao" binding="late"/>
+        <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbg:prevencao')}"/>
+        </event>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('pje:fbg:prevencao', true)}"/>
+        </event>
     </process-state>
     <node name="(SG) Retornar ao gabinete de origem do encaminhamento">
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
@@ -840,26 +858,26 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encgab:OrgJulgadorOrigem')}"/>
         </event>
     </node>
-    <process-state name="(SG) Preparação de remessa para outro juízo">
-        <sub-process name="(SG) Remessa para outro juízo" binding="late"/>
+    <process-state name="(SG) PreparaÃ§Ã£o de remessa para outro juÃ­zo">
+        <sub-process name="(SG) Remessa para outro juÃ­zo" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <process-state name="(SG) Encaminhamento à COJUD">
-        <sub-process name="(SG) Encaminhamento à COJUD" binding="late"/>
+    <process-state name="(SG) Encaminhamento Ã  COJUD">
+        <sub-process name="(SG) Encaminhamento Ã  COJUD" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (SG) Fluxo básico geral">
-        <task name="Nó de Desvio - (SG) Fluxo básico geral" swimlane="Nó de Desvio - (SG) Fluxo básico geral" priority="3"/>
-        <transition to="Término" name="Término"/>
+    <end-state name="TÃ©rmino"/>
+    <task-node end-tasks="true" name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
+        <task name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" swimlane="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" priority="3"/>
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
-        <transition to="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da análise de admissibilidade - ANALISAR"/>
+        <transition to="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR" name="(SG) Autos devolvidos da anÃ¡lise de admissibilidade - ANALISAR"/>
         <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
-        <transition to="(SG) Despachados pela presidência" name="(SG) Despachados pela presidência"/>
+        <transition to="(SG) Despachados pela presidÃªncia" name="(SG) Despachados pela presidÃªncia"/>
     </task-node>
-    <process-state name="(SG) Conclusão para decisão da presidência">
-        <sub-process name="(SG) Remessa para a presidência" binding="late"/>
-        <transition to="(SG) Tem certidão sem efeito?" name="(SG) Tem certidão sem efeito?"/>
+    <process-state name="(SG) ConclusÃ£o para decisÃ£o da presidÃªncia">
+        <sub-process name="(SG) Remessa para a presidÃªncia" binding="late"/>
+        <transition to="(SG) Tem certidÃ£o sem efeito?" name="(SG) Tem certidÃ£o sem efeito?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:rempre:decisao_presidencia')}"/>
         </event>
@@ -867,9 +885,9 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:rempre:decisao_presidencia','true')}"/>
         </event>
     </process-state>
-    <process-state name="(SG) Conclusão para despacho da presidência">
-        <sub-process name="(SG) Remessa para a presidência" binding="late"/>
-        <transition to="(SG) Tem certidão sem efeito?" name="(SG) Tem certidão sem efeito?"/>
+    <process-state name="(SG) ConclusÃ£o para despacho da presidÃªncia">
+        <sub-process name="(SG) Remessa para a presidÃªncia" binding="late"/>
+        <transition to="(SG) Tem certidÃ£o sem efeito?" name="(SG) Tem certidÃ£o sem efeito?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:rempre:despacho_presidencia')}"/>
         </event>
@@ -877,32 +895,32 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:rempre:despacho_presidencia','true')}"/>
         </event>
     </process-state>
-    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('pje:rempre:temcertidaosemefeito') ? '(SG) Secretaria - AGUARDAR' : '(SG) Despachados pela presidência'}" name="(SG) Tem certidão sem efeito?">
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('pje:rempre:temcertidaosemefeito') ? '(SG) Secretaria - AGUARDAR' : '(SG) Despachados pela presidÃªncia'}" name="(SG) Tem certidÃ£o sem efeito?">
         <transition to="(SG) Secretaria - AGUARDAR" name="(SG) Secretaria - AGUARDAR"/>
-        <transition to="(SG) Despachados pela presidência" name="(SG) Despachados pela presidência"/>
+        <transition to="(SG) Despachados pela presidÃªncia" name="(SG) Despachados pela presidÃªncia"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:rempre:temcertidaosemefeito')}"/>
         </event>
     </decision>
-    <process-state name="(SG) Preparar comunicação da decisão inicial">
-        <sub-process name="(SG) Preparar ato de comunicação" binding="late"/>
+    <process-state name="(SG) Preparar comunicaÃ§Ã£o da decisÃ£o inicial">
+        <sub-process name="(SG) Preparar ato de comunicaÃ§Ã£o" binding="late"/>
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
     </process-state>
-    <task-node end-tasks="true" name="(SG) Despachados pela presidência">
-        <task name="(SG) Despachados pela presidência" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(SG) Despachados pela presidÃªncia">
+        <task name="(SG) Despachados pela presidÃªncia" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="(SG) Preparar comunicação da decisão inicial" name="Preparar comunicação"/>
-        <transition to="Nó de Desvio - (SG) Fluxo básico geral" name="Nó de Desvio - (SG) Fluxo básico geral">
+        <transition to="(SG) Preparar comunicaÃ§Ã£o da decisÃ£o inicial" name="Preparar comunicaÃ§Ã£o"/>
+        <transition to="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral" name="NÃ³ de Desvio - (SG) Fluxo bÃ¡sico geral">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Secretaria - ANALISAR" name="Cumprir despacho"/>
     </task-node>
-    <process-state name="(SG) Enviar para a Turma de Uniformização de Jurisprudência">
-        <sub-process name="(TUJ) Fluxo básico geral" binding="late"/>
+    <process-state name="(SG) Enviar para a Turma de UniformizaÃ§Ã£o de JurisprudÃªncia">
+        <sub-process name="(TUJ) Fluxo bÃ¡sico geral" binding="late"/>
         <transition to="(SG) Processos devolvidos da TUJ" name="(SG) Processos devolvidos da TUJ"/>
     </process-state>
     <process-state name="(SG) Processos devolvidos da TUJ">
