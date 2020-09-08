@@ -171,7 +171,11 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Concluso para decisão sobre reanálise do acórdão - MINUTAR" name="(SG) Concluso para decisão sobre reanálise do acórdão - MINUTAR"/>
         <transition to="Término" name="Término"/>
     </decision>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar Ato Judicial de Decisão sobre Reanálise de Acórdão">
         <task name="Nó de Desvio - (SG) Preparar Ato Judicial de Decisão sobre Reanálise de Acórdão" swimlane="Nó de Desvio - (SG) Preparar Ato Judicial de Decisão sobre Reanálise de Acórdão"/>
         <transition to="Término" name="Término"/>

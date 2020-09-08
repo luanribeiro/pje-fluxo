@@ -184,7 +184,11 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:urgente', false)}"/>
         </event>
     </process-state>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação">
         <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação" swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre reativação" priority="3"/>
         <transition to="(SG) Concluso para decisão sobre reativação - MINUTAR" name="(SG) Concluso para decisão sobre reativação - MINUTAR"/>

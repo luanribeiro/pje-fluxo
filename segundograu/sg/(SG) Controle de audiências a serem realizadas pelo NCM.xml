@@ -168,7 +168,11 @@ Magistrado                        Gabinete Segundo Grau    Magistrado]]></descri
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:statusAudienciaSelecionada')}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM">
         <task name="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" swimlane="Nó de Desvio - (SG) Controle de audiências a serem realizadas pelo NCM" priority="3"/>
         <transition to="Término" name="Término"/>

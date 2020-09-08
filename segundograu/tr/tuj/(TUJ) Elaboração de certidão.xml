@@ -106,7 +106,11 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(107).lancarMovimento()}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Elaboração de certidão">
         <task name="Nó de Desvio - (TUJ) Elaboração de certidão" swimlane="Nó de Desvio - (TUJ) Elaboração de certidão" priority="3"/>
         <transition to="Término" name="Término"/>

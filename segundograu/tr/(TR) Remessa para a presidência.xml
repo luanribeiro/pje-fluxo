@@ -284,6 +284,9 @@
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:rempre:tiporetornominuta')}"/>
         </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TR) Remessa para a presidência">
         <task name="Nó de Desvio - (TR) Remessa para a presidência" swimlane="Nó de Desvio - (TR) Remessa para a presidência" priority="3"/>
