@@ -160,6 +160,9 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ato_ordinatorio_em_elaboracao')}"/>
         </event>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete">
         <task name="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete" swimlane="Nó de Desvio - (SG) Expedição de ato ordinatório de gabinete" priority="3"/>

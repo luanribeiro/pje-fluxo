@@ -155,7 +155,11 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_carta')}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
         <task name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" swimlane="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" priority="3"/>
         <transition to="Término" name="Término"/>
