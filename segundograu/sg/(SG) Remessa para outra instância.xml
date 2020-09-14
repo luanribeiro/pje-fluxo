@@ -140,7 +140,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </transition>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Remessa para o primeiro grau concluída')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90,108,109,110,190,194')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
