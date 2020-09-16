@@ -144,7 +144,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Remessa para o primeiro grau concluída')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90,194')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Remessa para o primeiro grau concluída">
@@ -175,7 +175,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Processo(s) recebido(s) do primeiro grau')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('Devolução de processo').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('Primeiro Grau').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Processo(s) recebido(s) do primeiro grau">
