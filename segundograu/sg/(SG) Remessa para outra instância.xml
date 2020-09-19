@@ -13,11 +13,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) É remessa para instância superior?" name="(SG) É remessa para instância superior?"/>
     </start-state>  
     <!-- NODES -->
@@ -26,7 +26,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) É remessa para o primeiro grau?" name="(SG) É remessa para o primeiro grau?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Remessa para instância superior - CONFIRMAR">
-        <task name="(SG) Remessa para instância superior - CONFIRMAR" swimlane="Secretaria"/>
+        <task name="(SG) Remessa para instância superior - CONFIRMAR" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (SG) Remessa para outra instância" name="Nó de Desvio - (SG) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
@@ -47,7 +47,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </event>
     </node>
     <task-node end-tasks="true" name="(SG) Remessa para o STF - AGUARDAR">
-        <task name="(SG) Remessa para o STF - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Remessa para o STF - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -70,15 +70,15 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Lançar movimento de recebido os autos" name="Registrar baixa do processo devolvido pelo STF"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Remessa para o STJ - AGUARDAR">
-        <task name="(SG) Remessa para o STJ - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Remessa para o STJ - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -101,11 +101,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="(SG) Lançar movimento de recebido os autos" name="Registrar baixa do processo devolvido pelo STJ"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <node name="(SG) Lançar movimento de recebido os autos">
@@ -119,7 +119,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="Término" name="Término"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Remessa para o primeiro grau - CONFIRMAR">
-        <task name="(SG) Remessa para o primeiro grau - CONFIRMAR" swimlane="Secretaria">
+        <task name="(SG) Remessa para o primeiro grau - CONFIRMAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Intercomunicacao_retornoProcesso" mapped-name="frame:Intercomunicacao_retornoProcesso" access="read,write"/>
             </controller>
@@ -138,17 +138,17 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Remessa para o primeiro grau concluída" name="(SG) Remessa para o primeiro grau concluída">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Remessa para o primeiro grau concluída')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('comboMotivoRemessa')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Remessa para o primeiro grau concluída')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('comboMotivoRemessa', '18;37,38,39,40,90,194')}"/>
+        </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Remessa para o primeiro grau concluída">
-        <task name="(SG) Remessa para o primeiro grau concluída" swimlane="Secretaria">
+        <task name="(SG) Remessa para o primeiro grau concluída" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
@@ -160,34 +160,78 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso]]></description>
-        <transition to="Término" name="Término">
-            <condition expression="#{true}"/>
-        </transition>
+        <transition to="Término" name="Finalizar tarefa"/>
         <transition to="Nó de Desvio - (SG) Remessa para outra instância" name="Nó de Desvio - (SG) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
+        <transition to="(SG) Processo(s) recebido(s) do primeiro grau" name="(SG) Processo(s) recebido(s) do primeiro grau">
+            <condition expression="#{true}"/>
+        </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Processo(s) recebido(s) do primeiro grau')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('Primeiro Grau').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(motivoRemessa.codigoGlossario).lancarMovimento()}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(SG) Processo(s) recebido(s) do primeiro grau">
+        <task name="(SG) Processo(s) recebido(s) do primeiro grau" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Finalizar tarefa"/>
+        <transition to="Nó de Desvio - (SG) Remessa para outra instância" name="Nó de Desvio - (SG) Remessa para outra instância">
+            <condition expression="#{true}"/>
+        </transition>
     </task-node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Remessa para outra instância">
-        <task name="Nó de Desvio - (SG) Remessa para outra instância" swimlane="Nó de Desvio - (SG) Remessa para outra instância"/>
+        <task name="Nó de Desvio - (SG) Remessa para outra instância" swimlane="Nó de Desvio - (SG) Remessa para outra instância" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Remessa para instância superior - CONFIRMAR" name="(SG) Remessa para instância superior - CONFIRMAR"/>
         <transition to="(SG) Remessa para o primeiro grau - CONFIRMAR" name="(SG) Remessa para o primeiro grau - CONFIRMAR"/>
         <transition to="(SG) Remessa para o STF - AGUARDAR" name="(SG) Remessa para o STF - AGUARDAR"/>
         <transition to="(SG) Remessa para o primeiro grau concluída" name="(SG) Remessa para o primeiro grau concluída"/>
         <transition to="(SG) Remessa para o STJ - AGUARDAR" name="(SG) Remessa para o STJ - AGUARDAR"/>
+        <transition to="(SG) Processo(s) recebido(s) do primeiro grau" name="(SG) Processo(s) recebido(s) do primeiro grau"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -196,40 +240,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event> 
 </process-definition>
