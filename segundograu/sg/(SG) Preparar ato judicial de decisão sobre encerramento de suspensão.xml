@@ -29,6 +29,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
+        <transition to="(SG) Concluso para decisão sobre encerramento de suspensão - MINUTAR" name="(SG) Concluso para decisão sobre encerramento de suspensão - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Concluso para decisão sobre encerramento de suspensão - MINUTAR">
