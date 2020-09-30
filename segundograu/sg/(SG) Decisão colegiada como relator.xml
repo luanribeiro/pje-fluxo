@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Decisão colegiada como relator">
-    <description><![CDATA[Código do fluxo: SG_DECCOLREL.
+    <description><![CDATA[Código do fluxo: SG_DECCOLREL..
 
 Descrição: Fluxo destinado a preparação de decisões colegiadas como relator do processo.
 
@@ -71,7 +71,9 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="Nó de Desvio - (SG) Decisão colegiada como relator" name="Nó de Desvio - (SG) Decisão colegiada como relator">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Registrar cancelamento de decisão colegiada" name="Alterar escolha do tipo de conclusão"/>
+        <transition to="(SG) Registrar cancelamento de decisão colegiada" name="Alterar escolha do tipo de conclusão">
+            <condition expression="#{not(tramitacaoProcessualService.recuperaVariavel('sg:paj:reexame') == true)}"/>
+        </transition>
         <transition to="(SG) Voto, relatório ou ementa vazio?" name="Encaminhar para confirmação">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:deccolrel:enviarMagistrado', false)}"/>
         </transition>
