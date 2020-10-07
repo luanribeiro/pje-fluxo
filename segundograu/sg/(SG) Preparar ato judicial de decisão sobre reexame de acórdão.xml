@@ -15,7 +15,8 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             Assessoria Segundo Grau  Assessor Chefe
             Assessoria Segundo Grau  Assessor para Votação Antecipada
             Gabinete Segundo Grau    Magistrado
-            Assessoria Segundo Grau  Assessor Geral]]></description>  
+            Assessoria Segundo Grau  Assessor Geral
+.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907,8:1338')}"/>
@@ -63,6 +64,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </transition>
         <transition to="(SG) Concluso para decisão sobre reexame do acórdão - CONFIRMAR" name="Encaminhar para confirmação da minuta"/>
         <transition to="(SG) Concluso para decisão sobre reexame do acórdão - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
+        <transition to="(SG) Solicitar Voto, relatório e ementa" name="Solicitar Voto, relatório e ementa"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '63,64')}"/>
@@ -185,7 +187,17 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         <transition to="(SG) Concluso para decisão sobre reexame do acórdão - MINUTAR" name="(SG) Concluso para decisão sobre reexame do acórdão - MINUTAR"/>
         <transition to="(SG) Concluso para decisão sobre reexame do acórdão - CONFIRMAR" name="(SG) Concluso para decisão sobre reexame do acórdão - CONFIRMAR"/>
         <transition to="(SG) Concluso para decisão sobre reexame do acórdão - ASSINAR" name="(SG) Concluso para decisão sobre reexame do acórdão - ASSINAR"/>
-    </task-node>  
+    </task-node>
+    <process-state name="(SG) Solicitar Voto, relatório e ementa">
+        <sub-process name="(SG) Decisão colegiada como relator" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:paj:reexame')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:reexame', true)}"/>
+        </event>
+    </process-state>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
