@@ -228,6 +228,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:controlaLiberacao', false)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
         </event>
     </task-node>
     <decision expression="#{votacaoColegiadoAction.isRelatorioAssinado() ? '(SG) Registrar aptidão para julgamento' : '(SG) Voto, relatório e ementa - VALIDAR'}" name="(SG) Pode solicitar inclusão em pauta?">
@@ -297,15 +298,13 @@ Magistrado  Assessoria Segundo Grau  Assessor
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:encrevisor:revisaoCancelada') == true ? '(SG) Voto, relatório e ementa - VALIDAR' : '(SG) Registrar aptidão para julgamento'}" name="(SG) Revisão cancelada?">
         <transition to="(SG) Voto, relatório e ementa - VALIDAR" name="(SG) Voto, relatório e ementa - VALIDAR"/>
         <transition to="(SG) Registrar aptidão para julgamento" name="(SG) Registrar aptidão para julgamento"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
-        </event>
     </decision>
     <node name="(SG) Registrar aptidão para julgamento">
         <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
         <event type="node-enter">
             <action expression="#{processoJudicialManager.aptidaoParaJulgamento(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, true)}"/>
             <action expression="#{preencherMovimento.deCodigo(20000027).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
         </event>
     </node>
     <node name="(SG) Lançar movimentação de retirada de aptidão de julgamento">
