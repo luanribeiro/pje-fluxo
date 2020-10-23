@@ -17,7 +17,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial"/>
+        <task name="Tarefa inicial" priority="3"/>
         <transition to="(SG) É urgente?" name="(SG) É urgente?"/>
     </start-state>  
     <!-- NODES -->
@@ -26,7 +26,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR" name="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Autos recebidos do gabinete - ANALISAR">
-        <task name="(SG) Autos recebidos do gabinete - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Autos recebidos do gabinete - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -67,6 +67,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{tramitacaoProcessualService.temSituacao('jus:suspenso')}"/>
         </transition>
         <transition to="(SG) Intimar MP (sem prazo)" name="Intimar MP eletronicamente (sem prazo)"/>
+        <transition to="(SG) Intimar MP (com prazo)" name="(SG) Intimar MP (com prazo 15 dias )"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
@@ -75,7 +76,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR">
-        <task name="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -99,6 +100,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         </transition>
         <transition to="Término" name="Cumprir determinações"/>
         <transition to="(SG) Intimar MP (sem prazo)" name="Intimar MP eletronicamente (sem prazo)"/>
+        <transition to="(SG) Intimar MP (com prazo)" name="(SG) Intimar MP (com prazo 15 dias )"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
@@ -137,7 +139,13 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <node name="(SG) Intimar MP (sem prazo)">
         <transition to="(SG) Encaminhar para controle de prazo do MP" name="(SG) Encaminhar para controle de prazo do MP"/>
         <event type="node-leave">
-            <action expression="#{atoComunicacaoService.intimarEletronicamenteTJRN(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, empty tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') or tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') == 0 ? 'S' : 'D', empty tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') or tramitacaoProcessualService.recuperaVariavel('prazoIntimacao') == 0 ? null : tramitacaoProcessualService.recuperaVariavel('prazoIntimacao'), tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'), 4266)}"/>
+            <action expression="#{atoComunicacaoService.intimarEletronicamenteTJRN(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 'S', 0, tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'), 4266)}"/>
+        </event>
+    </node>
+    <node name="(SG) Intimar MP (com prazo)">
+        <transition to="(SG) Encaminhar para controle de prazo do MP" name="(SG) Encaminhar para controle de prazo do MP"/>
+        <event type="node-leave">
+            <action expression="#{atoComunicacaoService.intimarEletronicamenteTJRN(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 'D', 15, tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'), 4266)}"/>
         </event>
     </node>
     <node name="(SG) Encaminhar para controle de prazo do MP">
@@ -148,7 +156,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </node>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Autos recebidos do gabinete">
-        <task name="Nó de Desvio - (SG) Autos recebidos do gabinete" swimlane="Nó de Desvio - (SG) Autos recebidos do gabinete"/>
+        <task name="Nó de Desvio - (SG) Autos recebidos do gabinete" swimlane="Nó de Desvio - (SG) Autos recebidos do gabinete" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR" name="(SG) Autos recebidos do gabinete [Urgente] - ANALISAR"/>
         <transition to="(SG) Autos recebidos do gabinete - ANALISAR" name="(SG) Autos recebidos do gabinete - ANALISAR"/>
