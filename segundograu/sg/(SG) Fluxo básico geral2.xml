@@ -13,7 +13,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5906,8:5483')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5483,8:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -21,18 +21,9 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         <transition to="(SG) Direciona diretamente para secretaria?" name="(SG) Direciona diretamente para secretaria?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) É Migração de remessa do TR?' : '(SG) Acrescentar situação do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
-        <transition to="(SG) É Migração de remessa do TR?" name="(SG) É Migração de remessa do TR?"/>
-        <transition to="(SG) Acrescentar situação do processo em andamento" name="(SG) Acrescentar situação do processo em andamento"/>
-    </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:migrado_tr') == true ? '(SG) É Remessa para instância superior?': '(SG) Secretaria - ANALISAR'}" name="(SG) É Migração de remessa do TR?">
-        <description><![CDATA[Verifica se o processo foi remetido pelo fluxo TR e migrado para o SG.]]></description>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:fbg:direcionar_secretaria') == true ? '(SG) Secretaria - ANALISAR' : '(SG) Acrescentar situação do processo em andamento'}" name="(SG) Direciona diretamente para secretaria?">
         <transition to="(SG) Secretaria - ANALISAR" name="(SG) Secretaria - ANALISAR"/>
-        <transition to="(SG) É Remessa para instância superior?" name="(SG) É Remessa para instância superior?"/>
-    </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:remessa_instancia_superior') == true ? '(SG) Gravar variavel fluxo unico - Remeter para instância superior' : '(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau'}" name="(SG) É Remessa para instância superior?">
-        <transition to="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau" name="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Remeter para instância superior" name="(SG) Gravar variavel fluxo unico - Remeter para instância superior"/>
+        <transition to="(SG) Acrescentar situação do processo em andamento" name="(SG) Acrescentar situação do processo em andamento"/>
     </decision>
     <node name="(SG) Acrescentar situação do processo em andamento">
         <transition to="(SG) É apelação?" name="(SG) É apelação?"/>
@@ -230,6 +221,9 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         <transition to="(SG) Gravar variavel fluxo unico - Redistribuir" name="03 - Redistribuir"/>
         <transition to="(SG) Gravar variavel fluxo unico - Arquivar o processo" name="04 - Arquivar o processo"/>
         <transition to="(SG) Gravar variavel fluxo unico - Remeter para instância superior" name="05 - Remeter para instância superior"/>
+        <transition to="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau" name="06 - Remeter para o primeiro grau">
+            <condition expression="#{ parametroUtil.getParametro('pje:tjrn:remessa:pg:classeJudicial').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) }"/>
+        </transition>
         <transition to="(SG) Gravar variavel fluxo unico - Cancelar distribuição" name="07 - Cancelar distribuição"/>
         <transition to="(SG) Gravar variavel fluxo unico - Controlar retorno de expediente" name="08 - Controlar retorno de expediente">
             <condition expression="#{true}"/>
@@ -260,7 +254,6 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral.]]></description>
         <transition to="(SG) Conclusão para despacho da presidência" name="19 - Conclusão para despacho da presidência"/>
         <transition to="(SG) Enviar para a Turma de Uniformização de Jurisprudência" name="20 - Enviar para a Turma de Uniformização de Jurisprudência"/>
         <transition to="(SG) Gravar variavel fluxo unico - Encaminhar para análise de prevenção" name="21 - Encaminhar para análise de prevenção"/>
-        <transition to="(SG) Gravar variavel fluxo unico - Remeter para o primeiro grau" name="06 - Remeter para o primeiro grau"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('sg:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:sg_fbg_apensar_desapensar') == true ? '{sg_fbg_apensar_desapensar}' : ''))}"/>

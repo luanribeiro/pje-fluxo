@@ -3,13 +3,13 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(TR) Remessa para outra instância">
     <description><![CDATA[Remessa de processo para outra instância...]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (TR) Remessa para outra instância"/>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('8:1338,8:5483')}" actor-id="#{actor.id}"/>
-    </swimlane>  
+    </swimlane>
+    <swimlane name="Nó de Desvio - (TR) Remessa para outra instância"/>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(TR) É encaminhar para instância superior?" name="(TR) É encaminhar para instância superior?"/>
     </start-state>  
     <!-- NODES -->
@@ -18,7 +18,7 @@
         <transition to="(TR) Encaminhar ao primeiro grau" name="(TR) Encaminhar ao primeiro grau"/>
     </decision>
     <task-node end-tasks="true" name="(TR) Encaminhar para instância superior">
-        <task name="(TR) Encaminhar para instância superior" swimlane="Secretaria"/>
+        <task name="(TR) Encaminhar para instância superior" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (TR) Remessa para outra instância" name="Nó de Desvio - (TR) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
@@ -32,14 +32,15 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(TR) Aguardando julgamento da instância superior">
-        <task name="(TR) Aguardando julgamento da instância superior" swimlane="Secretaria"/>
+        <task name="(TR) Aguardando julgamento da instância superior" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (TR) Remessa para outra instância" name="Nó de Desvio - (TR) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Finalizar e sair da tarefa"/>
+        <transition to="Término" name="Finalizar e Encaminhar para Análise da secretaria da TR"/>
+        <transition to="(TR) Lançar migração de remessa ao SG" name="(TR) Lançar migração de remessa ao SG"/>
     </task-node>
     <task-node end-tasks="true" name="(TR) Encaminhar ao primeiro grau">
-        <task name="(TR) Encaminhar ao primeiro grau" swimlane="Secretaria">
+        <task name="(TR) Encaminhar ao primeiro grau" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Intercomunicacao_retornoProcesso" mapped-name="frame:Intercomunicacao_retornoProcesso" access="read,write"/>
             </controller>
@@ -63,7 +64,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(TR) Remetidos ao primeiro grau">
-        <task name="(TR) Remetidos ao primeiro grau" swimlane="Secretaria"/>
+        <task name="(TR) Remetidos ao primeiro grau" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (TR) Remessa para outra instância" name="Nó de Desvio - (TR) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
@@ -82,7 +83,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="Nó de Desvio - (TR) Remessa para outra instância">
-        <task name="Nó de Desvio - (TR) Remessa para outra instância" swimlane="Nó de Desvio - (TR) Remessa para outra instância"/>
+        <task name="Nó de Desvio - (TR) Remessa para outra instância" swimlane="Nó de Desvio - (TR) Remessa para outra instância" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(TR) Encaminhar para instância superior" name="(TR) Encaminhar para instância superior"/>
         <transition to="(TR) Aguardando julgamento da instância superior" name="(TR) Aguardando julgamento da instância superior"/>
@@ -92,26 +93,39 @@
         <transition to="(TR) Despachados sobre reativação pós remessa" name="(TR) Despachados sobre reativação pós remessa"/>
     </task-node>
     <task-node end-tasks="true" name="(TR) Processos recebidos do primeiro grau">
-        <task name="(TR) Processos recebidos do primeiro grau" swimlane="Secretaria"/>
-        <transition to="Término" name="Encaminhar para Análise da secretaria"/>
+        <task name="(TR) Processos recebidos do primeiro grau" swimlane="Secretaria" priority="3"/>
+        <transition to="(TR) Lançar migração de remessa ao SG" name="(TR) Lançar migração de remessa ao SG"/>
         <transition to="Nó de Desvio - (TR) Remessa para outra instância" name="Nó de Desvio - (TR) Remessa para outra instância">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="Término" name="Encaminhar para Análise da secretaria da TR"/>
     </task-node>
+    <node name="(TR) Lançar migração de remessa ao SG">
+        <description><![CDATA[Nó de sistema para possibilitar a transição da tarefa (TR) Processos recebidos do primeiro grau para seu equivalente no fluxo SG.
+
+VARIÁVEIS:
+sg:reminst:migrado_tr: responsável por indicar que o processo migre direto para (SG) Processos recebidos do primeiro grau.
+sg:reminst:remessa_instancia_superior: variável que sinaliza no fluxo SG que o processo objeto da remessa veio do primeiro grau.]]></description>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:reminst:remessa_instancia_superior',tramitacaoProcessualService.recuperaVariavel('tr:reminst:instancia_superior') == true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:reminst:migrado_tr',true)}"/>
+        </event>
+    </node>
     <process-state name="(TR) Encaminhar para concluso para decisão de reativação">
         <sub-process name="(TR) Preparar Ato Judicial" binding="late"/>
         <transition to="(TR) Despachados sobre reativação pós remessa" name="(TR) Despachados sobre reativação pós remessa"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tr:paj:decisao', true)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tr:paj:decisao_reativacao', true)}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tr:paj:decisao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tr:paj:decisao_reativacao')}"/>
         </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tr:paj:decisao', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tr:paj:decisao_reativacao', true)}"/>
+        </event>
     </process-state>
     <task-node end-tasks="true" name="(TR) Despachados sobre reativação pós remessa">
-        <task name="(TR) Despachados sobre reativação pós remessa" swimlane="Secretaria">
+        <task name="(TR) Despachados sobre reativação pós remessa" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
             </controller>
@@ -135,10 +149,37 @@
         </event>
     </end-state>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -147,40 +188,13 @@
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS --> 

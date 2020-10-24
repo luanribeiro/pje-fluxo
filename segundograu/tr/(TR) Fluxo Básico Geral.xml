@@ -189,7 +189,7 @@
     </process-state>
     <process-state name="(TR) Encaminhamento para instância superior">
         <sub-process name="(TR) Remessa para outra instância" binding="late"/>
-        <transition to="(TR) Análise da Secretaria" name="(TR) Análise da Secretaria"/>
+        <transition to="(TR) É migração para o SG?" name="(TR) É migração para o SG?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tr:reminst:instancia_superior')}"/>
         </event>
@@ -199,7 +199,7 @@
     </process-state>
     <process-state name="(TR) Encaminhamento para o primeiro grau">
         <sub-process name="(TR) Remessa para outra instância" binding="late"/>
-        <transition to="(TR) Análise da Secretaria" name="(TR) Análise da Secretaria"/>
+        <transition to="(TR) É migração para o SG?" name="(TR) É migração para o SG?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tr:reminst:primeiro_grau')}"/>
         </event>
@@ -207,6 +207,11 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tr:reminst:primeiro_grau','true')}"/>
         </event>
     </process-state>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:migrado_tr') == true ? '(TR) incluir processo no fluxo (SG) Secretaria - ANALISAR' : '(TR) Análise da Secretaria'}" name="(TR) É migração para o SG?">
+        <description><![CDATA[Nó de decisão se o processo deve ser migrado do fluxo TR para o fluxo SG.]]></description>
+        <transition to="(TR) Análise da Secretaria" name="(TR) Análise da Secretaria"/>
+        <transition to="(TR) incluir processo no fluxo (SG) Secretaria - ANALISAR" name="(TR) incluir processo no fluxo (SG) Secretaria - ANALISAR"/>
+    </decision>
     <process-state name="(TR) Preparação de relatório, voto e ementa">
         <sub-process name="(TR) Preparar Sessão de Julgamento" binding="late"/>
         <transition to="(TR) Encaminhar RecIno para Despachados?" name="(TR) Encaminhar RecIno para Despachados?"/>
@@ -366,6 +371,7 @@
         <transition to="Término" name="Término"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:fbg:direcionar_secretaria',true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:reminst:migrado_tr',tramitacaoProcessualService.recuperaVariavel('sg:reminst:migrado_tr') == true)}"/>
             <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'SG_FBG', processInstance.contextInstance.variables)}"/>
         </event>
     </node>  

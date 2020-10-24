@@ -2,9 +2,7 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Remessa para outra instância">
     <description><![CDATA[Código do fluxo: SG_REMINST
-
 Descrição: Controle de remessa de processo para instância superior e primeiro grau.
-
 Raia        Localização              Papel
 Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
 Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>  
@@ -13,7 +11,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5906,8:5483')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -21,10 +19,21 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) É remessa para instância superior?" name="(SG) É remessa para instância superior?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:remessa_instancia_superior') == true ? '(SG) Remessa para instância superior - CONFIRMAR' : '(SG) É remessa para o primeiro grau?'}" name="(SG) É remessa para instância superior?">
-        <transition to="(SG) Remessa para instância superior - CONFIRMAR" name="(SG) Remessa para instância superior - CONFIRMAR"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:remessa_instancia_superior') == true ? '(SG) É remessa migrada do TR?' : '(SG) É remessa para o primeiro grau?'}" name="(SG) É remessa para instância superior?">
+        <transition to="(SG) É remessa migrada do TR?" name="(SG) É remessa migrada do TR?"/>
         <transition to="(SG) É remessa para o primeiro grau?" name="(SG) É remessa para o primeiro grau?"/>
     </decision>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:migrado_tr') == true ? '(SG) Gravar variáveis de processo migrado da TR' : '(SG) Remessa para instância superior - CONFIRMAR'}" name="(SG) É remessa migrada do TR?">
+        <description><![CDATA[Nó de decisão que verifica se o processo foi migrado do fluxo TR para o SG a partir da devolução dos autos pela instância superior, antes remetido pela tarefa (TR) Aguardando julgamento da instância superior.]]></description>
+        <transition to="(SG) Gravar variáveis de processo migrado da TR" name="(SG) Gravar variáveis de processo migrado da TR"/>
+        <transition to="(SG) Remessa para instância superior - CONFIRMAR" name="(SG) Remessa para instância superior - CONFIRMAR"/>
+    </decision>
+    <node name="(SG) Gravar variáveis de processo migrado da TR">
+        <transition to="(SG) Lançar movimento de recebido os autos" name="(SG) Lançar movimento de recebido os autos"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:reminst:migrado_tr')}"/>
+        </event>
+    </node>
     <task-node end-tasks="true" name="(SG) Remessa para instância superior - CONFIRMAR">
         <task name="(SG) Remessa para instância superior - CONFIRMAR" swimlane="Secretaria" priority="3"/>
         <transition to="Nó de Desvio - (SG) Remessa para outra instância" name="Nó de Desvio - (SG) Remessa para outra instância">
@@ -54,13 +63,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: aviso1
    Label: Movimento de remessa foi lançado no processo. Aguarde-se o julgamento até que o processo seja devolvido pela instância superior correspondente. Após isso, registre a baixa e siga normalmente no fluxo.
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
@@ -85,13 +92,11 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: aviso1
    Label: Movimento de remessa foi lançado no processo. Aguarde-se o julgamento até que o processo seja devolvido pela instância superior correspondente. Após isso, registre a baixa e siga normalmente no fluxo.
    Escrita: Sim
    Obrig.: Não
    Tipo: Aviso
-
 2. Variável: movimentacaoLote
    Label: 
    Escrita: Sim
@@ -114,10 +119,24 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <action expression="#{preencherMovimento.deCodigo(132).lancarMovimento()}"/>
         </event>
     </node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:remessa_primeiro_grau') == true ? '(SG) Remessa para o primeiro grau - CONFIRMAR' : 'Término'}" name="(SG) É remessa para o primeiro grau?">
-        <transition to="(SG) Remessa para o primeiro grau - CONFIRMAR" name="(SG) Remessa para o primeiro grau - CONFIRMAR"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:remessa_primeiro_grau') == true ? '(SG) É remessa migrada do TR - Primeiro Grau?' : 'Término'}" name="(SG) É remessa para o primeiro grau?">
+        <transition to="(SG) É remessa migrada do TR - Primeiro Grau?" name="(SG) É remessa migrada do TR - Primeiro Grau?"/>
         <transition to="Término" name="Término"/>
     </decision>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:reminst:migrado_tr') == true ? '(SG) Gravar variáveis de processo migrado da TR - Primeiro Grau' : '(SG) Remessa para o primeiro grau - CONFIRMAR'}" name="(SG) É remessa migrada do TR - Primeiro Grau?">
+        <description><![CDATA[Nó de decisão que verifica se o processo foi migrado do fluxo TR para o SG a partir da devolução dos autos pelo primeiro grau, antes remetido pela tarefa (TR) Remetidos ao primeiro grau.]]></description>
+        <transition to="(SG) Gravar variáveis de processo migrado da TR - Primeiro Grau" name="(SG) Gravar variáveis de processo migrado da TR - Primeiro Grau"/>
+        <transition to="(SG) Remessa para o primeiro grau - CONFIRMAR" name="(SG) Remessa para o primeiro grau - CONFIRMAR"/>
+    </decision>
+    <node name="(SG) Gravar variáveis de processo migrado da TR - Primeiro Grau">
+        <transition to="(SG) Processo(s) recebido(s) do primeiro grau" name="(SG) Processo(s) recebido(s) do primeiro grau"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:reminst:migrado_tr')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Processo(s) recebido(s) do primeiro grau')}"/>
+        </event>
+    </node>
     <task-node end-tasks="true" name="(SG) Remessa para o primeiro grau - CONFIRMAR">
         <task name="(SG) Remessa para o primeiro grau - CONFIRMAR" swimlane="Secretaria" priority="3">
             <controller>
@@ -125,7 +144,6 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: Intercomunicacao_retornoProcesso
    Label: 
    Escrita: Sim
@@ -154,7 +172,6 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: aviso1
    Label: Processo devolvido ao primeiro grau.
    Escrita: Sim
