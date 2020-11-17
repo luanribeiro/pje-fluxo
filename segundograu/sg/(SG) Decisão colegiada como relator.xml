@@ -15,7 +15,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
             Assessoria Segundo Grau  Assessor Chefe
             Assessoria Segundo Grau  Assessor para Votação Antecipada
             Gabinete Segundo Grau    Magistrado
-            Assessoria Segundo Grau  Assessor Geral]]></description>  
+            Assessoria Segundo Grau  Assessor Geral...]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Redação judiciária">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:5031,8:5031')}"/>
@@ -360,6 +360,9 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Lançar movimentação de retirada de aptidão de julgamento" name="Pedir retirada de julgamento">
             <condition expression="#{processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')).selecionadoPauta and not empty sessaoProcessoDocumentoManager.recuperaElementosJulgamento(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')), null, authenticator.getOrgaoJulgadorAtual(), false, false) and sessaoProcessoDocumentoManager.recuperaElementosJulgamento(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')), null, authenticator.getOrgaoJulgadorAtual(), false, false).get(0).sessao.dataFechamentoPauta == null }"/>
         </transition>
+        <transition to="(SG) - Expedição de outros documentos" name=" Expedição de outros documentos criminais">
+            <condition expression="#{parametroUtil.getParametro('pje:sg:exibirDocCriminal').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado).concat('_'))}"/>
+        </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:colegiado:aguardaSessao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:colegiado:aguardaSessao:relator')}"/>
@@ -373,6 +376,14 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Encaminhar manualmente para preparação do acórdão')}"/>
         </event>
     </task-node>
+    <node name="(SG) - Expedição de outros documentos">
+        <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:deccolrel:outros_documentos_criminais',true)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'SG_EXP_OUTROSDOC', processInstance.contextInstance.variables)}"/>
+        </event>
+    </node>
     <node name="(SG) Renovar pedido de inclusão em pauta">
         <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
         <event type="node-enter">
