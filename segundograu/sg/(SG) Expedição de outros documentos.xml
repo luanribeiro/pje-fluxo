@@ -12,7 +12,7 @@ Magistrado  Gabinete Segundo Grau    Magistrado
 Magistrado  Assessoria Segundo Grau  Assessor para Votação Antecipada
 Magistrado  Assessoria Segundo Grau  Assessor
 Magistrado  Assessoria Segundo Grau  Assessor Chefe
-Magistrado  Assessoria Segundo Grau  Assessor Geral.]]></description>  
+Magistrado  Assessoria Segundo Grau  Assessor Geral..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (SG) Expedição de outros documentos">
         <assignment actor-id="#{actor.id}"/>
@@ -147,7 +147,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral.]]></description>
         <transition to="(SG) Outros documentos - EXPEDIR" name="Retornar para elaboração do documento pela secretaria"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
-            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')"/>
+            <action expression="#{taskInstanceUtil.deleteVariableLocally('frameDefaultLeavingTransition')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
         <event type="task-create">
