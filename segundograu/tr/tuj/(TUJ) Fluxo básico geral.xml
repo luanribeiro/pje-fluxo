@@ -16,7 +16,7 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(TUJ) Autos recebidos das Turmas Recursais" name="(TUJ) Autos recebidos das Turmas Recursais"/>
     </start-state>  
     <!-- NODES -->
@@ -44,7 +44,7 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
         </event>
     </decision>
     <task-node end-tasks="true" name="(TUJ) Secretaria - ANALISAR">
-        <task name="(TUJ) Secretaria - ANALISAR" swimlane="Secretaria">
+        <task name="(TUJ) Secretaria - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -75,11 +75,11 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
         <transition to="(TUJ) Gravar variavel fluxo unico - Enviar concluso para decisão" name="Enviar concluso para decisão"/>
         <transition to="(TUJ) Gravar variavel fluxo unico - Enviar concluso para despacho" name="Enviar concluso para despacho"/>
         <transition to="(TUJ) Gravar variavel fluxo unico - Enviar para preparação do voto, relatório e ementa" name="Enviar concluso para julgamento"/>
-        <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
     <node name="(TUJ) Gravar variavel fluxo unico - Suspender o processo">
@@ -166,6 +166,9 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
     <process-state name="(TUJ) Sortear">
         <sub-process name="(TUJ) Sortear para um dos relatores" binding="late"/>
         <transition to="(TUJ) Autos recebidos da admissibilidade" name="(TUJ) Autos recebidos da admissibilidade"/>
+        <event type="node-enter">
+            <action expression="#{entityManager.createQuery(parametroUtil.getParametro('pje:tjrn:tuj:alteraCompetenciaTUJ')).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).executeUpdate()}"/>
+        </event>
     </process-state>
     <process-state name="(TUJ) Autos recebidos da admissibilidade">
         <sub-process name="(TUJ) Autos recebidos da admissibilidade" binding="late"/>
@@ -190,44 +193,71 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
     <process-state name="(TUJ) Preparação de decisão genérica">
         <sub-process name="(TUJ) Preparar ato judicial" binding="late"/>
         <transition to="(TUJ) Secretaria - ANALISAR" name="(TUJ) Secretaria - ANALISAR"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:decisao', true)}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tuj:paj:decisao')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:decisao', true)}"/>
         </event>
     </process-state>
     <process-state name="(TUJ) Preparação de despacho genérico">
         <sub-process name="(TUJ) Preparar ato judicial" binding="late"/>
         <transition to="(TUJ) Secretaria - ANALISAR" name="(TUJ) Secretaria - ANALISAR"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:despacho', true)}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tuj:paj:despacho')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:despacho', true)}"/>
         </event>
     </process-state>
     <process-state name="(TUJ) Preparação de voto, relatório e ementa">
         <sub-process name="(TUJ) Preparar ato judicial" binding="late"/>
         <transition to="(TUJ) Secretaria - ANALISAR" name="(TUJ) Secretaria - ANALISAR"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:julgamento', true)}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tuj:paj:julgamento')}"/>
         </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:julgamento', true)}"/>
+        </event>
     </process-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Fluxo básico geral">
-        <task name="Nó de Desvio - (TUJ) Fluxo básico geral" swimlane="Nó de Desvio - (TUJ) Fluxo básico geral"/>
+        <task name="Nó de Desvio - (TUJ) Fluxo básico geral" swimlane="Nó de Desvio - (TUJ) Fluxo básico geral" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(TUJ) Secretaria - ANALISAR" name="(TUJ) Secretaria - ANALISAR"/>
     </task-node>
     <end-state name="Término"/>  
     <!-- PROCESS-EVENTS -->
-    <event type="node-enter">
+    <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="superstate-leave">
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="subprocess-end">
@@ -236,40 +266,13 @@ Secretaria  Secretaria TUJ  Chefe de Secretaria]]></description>
     <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="before-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="superstate-enter">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="process-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="transition">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-end">
+    <event type="superstate-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="task-start">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="after-signal">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-assign">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="task-create">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
-    <event type="timer">
+    <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>  
     <!-- ACTIONS -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de Audiência">
-    <description><![CDATA[Fluxo responsável por controlar as audiências.............]]></description>  
+    <description><![CDATA[Fluxo responsável por controlar as audiências...........]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469')}"/>
@@ -14,7 +14,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Limpar variáveis de audiência" name="(VCiv) Limpar variáveis de audiência"/>
     </start-state>  
     <!-- NODES -->
@@ -24,12 +24,12 @@
             <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ = :nomeVariavelAudiencia order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).setParameter('nomeVariavelAudiencia', 'pje:fluxo:audienciaSelecionada').executeUpdate()}"/>
         </event>
     </node>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(VCiv) Designar audiência' : '(VCiv) Aguardar audiência'}" name="(VCiv) Verifica se existe audiência designada">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? '(VCiv) Designar audiência' : '(VCiv) Aguardar audiência'}" name="(VCiv) Verifica se existe audiência designada">
         <transition to="(VCiv) Aguardar audiência" name="(VCiv) Aguardar audiência"/>
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aguardar audiência">
-        <task name="(VCiv) Aguardar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Aguardar audiência" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <description><![CDATA[Tarefa de aguardar audiência.]]></description>
@@ -44,7 +44,7 @@
         </transition>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Cancelar audiência">
-        <task name="(VCiv) Cancelar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Cancelar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -61,7 +61,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Converter audiência em diligência">
-        <task name="(VCiv) Converter audiência em diligência" swimlane="Secretaria">
+        <task name="(VCiv) Converter audiência em diligência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -78,7 +78,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Designar audiência">
-        <task name="(VCiv) Designar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Designar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -102,12 +102,12 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:aud:citar_intimar_aud', true)}"/>
         </event>
     </process-state>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? '(VCiv) Designar audiência' : '(VCiv) Realizar audiência'}" name="(VCiv) Existe audiência designada?">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? '(VCiv) Designar audiência' : '(VCiv) Realizar audiência'}" name="(VCiv) Existe audiência designada?">
         <transition to="(VCiv) Realizar audiência" name="(VCiv) Realizar audiência"/>
         <transition to="(VCiv) Designar audiência" name="(VCiv) Designar audiência"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Minutar ata de audiência">
-        <task name="(VCiv) Minutar ata de audiência" swimlane="Secretaria">
+        <task name="(VCiv) Minutar ata de audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="minuta_audiencia" mapped-name="textEditCombo:minuta_audiencia" access="read,write"/>
@@ -132,7 +132,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false))}"/>
         </event>
     </task-node>
     <node name="(VCiv) Apagar minuta em elaboração">
@@ -142,7 +142,7 @@
         </event>
     </node>
     <task-node end-tasks="true" name="(VCiv) Realizar audiência">
-        <task name="(VCiv) Realizar audiência" swimlane="Secretaria"/>
+        <task name="(VCiv) Realizar audiência" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Minutar ata de audiência" name="Minutar ata de audiência"/>
         <transition to="Término" name="Cancelar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de Audiência" name="Nó de Desvio - (VCiv) Controle de Audiência">
@@ -162,7 +162,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo magistrado">
-        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -178,6 +178,7 @@
         <transition to="(VCiv) Deslocar secretaria unificada magistrado" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Intimar da audiência')}"/>
@@ -191,7 +192,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Informar dados da audiência">
-        <task name="(VCiv) Informar dados da audiência" swimlane="Secretaria">
+        <task name="(VCiv) Informar dados da audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="ProcessoAudiencia_informarDadosAudiencia" mapped-name="frame:ProcessoAudiencia_informarDadosAudiencia" access="read,write"/>
@@ -208,6 +209,7 @@
         <transition to="(VCiv) Ajustar audiência e movimentação" name="Gerar movimentação e ajustar audiência">
             <condition expression="#{tramitacaoProcessualService.recuperaVariavel('processo') == 156177}"/>
         </transition>
+        <transition to="(VCiv) Apagar minuta em elaboração" name="Cancelar e sair da tarefa"/>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:audienciaSelecionada') eq null ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada',processoJudicialManager.getProximaAudienciaDesignada(processoTrfHome.instance)) : ''}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
@@ -217,7 +219,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Informar movimentação">
-        <task name="(VCiv) Informar movimentação" swimlane="Secretaria">
+        <task name="(VCiv) Informar movimentação" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -236,7 +238,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência com ato judicial">
-        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -255,6 +257,7 @@
         <transition to="(VCiv) Deslocar secretaria unificada" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
@@ -269,7 +272,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo conciliador">
-        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria">
+        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -284,6 +287,7 @@
         <transition to="(VCiv) Selecionar opção de intimação" name="Documento já assinado">
             <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Intimar da audiência')}"/>
@@ -297,7 +301,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Redesignar audiência">
-        <task name="(VCiv) Redesignar audiência" swimlane="Secretaria">
+        <task name="(VCiv) Redesignar audiência" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -331,7 +335,7 @@
         <transition to="Término" name="Término"/>
     </process-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Controle de Audiência">
-        <task name="Nó de Desvio - (VCiv) Controle de Audiência" swimlane="Nó de Desvio - (VCiv) Controle de Audiência"/>
+        <task name="Nó de Desvio - (VCiv) Controle de Audiência" swimlane="Nó de Desvio - (VCiv) Controle de Audiência" priority="3"/>
         <transition to="(VCiv) Aguardar audiência" name="(VCiv) Aguardar audiência"/>
         <transition to="(VCiv) Cancelar audiência" name="(VCiv) Cancelar audiência"/>
         <transition to="(VCiv) Converter audiência em diligência" name="(VCiv) Converter audiência em diligência"/>
@@ -350,10 +354,16 @@
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Assinar ata de audiência pelo conciliador' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados audiência - conciliador?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
         <transition to="(VCiv) Assinar ata de audiência pelo conciliador" name="(VCiv) Assinar ata de audiência pelo conciliador"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+        </event>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Deslocar OJ origem magistrado' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados da audiência - magistrado ?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
         <transition to="(VCiv) Deslocar OJ origem magistrado" name="(VCiv) Deslocar OJ origem magistrado"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+        </event>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada') != null ? '(VCiv) Informar movimentação' : '(VCiv) Informar dados da audiência'}" name="(VCiv) Preencheu dados da audiência - ato judicial ?">
         <transition to="(VCiv) Informar dados da audiência" name="(VCiv) Informar dados da audiência"/>
@@ -369,7 +379,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:audienciaSelecionada')}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false))}"/>
         </event>
     </node>
     <process-state name="(VCiv) Intimar da audiência">
@@ -387,7 +397,7 @@
         </event>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Selecionar opção de intimação">
-        <task name="(VCiv) Selecionar opção de intimação" swimlane="Secretaria">
+        <task name="(VCiv) Selecionar opção de intimação" swimlane="Secretaria" priority="3">
             <controller/>
         </task>
         <description><![CDATA[aviso: Ao clicar no botão Concluir controle de audiência o processo será encaminhado para Análise da secretaria]]></description>

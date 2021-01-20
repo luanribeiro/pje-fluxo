@@ -1,59 +1,41 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Encerramento de expediente">
-    <description><![CDATA[Código do fluxo: SG_ENC_EXP
-
-Descrição: Fluxo destinado ao encerramento de expedientes.
-
-Raia        Localização              Papel
-Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
-Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) AnÃ¡lise de documentos nÃ£o lidos memoriais">
+    <description><![CDATA[.]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (SG) Encerramento de expediente">
-        <assignment actor-id="#{actor.id}"/>
-    </swimlane>
-    <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5483,8:5906')}" actor-id="#{actor.id}"/>
+    <swimlane name="magistrado">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5899,599:1469,5:5899,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
-        <transition to="(SG) Expedientes - ENCERRAR" name="(SG) Expedientes - ENCERRAR"/>
+    <start-state name="InÃ­cio">
+        <task name="Tarefa inicial" swimlane="magistrado" priority="3"/>
+        <transition to="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR" name="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR"/>
     </start-state>  
     <!-- NODES -->
-    <task-node end-tasks="true" name="(SG) Expedientes - ENCERRAR">
-        <task name="(SG) Expedientes - ENCERRAR" swimlane="Secretaria">
+    <end-state name="TÃ©rmino"/>
+    <task-node end-tasks="true" name="NÃ³ de Desvio - (SG) AnÃ¡lise de documentos nÃ£o lidos memoriais">
+        <task name="NÃ³ de Desvio - (SG) AnÃ¡lise de documentos nÃ£o lidos memoriais" priority="3"/>
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+        <transition to="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR" name="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR"/>
+    </task-node>
+    <task-node end-tasks="true" name="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR">
+        <task name="(SG) Documentos nÃ£o lidos - Memoriais - ANALISAR" swimlane="magistrado" priority="3">
             <controller>
-                <variable name="WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" mapped-name="frame:WEB-INF_xhtml_flx_exped_encerrarExpedienteManual" access="read,write"/>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+                <variable name="WEB-INF_xhtml_flx_visualizarPeticao" mapped-name="frame:WEB-INF_xhtml_flx_visualizarPeticao" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[*Variáveis*
-
-1. Variável: WEB-INF_xhtml_flx_exped_encerrarExpedienteManual
-   Label: Encerrar expediente manualmente
-   Escrita: Sim
-   Obrig.: Não
-   Tipo: Frame]]></description>
-        <transition to="Nó de Desvio - (SG) Encerramento de expediente" name="Nó de Desvio - (SG) Encerramento de expediente">
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+        <transition to="NÃ³ de Desvio - (SG) AnÃ¡lise de documentos nÃ£o lidos memoriais" name="NÃ³ de Desvio - (SG) AnÃ¡lise de documentos nÃ£o lidos memoriais">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Verificar pendência de cumprimentos" name="Finalizar"/>
         <event type="task-end">
+            <action expression="#{processoDocumentoTrfHome.inserirDocumentoLido(visualizarPeticaoAction.documentoPrincipal)}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
-    </task-node>
-    <process-state name="(SG) Verificar pendência de cumprimentos">
-        <sub-process name="(SG) Sinalizar verificação de cumprimentos" binding="late"/>
-        <transition to="Término" name="Término"/>
-    </process-state>
-    <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (SG) Encerramento de expediente">
-        <task name="Nó de Desvio - (SG) Encerramento de expediente" swimlane="Nó de Desvio - (SG) Encerramento de expediente"/>
-        <transition to="Término" name="Término"/>
-        <transition to="(SG) Expedientes - ENCERRAR" name="(SG) Expedientes - ENCERRAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
@@ -68,16 +50,16 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <event type="task-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="subprocess-created">
-        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event>
     <event type="task-create">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="transition">
+    <event type="subprocess-created">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="after-signal">
@@ -92,10 +74,10 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     <event type="subprocess-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="node-leave">
+    <event type="process-end">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
-    <event type="process-end">
+    <event type="node-leave">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
     </event>
     <event type="superstate-leave">

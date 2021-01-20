@@ -3,7 +3,7 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Sinalizar verificação de cumprimentos"> 
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (SG) Sinalizar verificação de cumprimentos">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469,8:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="solicitante">
         <assignment actor-id="#{actor.id}"/>

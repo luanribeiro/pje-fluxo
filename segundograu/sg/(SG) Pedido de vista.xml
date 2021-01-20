@@ -14,10 +14,10 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             Assessoria Segundo Grau  Assessor Geral]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Redação judiciária">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:5031,600:5899,600:5898,600:5197,599:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:5031,600:5899,600:5898,600:5197,599:1469,8:5031,5:5899,5:5898,5:5197,6:1469')}"/>
     </swimlane>
     <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,5:5197,6:1469,600:5907,602:5031')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,5:5197,6:1469,600:5907,602:5031,5:5197,6:1469,5:5898,5:5899,5:5197,6:1469,5:5907,8:5031')}" actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Pedido de vista">
         <assignment actor-id="#{actor.id}"/>

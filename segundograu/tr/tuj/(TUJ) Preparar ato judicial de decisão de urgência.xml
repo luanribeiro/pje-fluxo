@@ -185,7 +185,11 @@ Magistrado  Gabinete TUJ    Magistrado]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tuj:paj:conclusao_cancelada', true)}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de urgência">
         <task name="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de urgência" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial de decisão de urgência" priority="3"/>
         <transition to="(TUJ) Concluso para decisão de urgência - MINUTAR" name="(TUJ) Concluso para decisão de urgência - MINUTAR"/>

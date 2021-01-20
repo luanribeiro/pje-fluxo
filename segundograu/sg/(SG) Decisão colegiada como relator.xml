@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Decisão colegiada como relator">
-    <description><![CDATA[Código do fluxo: SG_DECCOLREL.
+    <description><![CDATA[Código do fluxo: SG_DECCOLREL..
 
 Descrição: Fluxo destinado a preparação de decisões colegiadas como relator do processo.
 
@@ -15,19 +15,19 @@ Magistrado  Assessoria Segundo Grau  Assessor
             Assessoria Segundo Grau  Assessor Chefe
             Assessoria Segundo Grau  Assessor para Votação Antecipada
             Gabinete Segundo Grau    Magistrado
-            Assessoria Segundo Grau  Assessor Geral]]></description>  
+            Assessoria Segundo Grau  Assessor Geral...]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Redação judiciária">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:5031')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:5031,8:5031')}"/>
     </swimlane>
     <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907,8:1338')}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Decisão colegiada como relator">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907,8:1338')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -71,7 +71,9 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="Nó de Desvio - (SG) Decisão colegiada como relator" name="Nó de Desvio - (SG) Decisão colegiada como relator">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(SG) Registrar cancelamento de decisão colegiada" name="Alterar escolha do tipo de conclusão"/>
+        <transition to="(SG) Registrar cancelamento de decisão colegiada" name="Alterar escolha do tipo de conclusão">
+            <condition expression="#{not(tramitacaoProcessualService.recuperaVariavel('sg:paj:reexame') == true)}"/>
+        </transition>
         <transition to="(SG) Voto, relatório ou ementa vazio?" name="Encaminhar para confirmação">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:deccolrel:enviarMagistrado', false)}"/>
         </transition>
@@ -226,6 +228,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:controlaLiberacao', false)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
         </event>
     </task-node>
     <decision expression="#{votacaoColegiadoAction.isRelatorioAssinado() ? '(SG) Registrar aptidão para julgamento' : '(SG) Voto, relatório e ementa - VALIDAR'}" name="(SG) Pode solicitar inclusão em pauta?">
@@ -295,15 +298,13 @@ Magistrado  Assessoria Segundo Grau  Assessor
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('sg:encrevisor:revisaoCancelada') == true ? '(SG) Voto, relatório e ementa - VALIDAR' : '(SG) Registrar aptidão para julgamento'}" name="(SG) Revisão cancelada?">
         <transition to="(SG) Voto, relatório e ementa - VALIDAR" name="(SG) Voto, relatório e ementa - VALIDAR"/>
         <transition to="(SG) Registrar aptidão para julgamento" name="(SG) Registrar aptidão para julgamento"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
-        </event>
     </decision>
     <node name="(SG) Registrar aptidão para julgamento">
         <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
         <event type="node-enter">
             <action expression="#{processoJudicialManager.aptidaoParaJulgamento(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, true)}"/>
             <action expression="#{preencherMovimento.deCodigo(20000027).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:encrevisor:revisaoCancelada')}"/>
         </event>
     </node>
     <node name="(SG) Lançar movimentação de retirada de aptidão de julgamento">
@@ -359,6 +360,9 @@ Magistrado  Assessoria Segundo Grau  Assessor
         <transition to="(SG) Lançar movimentação de retirada de aptidão de julgamento" name="Pedir retirada de julgamento">
             <condition expression="#{processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')).selecionadoPauta and not empty sessaoProcessoDocumentoManager.recuperaElementosJulgamento(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')), null, authenticator.getOrgaoJulgadorAtual(), false, false) and sessaoProcessoDocumentoManager.recuperaElementosJulgamento(processoJudicialManager.findById(processInstance.contextInstance.getVariable('processo')), null, authenticator.getOrgaoJulgadorAtual(), false, false).get(0).sessao.dataFechamentoPauta == null }"/>
         </transition>
+        <transition to="(SG) - Expedição de outros documentos" name=" Expedição de outros documentos criminais">
+            <condition expression="#{parametroUtil.getParametro('pje:sg:exibirDocCriminal').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado).concat('_'))}"/>
+        </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:colegiado:aguardaSessao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:colegiado:aguardaSessao:relator')}"/>
@@ -372,6 +376,14 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Encaminhar manualmente para preparação do acórdão')}"/>
         </event>
     </task-node>
+    <node name="(SG) - Expedição de outros documentos">
+        <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:deccolrel:outros_documentos_criminais',true)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'SG_EXP_OUTROSDOC', processInstance.contextInstance.variables)}"/>
+        </event>
+    </node>
     <node name="(SG) Renovar pedido de inclusão em pauta">
         <transition to="(SG) Sessão de julgamento - AGUARDAR" name="(SG) Sessão de julgamento - AGUARDAR"/>
         <event type="node-enter">
@@ -577,7 +589,7 @@ Magistrado  Assessoria Segundo Grau  Assessor
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Acórdão [Inteiro Teor] - ASSINAR">
-        <task name="(SG) Acórdão [Inteiro Teor] - ASSINAR" swimlane="Magistrado" priority="3">
+        <task name="(SG) Acórdão [Inteiro Teor] - ASSINAR" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="WEB-INF_xhtml_flx_elaborarAcordao" mapped-name="frame:WEB-INF_xhtml_flx_elaborarAcordao" access="read,write"/>
                 <variable name="assinaturaInteiroTeorLote" mapped-name="assinarInteiroTeorLote:assinaturaInteiroTeorLote" access="read,write"/>
@@ -729,7 +741,11 @@ Magistrado  Assessoria Segundo Grau  Assessor
             <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:acordaorevisado')}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Decisão colegiada como relator">
         <task name="Nó de Desvio - (SG) Decisão colegiada como relator" swimlane="Nó de Desvio - (SG) Decisão colegiada como relator" priority="3"/>
         <transition to="Término" name="Término"/>

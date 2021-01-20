@@ -22,10 +22,10 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Gabinete">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,600:5898,599:1469,600:5899,600:5907')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,600:5898,599:1469,600:5899,600:5907,5:5197,5:5898,6:1469,5:5899,5:5907')}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,600:5898,599:1469,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,600:5898,599:1469,600:5899,600:5907,5:5197,5:5898,6:1469,5:5899,5:5907')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -85,7 +85,7 @@ Magistrado  Assessoria Segundo Grau  Assessor Geral]]></description>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:encrevisor:revisaoCancelada', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:ocultaVoto', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:ocultaVoto', false)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:ocultaEmenta', true)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:votacaoColegiado:permiteAssinarRelatorio', false)}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Solicitar inclusão em pauta')}"/>

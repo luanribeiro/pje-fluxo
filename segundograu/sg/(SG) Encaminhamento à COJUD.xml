@@ -11,10 +11,10 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral
 Secretaria  Secretaria Segundo Grau  Servidor de Secretaria]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5906,602:5483')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5906,602:5483,8:1338,8:5906,8:5483')}" actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Encaminhamento à COJUD">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,1342:1469,8:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
