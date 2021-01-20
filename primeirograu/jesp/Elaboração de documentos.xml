@@ -21,7 +21,7 @@
     <task-node end-tasks="true" name="Elaborar documento">
         <task name="Elaborar documento" swimlane="Secretaria">
             <controller>
-                <variable name="minutaEmElaboracao" mapped-name="textEditSecretariaJT:minutaEmElaboracao" access="read,write"/>
+                <variable name="minutaEmElaboracao" mapped-name="textEditCombo:minutaEmElaboracao" access="read,write"/>
             </controller>
         </task>
         <transition to="Nó de Desvio - Elaboração de documentos" name="Nó de Desvio - Elaboração de documentos">

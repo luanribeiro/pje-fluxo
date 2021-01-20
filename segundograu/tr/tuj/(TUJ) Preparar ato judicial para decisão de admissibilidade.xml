@@ -117,7 +117,11 @@ Magistrado  Assessoria TUJ  Assessor]]></description>
         <sub-process name="(TUJ) Autos recebidos da presidência" binding="late"/>
         <transition to="Término" name="Término"/>
     </process-state>
-    <end-state name="Término"/>
+   <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade">
         <task name="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade" swimlane="Nó de Desvio - (TUJ) Preparar ato judicial para decisão de admissibilidade" priority="3"/>
         <transition to="Término" name="Término"/>

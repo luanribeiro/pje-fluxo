@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(TR) Remessa para a presidência">
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Remessa para a presidÃªncia">
     <description><![CDATA[.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,5:5197,8:1338')}" actor-id="#{actor.id}"/>
     </swimlane>
-    <swimlane name="Nó de Desvio - (TR) Remessa para a presidência">
+    <swimlane name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="Início">
+    <start-state name="InÃ­cio">
         <task name="Tarefa inicial" swimlane="Magistrado" priority="3"/>
-        <transition to="(TR) Enviar para a presidência" name="(TR) Enviar para a presidência"/>
+        <transition to="(SG) Enviar para a presidÃªncia" name="(SG) Enviar para a presidÃªncia"/>
     </start-state>  
     <!-- NODES -->
-    <node name="(TR) Enviar para a presidência">
-        <transition to="(TR) É decisão para presidência?" name="(TR) É decisão para presidência?"/>
+    <node name="(SG) Enviar para a presidÃªncia">
+        <transition to="(SG) Ã‰ decisÃ£o para presidÃªncia?" name="(SG) Ã‰ decisÃ£o para presidÃªncia?"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_1_TR') ) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino',parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_3_TR')))}"/>
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_1_TR')) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_3_TR')))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
     </node>
-    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('tr:rempre:decisao_presidencia') ? '(TR) Lançar movimento concluso para decisão' : '(TR) É despacho para presidência?'}" name="(TR) É decisão para presidência?">
-        <transition to="(TR) É despacho para presidência?" name="(TR) É despacho para presidência?"/>
-        <transition to="(TR) Lançar movimento concluso para decisão" name="(TR) Lançar movimento concluso para decisão"/>
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('sg:rempre:decisao_presidencia') ? '(SG) LanÃ§ar movimento concluso para decisÃ£o' : '(SG) Ã‰ despacho para presidÃªncia?'}" name="(SG) Ã‰ decisÃ£o para presidÃªncia?">
+        <transition to="(SG) Ã‰ despacho para presidÃªncia?" name="(SG) Ã‰ despacho para presidÃªncia?"/>
+        <transition to="(SG) LanÃ§ar movimento concluso para decisÃ£o" name="(SG) LanÃ§ar movimento concluso para decisÃ£o"/>
     </decision>
-    <node name="(TR) Lançar movimento concluso para decisão">
-        <transition to="(TR) Concluso para decisão da presidência" name="(TR) Concluso para decisão da presidência"/>
+    <node name="(SG) LanÃ§ar movimento concluso para decisÃ£o">
+        <transition to="(SG) Concluso para decisÃ£o da presidÃªncia" name="(SG) Concluso para decisÃ£o da presidÃªncia"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(51).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(6).lancarMovimento()}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(TR) Concluso para decisão da presidência">
-        <task name="(TR) Concluso para decisão da presidência" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Concluso para decisÃ£o da presidÃªncia">
+        <task name="(SG) Concluso para decisÃ£o da presidÃªncia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Assinar decisão da presidência" name="Encaminhar para assinatura"/>
-        <transition to="(TR) Certificar Conclusão sem Efeito da presidência" name="Emitir certidão de conclusão sem efeito"/>
-        <transition to="(TR) Atualizar concluso para decisão da presidência" name="Atualizar gabinete da presidência"/>
+        <transition to="(SG) Assinar decisÃ£o da presidÃªncia" name="Encaminhar para assinatura"/>
+        <transition to="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" name="Emitir certidÃ£o de conclusÃ£o sem efeito"/>
+        <transition to="(SG) Atualizar concluso para decisÃ£o da presidÃªncia" name="Atualizar gabinete da presidÃªncia"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:documento:tipo:minuta:ids','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
@@ -60,16 +60,16 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="task-create">
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidência')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Emitir certidão de conclusão sem efeito')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidÃªncia')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Emitir certidÃ£o de conclusÃ£o sem efeito')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio','true')}"/>
         </event>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:rempre:tiporetornominuta', '(TR) Concluso para decisão da presidência')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:rempre:tiporetornominuta', '(SG) Concluso para decisÃ£o da presidÃªncia')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(TR) Assinar decisão da presidência">
-        <task name="(TR) Assinar decisão da presidência" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Assinar decisÃ£o da presidÃªncia">
+        <task name="(SG) Assinar decisÃ£o da presidÃªncia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -77,62 +77,62 @@
                 <variable name="HomologarMovimentos" mapped-name="homologadorEventoTree:HomologarMovimentos" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Concluso para decisão da presidência" name="Retornar para minuta"/>
-        <transition to="(TR) Receber da presidência" name="(TR) Receber da presidência">
+        <transition to="(SG) Concluso para decisÃ£o da presidÃªncia" name="Retornar para minuta"/>
+        <transition to="(SG) Receber da presidÃªncia" name="(SG) Receber da presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Remover documento temporário sem efeito da presidência" name="(TR) Remover documento temporário sem efeito da presidência">
+        <transition to="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia" name="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Atualizar concluso para decisão da presidência" name="Atualizar gabinete da presidência"/>
-        <transition to="(TR) Remover documento temporário sem efeito da presidência" name="Documento já assinado! Encaminhar para secretaria">
+        <transition to="(SG) Atualizar concluso para decisÃ£o da presidÃªncia" name="Atualizar gabinete da presidÃªncia"/>
+        <transition to="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('Processo_Fluxo_revisarMinuta','63,64')}"/>
         </event>
         <event type="task-create">
-            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(TR) Remover documento temporário sem efeito da presidência')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidência')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidÃªncia')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
     </task-node>
-    <node name="(TR) Atualizar concluso para decisão da presidência">
-        <transition to="(TR) Concluso para decisão da presidência" name="(TR) Concluso para decisão da presidência"/>
+    <node name="(SG) Atualizar concluso para decisÃ£o da presidÃªncia">
+        <transition to="(SG) Concluso para decisÃ£o da presidÃªncia" name="(SG) Concluso para decisÃ£o da presidÃªncia"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_1_TR') ) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino',parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_3_TR')))}"/>
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_1_TR')) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_3_TR')))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
     </node>
-    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('tr:rempre:despacho_presidencia') ? '(TR) Lançar movimento concluso para despacho' : '(TR) Receber da presidência'}" name="(TR) É despacho para presidência?">
-        <transition to="(TR) Receber da presidência" name="(TR) Receber da presidência"/>
-        <transition to="(TR) Lançar movimento concluso para despacho" name="(TR) Lançar movimento concluso para despacho"/>
+    <decision expression="#{true == tramitacaoProcessualService.recuperaVariavel('sg:rempre:despacho_presidencia') ? '(SG) LanÃ§ar movimento concluso para despacho' : '(SG) Receber da presidÃªncia'}" name="(SG) Ã‰ despacho para presidÃªncia?">
+        <transition to="(SG) Receber da presidÃªncia" name="(SG) Receber da presidÃªncia"/>
+        <transition to="(SG) LanÃ§ar movimento concluso para despacho" name="(SG) LanÃ§ar movimento concluso para despacho"/>
     </decision>
-    <node name="(TR) Lançar movimento concluso para despacho">
-        <transition to="(TR) Concluso para despacho da presidência" name="(TR) Concluso para despacho da presidência"/>
+    <node name="(SG) LanÃ§ar movimento concluso para despacho">
+        <transition to="(SG) Concluso para despacho da presidÃªncia" name="(SG) Concluso para despacho da presidÃªncia"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(51).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(5).lancarMovimento()}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(TR) Concluso para despacho da presidência">
-        <task name="(TR) Concluso para despacho da presidência" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Concluso para despacho da presidÃªncia">
+        <task name="(SG) Concluso para despacho da presidÃªncia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Assinar despacho da presidencia" name="Encaminhar para assinatura"/>
-        <transition to="(TR) Certificar Conclusão sem Efeito da presidência" name="Emitir certidão de conclusão sem efeito"/>
-        <transition to="(TR) Atualizar concluso para despacho da presidência" name="Atualizar gabinete da presidência"/>
+        <transition to="(SG) Assinar despacho da presidencia" name="Encaminhar para assinatura"/>
+        <transition to="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" name="Emitir certidÃ£o de conclusÃ£o sem efeito"/>
+        <transition to="(SG) Atualizar concluso para despacho da presidÃªncia" name="Atualizar gabinete da presidÃªncia"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:documento:tipo:minuta:ids','63,64')}"/>
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
@@ -144,16 +144,16 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
         </event>
         <event type="task-create">
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidência')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Emitir certidão de conclusão sem efeito')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidÃªncia')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Emitir certidÃ£o de conclusÃ£o sem efeito')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio','true')}"/>
         </event>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:rempre:tiporetornominuta', '(TR) Concluso para despacho da presidência')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:rempre:tiporetornominuta', '(SG) Concluso para despacho da presidÃªncia')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(TR) Assinar despacho da presidencia">
-        <task name="(TR) Assinar despacho da presidencia" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Assinar despacho da presidencia">
+        <task name="(SG) Assinar despacho da presidencia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
@@ -161,40 +161,40 @@
                 <variable name="HomologarMovimentos" mapped-name="homologadorEventoTree:HomologarMovimentos" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Concluso para despacho da presidência" name="Retornar para minuta"/>
-        <transition to="(TR) Receber da presidência" name="(TR) Receber da presidência">
+        <transition to="(SG) Concluso para despacho da presidÃªncia" name="Retornar para minuta"/>
+        <transition to="(SG) Receber da presidÃªncia" name="(SG) Receber da presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Remover documento temporário sem efeito da presidência" name="(TR) Remover documento temporário sem efeito da presidência">
+        <transition to="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia" name="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Atualizar concluso para despacho da presidência" name="Atualizar gabinete da presidência"/>
-        <transition to="(TR) Remover documento temporário sem efeito da presidência" name="Documento já assinado! Encaminhar para secretaria">
+        <transition to="(SG) Atualizar concluso para despacho da presidÃªncia" name="Atualizar gabinete da presidÃªncia"/>
+        <transition to="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('Processo_Fluxo_revisarMinuta','63,64')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(TR) Remover documento temporário sem efeito da presidência')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidência')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Atualizar gabinete da presidÃªncia')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
     </task-node>
-    <node name="(TR) Atualizar concluso para despacho da presidência">
-        <transition to="(TR) Concluso para despacho da presidência" name="(TR) Concluso para despacho da presidência"/>
+    <node name="(SG) Atualizar concluso para despacho da presidÃªncia">
+        <transition to="(SG) Concluso para despacho da presidÃªncia" name="(SG) Concluso para despacho da presidÃªncia"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_1_TR') ) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino',parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', parametroUtil.getParametro('pje:tjrn:OrgaoPresidencia_3_TR')))}"/>
-            <action expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 2 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_1_TR')) : (tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado == 3 ? tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_2_TR')) : tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', parametroUtil.getParametro('pje:tjrn:CargoPresidencia_3_TR')))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoDestino', tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador )}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino', entityManager.createNativeQuery('select id_orgao_julgador_cargo from tb_orgao_julgador_cargo ojc where not in_auxiliar and ojc.in_ativo and id_orgao_julgador ='.concat( tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.orgaoJulgadorPresidente.idOrgaoJulgador ).concat(' order by id_cargo limit 1') ).getSingleResult() )}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:deslocamento:colegiadoDestino',tramitacaoProcessualService.recuperaProcesso().orgaoJulgadorColegiado.idOrgaoJulgadorColegiado)}"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
     </node>
-    <node name="(TR) Receber da presidência">
-        <transition to="Término" name="Término"/>
+    <node name="(SG) Receber da presidÃªncia">
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino')}"/>
@@ -202,18 +202,18 @@
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(TR) Certificar Conclusão sem Efeito da presidência">
-        <task name="(TR) Certificar Conclusão sem Efeito da presidência" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia">
+        <task name="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="minuta_semefeito" mapped-name="textEditCombo:minuta_semefeito" access="read,write,required"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Retornar para qual concluso?" name="Retornar para minuta"/>
-        <transition to="(TR) Assinar Conclusão sem Efeito da presidência" name="Encaminhar para assinatura"/>
+        <transition to="(SG) Retornar para qual concluso?" name="Retornar para minuta"/>
+        <transition to="(SG) Assinar ConclusÃ£o sem Efeito da presidÃªncia" name="Encaminhar para assinatura"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57')}"/>
         </event>
@@ -229,22 +229,22 @@
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(TR) Assinar Conclusão sem Efeito da presidência">
-        <task name="(TR) Assinar Conclusão sem Efeito da presidência" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(SG) Assinar ConclusÃ£o sem Efeito da presidÃªncia">
+        <task name="(SG) Assinar ConclusÃ£o sem Efeito da presidÃªncia" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
                 <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (TR) Remessa para a presidência" name="Nó de Desvio - (TR) Remessa para a presidência">
+        <transition to="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Tem documento da presidência assinado?" name="(TR) Tem documento da presidência assinado?">
+        <transition to="(SG) Tem documento da presidÃªncia assinado?" name="(SG) Tem documento da presidÃªncia assinado?">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(TR) Certificar Conclusão sem Efeito da presidência" name="Retornar para elaboração de certidão sem efeito"/>
-        <transition to="(TR) Tem documento da presidência assinado?" name="Documento já assinado! Encaminhar para secretaria">
+        <transition to="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" name="Retornar para elaboraÃ§Ã£o de certidÃ£o sem efeito"/>
+        <transition to="(SG) Tem documento da presidÃªncia assinado?" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
             <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
         </transition>
         <event type="task-end">
@@ -253,50 +253,47 @@
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57')}"/>
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(TR) Tem documento da presidência assinado?')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(SG) Tem documento da presidÃªncia assinado?')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('condicaoLancamentoMovimentosTemporario', '${true}')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Retornar para elaboração de certidão sem efeito')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Retornar para elaboraÃ§Ã£o de certidÃ£o sem efeito')}"/>
         </event>
     </task-node>
-    <decision expression="#{true ? tramitacaoProcessualService.recuperaVariavel('pje:rempre:tiporetornominuta') : ''}" name="(TR) Retornar para qual concluso?">
-        <transition to="(TR) Concluso para decisão da presidência" name="(TR) Concluso para decisão da presidência"/>
-        <transition to="(TR) Concluso para despacho da presidência" name="(TR) Concluso para despacho da presidência"/>
+    <decision expression="#{true ? tramitacaoProcessualService.recuperaVariavel('pje:rempre:tiporetornominuta') : ''}" name="(SG) Retornar para qual concluso?">
+        <transition to="(SG) Concluso para decisÃ£o da presidÃªncia" name="(SG) Concluso para decisÃ£o da presidÃªncia"/>
+        <transition to="(SG) Concluso para despacho da presidÃªncia" name="(SG) Concluso para despacho da presidÃªncia"/>
     </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:paj:idDocAssinado') ? '(TR) Remover documento temporário decisão_despacho' : '(TR) Certificar Conclusão sem Efeito da presidência'}" name="(TR) Tem documento da presidência assinado?">
-        <transition to="(TR) Certificar Conclusão sem Efeito da presidência" name="(TR) Certificar Conclusão sem Efeito da presidência"/>
-        <transition to="(TR) Remover documento temporário decisão_despacho" name="(TR) Remover documento temporário decisão_despacho"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:paj:idDocAssinado') ? '(SG) Remover documento temporÃ¡rio decisÃ£o_despacho' : '(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia'}" name="(SG) Tem documento da presidÃªncia assinado?">
+        <transition to="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" name="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia"/>
+        <transition to="(SG) Remover documento temporÃ¡rio decisÃ£o_despacho" name="(SG) Remover documento temporÃ¡rio decisÃ£o_despacho"/>
     </decision>
-    <node name="(TR) Remover documento temporário decisão_despacho">
-        <transition to="(TR) Receber da presidência" name="(TR) Receber da presidência"/>
+    <node name="(SG) Remover documento temporÃ¡rio decisÃ£o_despacho">
+        <transition to="(SG) Receber da presidÃªncia" name="(SG) Receber da presidÃªncia"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_ato_judicial')}"/>
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(200001).lancarMovimento()}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:rempre:temcertidaosemefeito', true)}"/>
         </event>
     </node>
-    <node name="(TR) Remover documento temporário sem efeito da presidência">
-        <transition to="(TR) Receber da presidência" name="(TR) Receber da presidência"/>
+    <node name="(SG) Remover documento temporÃ¡rio sem efeito da presidÃªncia">
+        <transition to="(SG) Receber da presidÃªncia" name="(SG) Receber da presidÃªncia"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_semefeito')}"/>
         </event>
     </node>
-    <end-state name="Término">
+    <end-state name="TÃ©rmino">
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:rempre:tiporetornominuta')}"/>
         </event>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
-        </event>
     </end-state>
-    <task-node end-tasks="true" name="Nó de Desvio - (TR) Remessa para a presidência">
-        <task name="Nó de Desvio - (TR) Remessa para a presidência" swimlane="Nó de Desvio - (TR) Remessa para a presidência" priority="3"/>
-        <transition to="Término" name="Término"/>
-        <transition to="(TR) Concluso para decisão da presidência" name="(TR) Concluso para decisão da presidência"/>
-        <transition to="(TR) Concluso para despacho da presidência" name="(TR) Concluso para despacho da presidência"/>
-        <transition to="(TR) Assinar decisão da presidência" name="(TR) Assinar decisão da presidência"/>
-        <transition to="(TR) Assinar despacho da presidencia" name="(TR) Assinar despacho da presidencia"/>
-        <transition to="(TR) Certificar Conclusão sem Efeito da presidência" name="(TR) Certificar Conclusão sem Efeito da presidência"/>
-        <transition to="(TR) Assinar Conclusão sem Efeito da presidência" name="(TR) Assinar Conclusão sem Efeito da presidência"/>
+    <task-node end-tasks="true" name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia">
+        <task name="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" swimlane="NÃ³ de Desvio - (SG) Remessa para a presidÃªncia" priority="3"/>
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+        <transition to="(SG) Concluso para decisÃ£o da presidÃªncia" name="(SG) Concluso para decisÃ£o da presidÃªncia"/>
+        <transition to="(SG) Concluso para despacho da presidÃªncia" name="(SG) Concluso para despacho da presidÃªncia"/>
+        <transition to="(SG) Assinar decisÃ£o da presidÃªncia" name="(SG) Assinar decisÃ£o da presidÃªncia"/>
+        <transition to="(SG) Assinar despacho da presidencia" name="(SG) Assinar despacho da presidencia"/>
+        <transition to="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia" name="(SG) Certificar ConclusÃ£o sem Efeito da presidÃªncia"/>
+        <transition to="(SG) Assinar ConclusÃ£o sem Efeito da presidÃªncia" name="(SG) Assinar ConclusÃ£o sem Efeito da presidÃªncia"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">

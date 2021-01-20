@@ -15,13 +15,13 @@ Magistrado  Assessoria Segundo Grau  Assessor para Votação Antecipada
 Assessoria Segundo Grau  Assessor Geral]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907')}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5483,8:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -155,7 +155,11 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_carta')}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória">
         <task name="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" swimlane="Nó de Desvio - (SG) Expedição de carta de ordem, precatória ou rogatória" priority="3"/>
         <transition to="Término" name="Término"/>

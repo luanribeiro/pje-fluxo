@@ -9,7 +9,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
         <assignment actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('602:1338,602:5483,602:5906,8:1338,8:5483,8:5906')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
@@ -61,7 +61,7 @@ A separação do PAC geral deu-se em função da necessidade de preparar intimações 
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('atoProferidoOriginal', tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('number:prazoIntimacao', 0)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('number:prazoIntimacao', 15)}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:atoProferido') == null ? '(SG) Intimação ou citação ao MP - EXPEDIR' : '(SG) Intimação ou citação ao MP - CONFIRMAR'}" name="(SG) Último ato foi selecionado?">

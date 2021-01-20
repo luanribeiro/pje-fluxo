@@ -52,7 +52,7 @@
         </transition>
         <transition to="Término" name="Ignorar e sair da tarefa"/>
         <event type="task-start">
-            <action expression="#{taskInstanceUtil.setVariable('comboMotivoRemessa','18;37,38,39,40,90')}"/>
+            <action expression="#{taskInstanceUtil.setVariable('comboMotivoRemessa','18;37,38,39,40,90,108,109,110,190,194')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Efetuar remessa ao primeiro grau')}"/>
         </event>
     </task-node>

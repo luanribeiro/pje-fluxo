@@ -148,6 +148,9 @@ Assessoria  Gabinete TUJ    Magistrado]]></description>
         </event>
     </node>
     <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('ato_ordinatorio_em_elaboracao')}"/>
         </event>

@@ -18,10 +18,10 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             Assessoria Segundo Grau  Assessor Geral]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907,8:1338')}"/>
     </swimlane>
     <swimlane name="Assessoria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907')}" actor-id="#{actor.id}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('600:5197,599:1469,600:5898,600:5899,600:5907,5:5197,6:1469,5:5898,5:5899,5:5907,8:1338')}" actor-id="#{actor.id}"/>
     </swimlane>
     <swimlane name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre agravo em resp. ou rext.">
         <assignment actor-id="#{actor.id}"/>
@@ -128,7 +128,7 @@ Magistrado  Assessoria Segundo Grau  Assessoria
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Concluso para decisão sobre agravo em resp. ou rext. - ASSINAR">
-        <task name="(SG) Concluso para decisão sobre agravo em resp. ou rext. - ASSINAR" swimlane="Magistrado" priority="3">
+        <task name="(SG) Concluso para decisão sobre agravo em resp. ou rext. - ASSINAR" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -185,7 +185,11 @@ Magistrado  Assessoria Segundo Grau  Assessoria
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:paj:conclusao_cancelada', true)}"/>
         </event>
     </node>
-    <end-state name="Término"/>
+    <end-state name="Término">
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre agravo em resp. ou rext.">
         <task name="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre agravo em resp. ou rext." swimlane="Nó de Desvio - (SG) Preparar ato judicial de decisão sobre agravo em resp. ou rext." priority="3"/>
         <transition to="(SG) Concluso para decisão sobre agravo em resp. ou rext. - MINUTAR" name="(SG) Concluso para decisão sobre agravo em resp. ou rext. - MINUTAR"/>
