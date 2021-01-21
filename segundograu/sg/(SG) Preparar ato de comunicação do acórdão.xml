@@ -44,6 +44,10 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <condition expression="#{true}"/>
         </transition>
         <transition to="Término" name="Encaminhar para &quot;Secretaria - ANALISAR&quot;"/>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.fecharTarefa('(SG) Documentos não lidos - Memoriais - ANALISAR')}"/>
+            <action expression="#{tramitacaoProcessualService.fecharTarefa('(SG) Documentos não lidos - ANALISAR')}"/>
+        </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
