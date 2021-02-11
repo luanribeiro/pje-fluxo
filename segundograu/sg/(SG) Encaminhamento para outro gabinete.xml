@@ -104,6 +104,9 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Encaminhar para PlenoGab14" name="Encaminhar para Gab. Des. Cornélio Alves no Pleno">
             <condition expression="#{orgaoJulgadorManager.orgaosPorColegiado(authenticator.getOrgaoJulgadorColegiadoAtual()).contains(orgaoJulgadorService.findById(28))}"/>
         </transition>
+        <transition to="(SG) Encaminhar para PlenoGab15" name="Encaminhar para Gab. Des. Expedito Ferreira no Pleno">
+            <condition expression="#{orgaoJulgadorManager.orgaosPorColegiado(authenticator.getOrgaoJulgadorColegiadoAtual()).contains(orgaoJulgadorService.findById(68))}"/>
+        </transition>
         <transition to="(SG) Encaminhar para SCvGab01" name="Encaminhar para Gab. Des. Amaury Moura Sobrinho na Seção Cível">
             <condition expression="#{orgaoJulgadorManager.orgaosPorColegiado(authenticator.getOrgaoJulgadorColegiadoAtual()).contains(orgaoJulgadorService.findById(61))}"/>
         </transition>
@@ -364,6 +367,14 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:encgab:OrgJulgadorDestino', 'Gab. Des. Cornélio Alves no Pleno') }"/>
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 28, 30, 8)}"/>
             <action expression="#{processoJudicialService.deslocarOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso(),28,8,30,false)}"/>
+        </event>
+    </node>
+    <node name="(SG) Encaminhar para PlenoGab15">
+        <transition to="(SG) Registrar movimentação de remessa" name="(SG) Registrar movimentação de remessa"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:encgab:OrgJulgadorDestino', 'Gab. Des. Expedito Ferreira no Pleno') }"/>
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 68, 126, 8)}"/>
+            <action expression="#{processoJudicialService.deslocarOrgaoJulgador(tramitacaoProcessualService.recuperaProcesso(),68,8,126,false)}"/>
         </event>
     </node>
     <node name="(SG) Encaminhar para SCvGab01">
