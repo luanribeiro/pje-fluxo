@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Fluxo básico de conhecimento">
-    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum..
-Aguardar Perícia / Laudo Técnico / Outros...]]></description>  
+    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum.
+Aguardar Perícia / Laudo Técnico / Outros.]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
-    </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
     </swimlane>  
@@ -44,7 +41,7 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
     </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
-        <task name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" swimlane="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" priority="3"/>
+        <task name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" priority="3"/>
         <transition to="Término" name="Término">
             <condition expression="#{true}"/>
         </transition>
@@ -122,7 +119,6 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
                 <variable name="vciv_fbc_aguardar_laudo_tecnico" mapped-name="sim_nao:vciv_fbc_aguardar_laudo_tecnico" access="read,write"/>
                 <variable name="vciv_fbc_apensar" mapped-name="sim_nao:vciv_fbc_apensar" access="read,write"/>
                 <variable name="vciv_fbc_alterar_tipo_documento" mapped-name="sim_nao:vciv_fbc_alterar_tipo_documento" access="read,write"/>
-                <variable name="vciv_fbc_bacenjud_minutar" mapped-name="sim_nao:vciv_fbc_bacenjud_minutar" access="read,write"/>
                 <variable name="vciv_fbc_calcular_custas" mapped-name="sim_nao:vciv_fbc_calcular_custas" access="read,write"/>
                 <variable name="vciv_fbc_certificar_decurso" mapped-name="sim_nao:vciv_fbc_certificar_decurso" access="read,write"/>
                 <variable name="vciv_fbc_certificar_transito" mapped-name="sim_nao:vciv_fbc_certificar_transito" access="read,write"/>
@@ -243,7 +239,6 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:aguardar_audiencia', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_aguardar_audiencia'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:apensar', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_apensar'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:alterar_tipo_documento', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_alterar_tipo_documento'))}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:bacenjud_minutar', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_bacenjud_minutar'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:calcular_custas', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_calcular_custas'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:certificar_decurso', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_certificar_decurso'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:certificar_transito', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_certificar_transito'))}"/>
@@ -492,17 +487,13 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
                 && 
         competenciaClasseAssuntoHome.processoContemClasseAssunto('159;156')
 ) 
-
 ||
-
 (
         tramitacaoProcessualService.recuperaProcesso().competencia.idCompetencia == 25 
                         && 
         competenciaClasseAssuntoHome.processoContemClasseAssunto('159;156')
 ) 
-
 || 
-
 (
         tramitacaoProcessualService.recuperaProcesso().competencia.idCompetencia != 3
                 &&
@@ -537,14 +528,8 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
         </event>
     </process-state>
     <process-state name="(VCiv) Dar cumprimento a ato judicial de penhora online">
-        <sub-process name="(VCiv) Cumprimento de decisão" binding="late"/>
+        <sub-process name="Integraçao PJe x Sisbajud" binding="late"/>
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:fbc:bacenjud_minutar')}"/>
-        </event>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:bacenjud_minutar', 'true')}"/>
-        </event>
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Despachados sobre homologação e(ou) extinção">
         <task name="(VCiv) Despachados sobre homologação e(ou) extinção" swimlane="Secretaria" priority="3">
@@ -695,7 +680,6 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
                 <variable name="vciv_fbc_aguardar_laudo_tecnico" mapped-name="sim_nao:vciv_fbc_aguardar_laudo_tecnico" access="read,write"/>
                 <variable name="vciv_fbc_aguardar_decurso_prazo" mapped-name="sim_nao:vciv_fbc_aguardar_decurso_prazo" access="read,write"/>
                 <variable name="vciv_fbc_apensar" mapped-name="sim_nao:vciv_fbc_apensar" access="read,write"/>
-                <variable name="vciv_fbc_bacenjud_minutar" mapped-name="sim_nao:vciv_fbc_bacenjud_minutar" access="read,write"/>
                 <variable name="vciv_fbc_calcular_custas" mapped-name="sim_nao:vciv_fbc_calcular_custas" access="read,write"/>
                 <variable name="vciv_fbc_certificar_decurso" mapped-name="sim_nao:vciv_fbc_certificar_decurso" access="read,write"/>
                 <variable name="vciv_fbc_certificar_transito" mapped-name="sim_nao:vciv_fbc_certificar_transito" access="read,write"/>
@@ -775,7 +759,6 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:aguardar_laudo_tecnico', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_aguardar_laudo_tecnico'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:aguardar_audiencia', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_aguardar_audiencia'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:apensar', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_apensar'))}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:bacenjud_minutar', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_bacenjud_minutar'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:calcular_custas', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_calcular_custas'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:certificar_decurso', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_certificar_decurso'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:fbc:certificar_transito', tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:vciv_fbc_certificar_transito'))}"/>
