@@ -2,9 +2,7 @@
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(SG) Análise de documentos não lidos">
     <description><![CDATA[Código do fluxo: SG_ADOCNLIDO
-
-Descrição: Fluxo destinado à análise de juntada de documentos..
-
+Descrição: Fluxo destinado à análise de juntada de documentos.
 Raia        Localização              Papel
 Secretaria  Secretaria Segundo Grau  Chefe de Secretaria
 Secretaria  Secretaria Segundo Grau  Servidor Geral
@@ -18,7 +16,7 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Processo distribuído?" name="(SG) Processo distribuído?"/>
     </start-state>  
     <!-- NODES -->
@@ -26,25 +24,27 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Foi juntado pelo Ministério Público?" name="(SG) Foi juntado pelo Ministério Público?"/>
         <transition to="Término" name="Término"/>
     </decision>
-    <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pelo Ministério Público?">
-        <transition to="(SG) Documentos não lidos [Ministério Público] - ANALISAR" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR"/>
+    <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Resposta de Ato ordinatório do gabinete à PGJ?' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pelo Ministério Público?">
         <transition to="(SG) Documentos não lidos - ANALISAR" name="(SG) Documentos não lidos - ANALISAR"/>
+        <transition to="(SG) Resposta de Ato ordinatório do gabinete à PGJ?" name="(SG) Resposta de Ato ordinatório do gabinete à PGJ?"/>
+    </decision>
+    <decision expression="#{(entityManager.createNativeQuery('select count(1) from public.jbpm_variableinstance vi join public.jbpm_processinstance pi on (pi.id_= vi.processinstance_) join core.tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join core.tb_processo tp on (tpi.id_processo = tp.id_processo) join client.tb_processo_tarefa pt on (pt.id_processo_trf = tp.id_processo) where vi.name_ = \'sg:eaog:ato_ord_pgj\' and tpi.in_ativo is true and tpi.id_proc_inst = pt.id_process_instance and tp.id_processo = '.concat(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf)).getSingleResult() == 0 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : 'Término')}" name="(SG) Resposta de Ato ordinatório do gabinete à PGJ?">
+        <transition to="(SG) Documentos não lidos [Ministério Público] - ANALISAR" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR"/>
+        <transition to="Término" name="Término"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR">
-        <task name="(SG) Documentos não lidos [Ministério Público] - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Documentos não lidos [Ministério Público] - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
                 <variable name="WEB-INF_xhtml_flx_visualizarPeticao" mapped-name="frame:WEB-INF_xhtml_flx_visualizarPeticao" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: movimentacaoLote
    Label:
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 2. Variável: WEB-INF_xhtml_flx_visualizarPeticao
    Label:
    Escrita: Sim
@@ -67,20 +67,18 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Foi juntado pela Procuradoria?" name="(SG) Foi juntado pela Procuradoria?"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Documentos não lidos [Defensoria] - ANALISAR">
-        <task name="(SG) Documentos não lidos [Defensoria] - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Documentos não lidos [Defensoria] - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
                 <variable name="WEB-INF_xhtml_flx_visualizarPeticao" mapped-name="frame:WEB-INF_xhtml_flx_visualizarPeticao" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: movimentacaoLote
    Label:
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 2. Variável: WEB-INF_xhtml_flx_visualizarPeticao
    Label:
    Escrita: Sim
@@ -103,20 +101,18 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Documentos não lidos - ANALISAR" name="(SG) Documentos não lidos - ANALISAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Documentos não lidos [Procuradoria] - ANALISAR">
-        <task name="(SG) Documentos não lidos [Procuradoria] - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Documentos não lidos [Procuradoria] - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
                 <variable name="WEB-INF_xhtml_flx_visualizarPeticao" mapped-name="frame:WEB-INF_xhtml_flx_visualizarPeticao" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: movimentacaoLote
    Label:
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 2. Variável: WEB-INF_xhtml_flx_visualizarPeticao
    Label:
    Escrita: Sim
@@ -135,20 +131,18 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Documentos não lidos - ANALISAR">
-        <task name="(SG) Documentos não lidos - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Documentos não lidos - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
                 <variable name="WEB-INF_xhtml_flx_visualizarPeticao" mapped-name="frame:WEB-INF_xhtml_flx_visualizarPeticao" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[*Variáveis*
-
 1. Variável: movimentacaoLote
    Label:
    Escrita: Sim
    Obrig.: Não
    Tipo: Habilitar Movimentação em Lote
-
 2. Variável: WEB-INF_xhtml_flx_visualizarPeticao
    Label:
    Escrita: Sim
@@ -172,7 +166,7 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Análise de documentos não lidos">
-        <task name="Nó de Desvio - (SG) Análise de documentos não lidos" swimlane="Nó de Desvio - (SG) Análise de documentos não lidos"/>
+        <task name="Nó de Desvio - (SG) Análise de documentos não lidos" swimlane="Nó de Desvio - (SG) Análise de documentos não lidos" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Documentos não lidos - ANALISAR" name="(SG) Documentos não lidos - ANALISAR"/>
         <transition to="(SG) Documentos não lidos [Ministério Público] - ANALISAR" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR"/>

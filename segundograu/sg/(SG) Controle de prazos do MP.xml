@@ -17,7 +17,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(SG) Separação em controle de prazos do MP" name="(SG) Separação em controle de prazos do MP"/>
     </start-state>  
     <!-- NODES -->
@@ -34,7 +34,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Junção em controle de prazos do MP" name="(SG) Junção em controle de prazos do MP"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao MP com prazo em curso - AGUARDAR">
-        <task name="(SG) Intimação ou citação ao MP com prazo em curso - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao MP com prazo em curso - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -78,7 +78,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Intimação ou citação ao MP com prazo em curso - AGUARDAR" name="(SG) Intimação ou citação ao MP com prazo em curso - AGUARDAR"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao MP com prazo decorrido - ANALISAR">
-        <task name="(SG) Intimação ou citação ao MP com prazo decorrido - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao MP com prazo decorrido - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -104,6 +104,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Encaminhar para expedição de intimação ao MP" name="Preparar nova intimação ao MP"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:eaog:ato_ord_pgj')}"/>
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
@@ -122,7 +123,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Junção em controle de prazos do MP" name="(SG) Junção em controle de prazos do MP"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao MP sem prazo - AGUARDAR">
-        <task name="(SG) Intimação ou citação ao MP sem prazo - AGUARDAR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao MP sem prazo - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -179,7 +180,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="(SG) Junção em controle de prazos do MP" name="(SG) Junção em controle de prazos do MP"/>
     </decision>
     <task-node end-tasks="true" name="(SG) Intimação ou citação ao MP sem prazo e fechado - ANALISAR">
-        <task name="(SG) Intimação ou citação ao MP sem prazo e fechado - ANALISAR" swimlane="Secretaria">
+        <task name="(SG) Intimação ou citação ao MP sem prazo e fechado - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -230,7 +231,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Controle de prazos do MP">
-        <task name="Nó de Desvio - (SG) Controle de prazos do MP" swimlane="Nó de Desvio - (SG) Controle de prazos do MP"/>
+        <task name="Nó de Desvio - (SG) Controle de prazos do MP" swimlane="Nó de Desvio - (SG) Controle de prazos do MP" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Intimação ou citação ao MP sem prazo - AGUARDAR" name="(SG) Intimação ou citação ao MP sem prazo - AGUARDAR"/>
         <transition to="(SG) Intimação ou citação ao MP sem prazo e fechado - ANALISAR" name="(SG) Intimação ou citação ao MP sem prazo e fechado - ANALISAR"/>

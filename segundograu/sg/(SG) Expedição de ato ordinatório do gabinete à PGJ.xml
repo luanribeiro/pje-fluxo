@@ -20,12 +20,12 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Assessoria"/>
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
         <transition to="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR" name="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR">
-        <task name="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR" swimlane="Assessoria">
+        <task name="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write,required"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -83,7 +83,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(SG) Ato ordinatório do gabinete à PGJ - ASSINAR">
-        <task name="(SG) Ato ordinatório do gabinete à PGJ - ASSINAR" swimlane="Assessoria">
+        <task name="(SG) Ato ordinatório do gabinete à PGJ - ASSINAR" swimlane="Assessoria" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -127,6 +127,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(SG) Lançar movimento de juntada de ato ordinatório')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','67')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Encaminhar para secretaria')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('sg:eaog:ato_ord_pgj', true)}"/>
         </event>
     </task-node>
     <node name="(SG) Lançar movimento de juntada de ato ordinatório">
@@ -159,6 +160,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <transition to="(SG) Enviar autos ao gabinete" name="(SG) Enviar autos ao gabinete"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(51).associarAoProcesso(tramitacaoProcessualService.recuperaProcesso()).comComplementoDeCodigo(3).doTipoDominio().preencherComElementoDeCodigo(6).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:eaog:ato_ord_pgj')}"/>
         </event>
     </node>
     <process-state name="(SG) Enviar autos ao gabinete">
@@ -170,6 +172,7 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('sg:eaog:assinou_ato_ordinatorio', false)}"/>
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('ato_ordinatorio_em_elaboracao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('sg:eaog:ato_ord_pgj')}"/>
         </event>
     </node>
     <node name="(SG) Gravar variável de cancelamento de ato ordinatório">
@@ -179,15 +182,15 @@ Assessoria Segundo Grau  Assessor Geral]]></description>
         </event>
     </node>
     <end-state name="Término">
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.apagaVariavel('ato_ordinatorio_em_elaboracao')}"/>
-        </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
         </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('ato_ordinatorio_em_elaboracao')}"/>
+        </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (SG) Expedição de ato ordinatório do gabinete à PGJ">
-        <task name="Nó de Desvio - (SG) Expedição de ato ordinatório do gabinete à PGJ" swimlane="Nó de Desvio - (SG) Expedição de ato ordinatório do gabinete à PGJ"/>
+        <task name="Nó de Desvio - (SG) Expedição de ato ordinatório do gabinete à PGJ" swimlane="Nó de Desvio - (SG) Expedição de ato ordinatório do gabinete à PGJ" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR" name="(SG) Ato ordinatório do gabinete à PGJ - EXPEDIR"/>
         <transition to="(SG) Ato ordinatório do gabinete à PGJ - ASSINAR" name="(SG) Ato ordinatório do gabinete à PGJ - ASSINAR"/>
