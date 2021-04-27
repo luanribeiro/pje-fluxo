@@ -218,7 +218,7 @@ Magistrado  Assessoria Segundo Grau  Assessor para Votação Antecipada
         <transition to="(SG) Existe conteúdo no voto?" name="(SG) Existe conteúdo no voto?"/>
         <transition to="(SG) Apagar variáveis do fluxo" name="(SG) Apagar variáveis do fluxo"/>
     </decision>
-    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:fluxo:colegiado:julgamento:id') and not empty sessaoProcessoDocumentoVotoManager.recuperarVoto(sessaoPautaProcessoTrfManager.findById(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:colegiado:julgamento:id')).sessao, tramitacaoProcessualService.recuperaProcesso(),orgaoJulgadorManager.findById(processoInstanceManager.findById(processInstance.id).orgaoJulgador)).processoDocumento ? '(SG) Voto [não relator] - ASSINAR' : '(SG) Apagar variáveis do fluxo'}" name="(SG) Existe conteúdo no voto?">
+    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('pje:fluxo:colegiado:julgamento:id') and not empty sessaoProcessoDocumentoVotoManager.recuperarVoto(sessaoPautaProcessoTrfManager.findById(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:colegiado:julgamento:id')).sessao, tramitacaoProcessualService.recuperaProcesso(), orgaoJulgadorManager.getOrgaoJulgadorByLocalizacao(localizacaoManager.findById(processoInstanceManager.findById(processInstance.id).idLocalizacao)).idOrgaoJulgador).processoDocumento ? '(SG) Voto [não relator] - ASSINAR' : '(SG) Apagar variáveis do fluxo'}" name="(SG) Existe conteúdo no voto?">
         <transition to="(SG) Voto [não relator] - ASSINAR" name="(SG) Voto [não relator] - ASSINAR"/>
         <transition to="(SG) Apagar variáveis do fluxo" name="(SG) Apagar variáveis do fluxo"/>
     </decision>
