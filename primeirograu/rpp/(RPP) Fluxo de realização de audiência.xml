@@ -1,46 +1,115 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de autos recebidos da evolução de classe">
-    <description><![CDATA[Cód: RPP_FLX_AUT_REC_EVO.
-Nome: (RPP) Fluxo de autos recebidos da evolução de classe.]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de realização de audiência">
+    <description><![CDATA[COD: RPP_REAL_AUD]]></description>  
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe">
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" priority="3"/>
-        <transition to="(RPP) Autos recebidos da evolução de classe - ANALISAR" name="(RPP) Autos recebidos da evolução de classe - ANALISAR"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(RPP) Audiência [ata] - MINUTAR" name="(RPP) Audiência [ata] - MINUTAR"/>
     </start-state>  
     <!-- NODES -->
-    <task-node end-tasks="true" name="(RPP) Autos recebidos da evolução de classe - ANALISAR">
-        <task name="(RPP) Autos recebidos da evolução de classe - ANALISAR" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(RPP) Audiência [ata] - MINUTAR">
+        <task name="(RPP) Audiência [ata] - MINUTAR" swimlane="Secretaria" priority="3">
             <controller>
-                <variable name="Aviso1" mapped-name="textAlert:Aviso1" access="read,write"/>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+                <variable name="minutaTermoAudiencia" mapped-name="textEditCombo:minutaTermoAudiencia" access="read,write"/>
+                <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="(RPP) Subfluxo para intimar MP" name="Intimar Ministério Público"/>
-        <transition to="(RPP) Subfluxo para enviar concluso" name="Enviar concluso para sentença"/>
-        <transition to="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe" name="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe">
+        <transition to="Nó de Desvio - (RPP) Fluxo de realização de audiência" name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
             <condition expression="#{true}"/>
         </transition>
+        <transition to="(RPP) Audiência [informações] - PREENCHER" name="Preencher dados da audiência"/>
+        <transition to="(RPP) Sinalizar cancelamento da realização da audiência" name="Cancelar realização da audiência"/>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '87')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar realização da audiência')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
+        </event>
     </task-node>
-    <process-state name="(RPP) Subfluxo para intimar MP">
-        <sub-process name="(RPP) Fluxo de intimação ao Ministério Público" binding="late"/>
+    <task-node end-tasks="true" name="(RPP) Audiência [informações] - PREENCHER">
+        <task name="(RPP) Audiência [informações] - PREENCHER" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+                <variable name="ProcessoAudiencia_informarDadosAudiencia" mapped-name="frame:ProcessoAudiencia_informarDadosAudiencia" access="read,write"/>
+                <variable name="aviso2" mapped-name="textAlert:aviso2" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de realização de audiência" name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Audiência [ata] - ASSINAR" name="Encaminhar para assinatura do termo de audiência"/>
+        <transition to="(RPP) Audiência [ata] - MINUTAR" name="Retornar para minuta do termo de audiência"/>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:audienciaSelecionada', processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()))}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Audiência [ata] - ASSINAR">
+        <task name="(RPP) Audiência [ata] - ASSINAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="assinarLote" mapped-name="assinarLote:assinarLote" access="read,write"/>
+                <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de realização de audiência" name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Gravar informações da audiência" name="(RPP) Gravar informações da audiência">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Audiência [informações] - PREENCHER" name="Retornar para as informações da audiência">
+            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        </transition>
+        <transition to="(RPP) Gravar informações da audiência" name="Ata de audiência assinada! Prosseguir no fluxo">
+            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '87')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Gravar informações da audiência')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavel('minutaTermoAudiencia'))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
+        </event>
+    </task-node>
+    <node name="(RPP) Gravar informações da audiência">
+        <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
+        <event type="node-enter">
+            <action expression="#{processoAudienciaHome.instance.setStatusAudiencia(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada'))}"/>
+            <action expression="#{processoAudienciaHome.update()}"/>
+            <action expression="#{processoAudienciaHome.registrarMovimentoAudiencia()}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', '')}"/>
+        </event>
+    </node>
+    <node name="(RPP) Sinalizar cancelamento da realização da audiência">
+        <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:cpp:sinalizacao', 'cancelarRealizacaoAudiencia')}"/>
+        </event>
+    </node>
+    <node name="(RPP) Apagar variáveis do fluxo">
         <transition to="Término" name="Término"/>
-    </process-state>
-    <process-state name="(RPP) Subfluxo para enviar concluso">
-        <sub-process name="(RPP) Fluxo de preparação de ato judicial de sentença" binding="late"/>
-        <transition to="Término" name="Término"/>
-    </process-state>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:audienciaSelecionada')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:statusAudienciaSelecionada')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action expression="#{tramitacaoProcesualService.apagaVariavel('minutaTermoAudiencia')}"/>
+        </event>
+    </node>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe">
-        <task name="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe" swimlane="Nó de Desvio - (RPP) Fluxo de autos recebidos da evolução de classe" priority="3"/>
-        <transition to="(RPP) Autos recebidos da evolução de classe - ANALISAR" name="(RPP) Autos recebidos da evolução de classe - ANALISAR"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de realização de audiência">
+        <task name="Nó de Desvio - (RPP) Fluxo de realização de audiência" swimlane="Nó de Desvio - (RPP) Fluxo de realização de audiência" priority="3"/>
         <transition to="Término" name="Término"/>
+        <transition to="(RPP) Audiência [ata] - MINUTAR" name="(RPP) Audiência [ata] - MINUTAR"/>
+        <transition to="(RPP) Audiência [informações] - PREENCHER" name="(RPP) Audiência [informações] - PREENCHER"/>
+        <transition to="(RPP) Audiência [ata] - ASSINAR" name="(RPP) Audiência [ata] - ASSINAR"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
@@ -90,5 +159,6 @@ Nome: (RPP) Fluxo de autos recebidos da evolução de classe.]]></description>
     </event>
     <event type="node-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
-    </event> 
+    </event>  
+    <!-- ACTIONS --> 
 </process-definition>
