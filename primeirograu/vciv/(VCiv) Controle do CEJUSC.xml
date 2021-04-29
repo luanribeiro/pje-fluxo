@@ -14,7 +14,7 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(CEJUSC) É CEJUSC ?" name="É intimar CEJUSC ?"/>
     </start-state>  
     <!-- NODES -->
@@ -23,7 +23,7 @@
         <transition to="(CEJUSC) Lançar movimento entrada " name="(CEJUSC) Lançar movimento entrada"/>
     </decision>
     <task-node end-tasks="true" name="(CEJUSC) Designar audiência">
-        <task name="(CEJUSC) Designar audiência" swimlane="CEJUSC">
+        <task name="(CEJUSC) Designar audiência" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
@@ -58,7 +58,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Análise do CEJUSC">
-        <task name="(CEJUSC) Análise do CEJUSC" swimlane="CEJUSC">
+        <task name="(CEJUSC) Análise do CEJUSC" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
@@ -93,7 +93,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Intimar da audiência">
-        <task name="(CEJUSC) Intimar da audiência" swimlane="CEJUSC">
+        <task name="(CEJUSC) Intimar da audiência" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_prepararExpediente" mapped-name="frame:Processo_Fluxo_prepararExpediente" access="read,write"/>
             </controller>
@@ -115,7 +115,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Intimar da PERÍCIA">
-        <task name="(CEJUSC) Intimar da PERÍCIA" swimlane="CEJUSC">
+        <task name="(CEJUSC) Intimar da PERÍCIA" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_prepararExpediente" mapped-name="frame:Processo_Fluxo_prepararExpediente" access="read,write"/>
             </controller>
@@ -141,7 +141,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Junção preparação intimação" name="(CEJUSC) Junção preparação intimação"/>
     </decision>
     <task-node end-tasks="true" name="(CEJUSC) Selecionar Central de Mandados">
-        <task name="(CEJUSC) Selecionar Central de Mandados" swimlane="CEJUSC">
+        <task name="(CEJUSC) Selecionar Central de Mandados" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_expedientes_centralmandados" mapped-name="frame:Processo_Fluxo_expedientes_centralmandados" access="read,write"/>
             </controller>
@@ -152,7 +152,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Lançar movimento de Expedição de mandado" name="Finalizar e prosseguir"/>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Processo com prazo em curso">
-        <task name="(CEJUSC) Processo com prazo em curso" swimlane="CEJUSC"/>
+        <task name="(CEJUSC) Processo com prazo em curso" swimlane="CEJUSC" priority="3"/>
         <transition to="Nó de Desvio - (VCiv) Controle do CEJUSC" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
             <condition expression="#{true}"/>
         </transition>
@@ -174,14 +174,14 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Processo com prazo decorrido" name="Processo com prazo decorrido"/>
     </decision>
     <task-node end-tasks="true" name="(CEJUSC) Processo com prazo decorrido">
-        <task name="(CEJUSC) Processo com prazo decorrido" swimlane="CEJUSC"/>
+        <task name="(CEJUSC) Processo com prazo decorrido" swimlane="CEJUSC" priority="3"/>
         <transition to="Nó de Desvio - (VCiv) Controle do CEJUSC" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(CEJUSC) Análise do CEJUSC" name="Cancelar e sair da tarefa"/>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Elaborar documento">
-        <task name="(CEJUSC) Elaborar documento" swimlane="CEJUSC">
+        <task name="(CEJUSC) Elaborar documento" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="minutaEmElaboracao" mapped-name="textEditSignature:minutaEmElaboracao" access="read,write"/>
             </controller>
@@ -231,7 +231,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </node>
     <task-node end-tasks="true" name="(CEJUSC) Assinar documento">
-        <task name="(CEJUSC) Assinar documento" swimlane="CEJUSC">
+        <task name="(CEJUSC) Assinar documento" swimlane="CEJUSC" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -246,15 +246,13 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Imprimir Documento" name="Imprimir Documento">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-start">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,57')}"/>
-        </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('Imprimir Documento')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34,57')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Imprimir Documento">
-        <task name="(CEJUSC) Imprimir Documento" swimlane="CEJUSC">
+        <task name="(CEJUSC) Imprimir Documento" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" mapped-name="page:Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" access="read,write"/>
             </controller>
@@ -270,7 +268,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
-        <task name="Nó de Desvio - (VCiv) Controle do CEJUSC" swimlane="Nó de Desvio - (VCiv) Controle do CEJUSC"/>
+        <task name="Nó de Desvio - (VCiv) Controle do CEJUSC" swimlane="Nó de Desvio - (VCiv) Controle do CEJUSC" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(CEJUSC) Designar audiência" name="(CEJUSC) Designar audiência"/>
         <transition to="(CEJUSC) Análise do CEJUSC" name="(CEJUSC) Análise do CEJUSC"/>
@@ -302,7 +300,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) PERÍCIA não realizada" name="(CEJUSC) PERÍCIA não realizada"/>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Informar conteúdo DJe">
-        <task name="(CEJUSC) Informar conteúdo DJe" swimlane="CEJUSC">
+        <task name="(CEJUSC) Informar conteúdo DJe" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Aviso1" mapped-name="textAlert:Aviso1" access="read,write"/>
                 <variable name="Aviso2" mapped-name="textAlert:Aviso2" access="read,write"/>
@@ -329,7 +327,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Ignorar conteúdo DJe">
-        <task name="(CEJUSC) Ignorar conteúdo DJe" swimlane="CEJUSC">
+        <task name="(CEJUSC) Ignorar conteúdo DJe" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Aviso_DJe" mapped-name="textAlert:Aviso_DJe" access="read,write"/>
             </controller>
@@ -345,7 +343,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Confirmar conteúdo DJe" name="(CEJUSC) Confirmar conteúdo DJe"/>
     </decision>
     <task-node end-tasks="true" name="(CEJUSC) Confirmar conteúdo DJe">
-        <task name="(CEJUSC) Confirmar conteúdo DJe" swimlane="CEJUSC">
+        <task name="(CEJUSC) Confirmar conteúdo DJe" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Aviso4" mapped-name="textAlert:Aviso4" access="read,write"/>
                 <variable name="Aviso5" mapped-name="textAlert:Aviso5" access="read,write"/>
@@ -420,7 +418,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </node>
     <task-node end-tasks="true" name="(CEJUSC) Escolher tipo de devolução">
-        <task name="(CEJUSC) Escolher tipo de devolução" swimlane="CEJUSC"/>
+        <task name="(CEJUSC) Escolher tipo de devolução" swimlane="CEJUSC" priority="3"/>
         <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem acordo" name="Devolver - Sem acordo"/>
         <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com acordo" name="Devolver - Com acordo"/>
         <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem laudo" name="Devolver - Sem laudo"/>
@@ -445,7 +443,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Aviso CEJUSC">
-        <task name="(CEJUSC) Aviso CEJUSC" swimlane="Secretaria">
+        <task name="(CEJUSC) Aviso CEJUSC" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="aviso2" mapped-name="textAlert:aviso2" access="read,write"/>
@@ -460,7 +458,7 @@ aviso2: Além disso, o Centro Judiciário de Solução de Conflitos somente recebe p
         <transition to="Término" name="Cancelar e sair da tarefa"/>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Aviso CEJUSC DPVAT - PERÍCIA">
-        <task name="(CEJUSC) Aviso CEJUSC DPVAT - PERÍCIA" swimlane="Secretaria">
+        <task name="(CEJUSC) Aviso CEJUSC DPVAT - PERÍCIA" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
             </controller>
@@ -508,7 +506,7 @@ aviso2: Além disso, o Centro Judiciário de Solução de Conflitos somente recebe p
         </event>
     </node>
     <task-node end-tasks="true" name="(CEJUSC) Designar audiência DPVAT">
-        <task name="(CEJUSC) Designar audiência DPVAT" swimlane="CEJUSC">
+        <task name="(CEJUSC) Designar audiência DPVAT" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -543,7 +541,7 @@ expressão p/ quando ativar parnamirim:
         </event>
     </task-node>
     <task-node end-tasks="true" name="(CEJUSC) Designar PERÍCIA DPVAT">
-        <task name="(CEJUSC) Designar PERÍCIA DPVAT" swimlane="CEJUSC">
+        <task name="(CEJUSC) Designar PERÍCIA DPVAT" swimlane="CEJUSC" priority="3">
             <controller>
                 <variable name="Processo_Fluxo_abaDesignarAudiencia" mapped-name="frame:Processo_Fluxo_abaDesignarAudiencia" access="read,write"/>
             </controller>
@@ -582,7 +580,7 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) Escolher tipo de devolução" name="(CEJUSC) Escolher tipo de devolução"/>
     </decision>
     <task-node end-tasks="true" name="(CEJUSC) Selecionar CEJUSC">
-        <task name="(CEJUSC) Selecionar CEJUSC" swimlane="Secretaria">
+        <task name="(CEJUSC) Selecionar CEJUSC" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="aviso2" mapped-name="textAlert:aviso2" access="read,write"/>
@@ -645,7 +643,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas sem acordo">
-        <task name="(CEJUSC) Audiências realizadas sem acordo" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas sem acordo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -667,7 +665,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas com acordo">
-        <task name="(CEJUSC) Audiências realizadas com acordo" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas com acordo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -689,7 +687,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas sem laudo">
-        <task name="(CEJUSC) Audiências realizadas sem laudo" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas sem laudo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -718,7 +716,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas com laudo">
-        <task name="(CEJUSC) Audiências realizadas com laudo" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas com laudo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -747,7 +745,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências não realizadas">
-        <task name="(CEJUSC) Audiências não realizadas" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências não realizadas" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -769,7 +767,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas com ausência parcial das partes">
-        <task name="(CEJUSC) Audiências realizadas com ausência parcial das partes" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas com ausência parcial das partes" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read"/>
             </controller>
@@ -791,7 +789,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) Audiências realizadas com acordo parcial">
-        <task name="(CEJUSC) Audiências realizadas com acordo parcial" swimlane="Secretaria">
+        <task name="(CEJUSC) Audiências realizadas com acordo parcial" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -813,7 +811,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) PERÍCIA realizada">
-        <task name="(CEJUSC) PERÍCIA realizada" swimlane="Secretaria">
+        <task name="(CEJUSC) PERÍCIA realizada" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>
@@ -835,7 +833,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </process-state>
     <task-node end-tasks="true" name="(CEJUSC) PERÍCIA não realizada">
-        <task name="(CEJUSC) PERÍCIA não realizada" swimlane="Secretaria">
+        <task name="(CEJUSC) PERÍCIA não realizada" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
             </controller>

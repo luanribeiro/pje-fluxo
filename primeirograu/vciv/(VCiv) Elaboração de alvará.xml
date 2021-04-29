@@ -11,12 +11,12 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial"/>
+        <task name="Tarefa inicial" priority="3"/>
         <transition to="(VCiv) Deslocar secretaria unificada inicio" name="(VCiv) Deslocar secretaria unificada inicio"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(VCiv) Expedir alvará(s)">
-        <task name="(VCiv) Expedir alvará(s)" swimlane="Secretaria">
+        <task name="(VCiv) Expedir alvará(s)" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_alvara" mapped-name="textEditCombo:minuta_alvara" access="read,write,required"/>
                 <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
@@ -44,7 +44,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar alvará(s)">
-        <task name="(VCiv) Assinar alvará(s)" swimlane="Magistrado">
+        <task name="(VCiv) Assinar alvará(s)" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -80,7 +80,7 @@
         <transition to="(VCiv) Deslocar secretaria unificada termino" name="(VCiv) Deslocar secretaria unificada termino"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Alvará(s) assinado(s)">
-        <task name="(VCiv) Alvará(s) assinado(s)" swimlane="Magistrado">
+        <task name="(VCiv) Alvará(s) assinado(s)" swimlane="Magistrado" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read"/>
@@ -113,7 +113,7 @@ Tipo: Aviso]]></description>
         </event>
     </node>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Elaboração de alvará">
-        <task name="Nó de Desvio - (VCiv) Elaboração de alvará"/>
+        <task name="Nó de Desvio - (VCiv) Elaboração de alvará" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(VCiv) Expedir alvará(s)" name="(VCiv) Expedir alvará(s)"/>
         <transition to="(VCiv) Assinar alvará(s)" name="(VCiv) Assinar alvará(s)"/>

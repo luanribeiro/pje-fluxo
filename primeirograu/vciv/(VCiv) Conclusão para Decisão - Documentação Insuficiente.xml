@@ -3,7 +3,7 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Conclusão para Decisão - Documentação Insuficiente">
     <description><![CDATA[Código do fluxo: VCiv_PAJ_DOCINS
 
-Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre processos com documentação insuficiente...........]]></description>  
+Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre processos com documentação insuficiente.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Assessor">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,7:5197,5:1338,8:5852,8:5853')}" actor-id="#{actor.id}"/>
@@ -114,7 +114,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Concluso para decisão - Documentação insuficiente - ASSINAR">
-        <task name="(VCiv) Concluso para decisão - Documentação insuficiente - ASSINAR" swimlane="Assessor" priority="3">
+        <task name="(VCiv) Concluso para decisão - Documentação insuficiente - ASSINAR" swimlane="Assessor" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -146,7 +146,9 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
    Escrita: Sim
    Obrig. Não
    Tipo: Homologador de Movimentos Temporários]]></description>
-        <transition to="(VCiv) Concluso para decisão - Documentação insuficiente" name="Retornar para minuta"/>
+        <transition to="(VCiv) Concluso para decisão - Documentação insuficiente" name="Retornar para minuta">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
         <transition to="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente" name="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente">
             <condition expression="#{true}"/>
         </transition>
@@ -154,7 +156,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Sinalizar análise de documentação insuficiente" name="Documento já assinado! Finalizar e prosseguir">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+           <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -167,7 +169,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar decisão - Documentação insuficiente">
-        <task name="(VCiv) Assinar decisão - Documentação insuficiente" swimlane="Assessor" priority="3">
+        <task name="(VCiv) Assinar decisão - Documentação insuficiente" swimlane="Assessor" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -199,7 +201,9 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
    Escrita: Sim
    Obrig. Não
    Tipo: Homologador de Movimentos Temporários]]></description>
-        <transition to="(VCiv) Concluso para decisão - Documentação insuficiente" name="Retornar para minuta"/>
+        <transition to="(VCiv) Concluso para decisão - Documentação insuficiente" name="Retornar para minuta">
+          <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
         <transition to="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente" name="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente">
             <condition expression="#{true}"/>
         </transition>
@@ -207,7 +211,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Sinalizar análise de documentação insuficiente" name="Documento já assinado! Finalizar e prosseguir">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -369,7 +373,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar decisão de urgência - Documentação insuficiente">
-        <task name="(VCiv) Assinar decisão de urgência - Documentação insuficiente" swimlane="Assessor" priority="3">
+        <task name="(VCiv) Assinar decisão de urgência - Documentação insuficiente" swimlane="Assessor" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -401,7 +405,9 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
    Escrita: Sim
    Obrig. Não
    Tipo: Homologador de Movimentos Temporários]]></description>
-        <transition to="(VCiv) Concluso para decisão de urgência - Documentação insuficiente" name="Retornar para minuta"/>
+        <transition to="(VCiv) Concluso para decisão de urgência - Documentação insuficiente" name="Retornar para minuta">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
         <transition to="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente" name="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente">
             <condition expression="#{true}"/>
         </transition>
@@ -409,7 +415,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Sinalizar análise de documentação insuficiente" name="Documento já assinado! Finalizar e prosseguir">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -422,7 +428,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Concluso para decisão - Urgência - Documentação insuficiente - ASSINAR">
-        <task name="(VCiv) Concluso para decisão - Urgência - Documentação insuficiente - ASSINAR" swimlane="Assessor" priority="3">
+        <task name="(VCiv) Concluso para decisão - Urgência - Documentação insuficiente - ASSINAR" swimlane="Assessor" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
@@ -454,7 +460,9 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
    Escrita: Sim
    Obrig. Não
    Tipo: Homologador de Movimentos Temporários]]></description>
-        <transition to="(VCiv) Concluso para decisão de urgência - Documentação insuficiente" name="Retornar para minuta"/>
+        <transition to="(VCiv) Concluso para decisão de urgência - Documentação insuficiente" name="Retornar para minuta">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
         <transition to="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente" name="Nó de Desvio - (VCiv) Conclusão para Decisão - Documentação Insuficiente">
             <condition expression="#{true}"/>
         </transition>
@@ -462,7 +470,7 @@ Descrição: Fluxo destinado ao preparo de atos judiciais de decisões sobre proces
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Sinalizar análise de documentação insuficiente" name="Documento já assinado! Finalizar e prosseguir">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>

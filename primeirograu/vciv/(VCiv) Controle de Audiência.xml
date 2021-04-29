@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de Audiência">
-    <description><![CDATA[Fluxo responsável por controlar as audiências...........]]></description>  
+    <description><![CDATA[Fluxo responsável por controlar as audiências.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469')}"/>
@@ -162,7 +162,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo magistrado">
-        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria" priority="3">
+        <task name="(VCiv) Assinar ata de audiência pelo magistrado" swimlane="Secretaria" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -176,7 +176,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Deslocar secretaria unificada magistrado" name="Documento já assinado">
-            <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
@@ -238,7 +238,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência com ato judicial">
-        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria" priority="3">
+        <task name="(VCiv) Assinar ata de audiência com ato judicial" swimlane="Secretaria" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
@@ -255,7 +255,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Deslocar secretaria unificada" name="Documento já assinado">
-            <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
@@ -272,7 +272,7 @@
         </event>
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Assinar ata de audiência pelo conciliador">
-        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria" priority="3">
+        <task name="(VCiv) Assinar ata de audiência pelo conciliador" swimlane="Secretaria" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -285,7 +285,7 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Selecionar opção de intimação" name="Documento já assinado">
-            <condition expression="#{not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">

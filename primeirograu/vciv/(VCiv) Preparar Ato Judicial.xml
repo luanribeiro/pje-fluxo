@@ -117,22 +117,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão de urgência inicial" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="(VCiv) Junção de decisão">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -172,13 +169,13 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para despacho inicial" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de despacho" name="(VCiv) Junção de despacho">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de despacho" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Encaminhar para Análise da Secretaria" name="(VCiv) Encaminhar para Análise da Secretaria">
             <condition expression="#{parametroUtil.getParametro(''pje:tjrn:processo:sairtarefa'').contains('' ''.concat(tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).concat('' ''))}"/>
@@ -188,9 +185,6 @@
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de despacho')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -242,22 +236,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para despacho" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de despacho" name="(VCiv) Junção de despacho">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de despacho" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de despacho')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -301,22 +292,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para sentença" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+           <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de sentença" name="(VCiv) Junção de sentença">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de sentença" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de sentença')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -419,22 +407,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão de urgência" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="(VCiv) Junção de decisão">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -478,22 +463,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para sentença de homologação e(ou) extinção" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de sentença" name="(VCiv) Junção de sentença">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de sentença" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de sentença')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -555,22 +537,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão de Emb. Declaração" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+           <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="(VCiv) Junção de decisão">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -617,19 +596,16 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão sobre recurso" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -671,7 +647,7 @@
         </task>
         <description><![CDATA[]]></description>
         <transition to="(VCiv) Concluso para decisão" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="(VCiv) Junção de decisão">
             <condition expression="#{true}"/>
@@ -680,15 +656,13 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -735,19 +709,16 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para despacho de cumprimento de sentença" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de despacho" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de despacho')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -794,10 +765,10 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão sobre reativação" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
@@ -805,9 +776,6 @@
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -848,7 +816,7 @@
             </controller>
         </task>
         <transition to="(VCiv) Concluso para decisão de penhora online" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="(VCiv) Junção de decisão">
             <condition expression="#{true}"/>
@@ -857,16 +825,13 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -910,21 +875,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão de desbloqueio" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="Nó de Desvio - (VCiv) Preparar Ato Judicial" name="Nó de Desvio - (VCiv) Preparar Ato Judicial">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>
@@ -968,22 +931,19 @@
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Concluso para decisão de suspensão" name="Retornar para minuta">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="Nó de Desvio - (VCiv) Preparar Ato Judicial" name="Nó de Desvio - (VCiv) Preparar Ato Judicial">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Junção de decisão" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-create">
             <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Junção de decisão')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
-        </event>
-        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
         </event>
     </task-node>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Intimações eletrônicas">
-    <description><![CDATA[Realiza intimações eletrônicas do último ato proferido.............]]></description>  
+    <description><![CDATA[Realiza intimações eletrônicas do último ato proferido.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
@@ -11,12 +11,12 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(VCiv) Informar dados de intimação eletrônica" name="(VCiv) Informar dados de intimação eletrônica"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(VCiv) Informar dados de intimação eletrônica">
-        <task name="(VCiv) Informar dados de intimação eletrônica" swimlane="Secretaria">
+        <task name="(VCiv) Informar dados de intimação eletrônica" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="prazoIntimacaoAtivo" mapped-name="number:prazoIntimacaoAtivo" access="read,write,required"/>
                 <variable name="prazoIntimacaoPassivo" mapped-name="number:prazoIntimacaoPassivo" access="read,write,required"/>
@@ -46,7 +46,7 @@ prazoIntimacaoPassivo: Prazo em dias para o(s) advogado(s) do polo passivo (0 - 
         </event>
     </end-state>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Intimações eletrônicas">
-        <task name="Nó de Desvio - (VCiv) Intimações eletrônicas" swimlane="Nó de Desvio - (VCiv) Intimações eletrônicas"/>
+        <task name="Nó de Desvio - (VCiv) Intimações eletrônicas" swimlane="Nó de Desvio - (VCiv) Intimações eletrônicas" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(VCiv) Informar dados de intimação eletrônica" name="(VCiv) Informar dados de intimação eletrônica"/>
         <transition to="(VCiv) Aviso - Intimar advogados automaticamente" name="(VCiv) Aviso - Intimar advogados automaticamente"/>
@@ -85,7 +85,7 @@ prazoIntimacaoPassivo: Prazo em dias para o(s) advogado(s) do polo passivo (0 - 
         <transition to="(VCiv) Deve realizar intimação ?" name="(VCiv) Deve realizar intimação ?"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Aviso - Intimar advogados automaticamente">
-        <task name="(VCiv) Aviso - Intimar advogados automaticamente" swimlane="Secretaria">
+        <task name="(VCiv) Aviso - Intimar advogados automaticamente" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
                 <variable name="poloAtivo" mapped-name="textAlert:poloAtivo" access="read,write"/>
