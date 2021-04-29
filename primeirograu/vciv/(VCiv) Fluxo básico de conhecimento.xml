@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Fluxo básico de conhecimento">
-    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum.
-Aguardar Perícia / Laudo Técnico / Outros.]]></description>  
+    <description><![CDATA[Fluxo básico de conhecimento para varas cíveis da justiça comum..
+Aguardar Perícia / Laudo Técnico / Outros...]]></description>  
     <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
     </swimlane>  
@@ -41,7 +44,7 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
     </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
-        <task name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" priority="3"/>
+        <task name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" swimlane="Nó de Desvio - (VCiv) Fluxo básico de conhecimento" priority="3"/>
         <transition to="Término" name="Término">
             <condition expression="#{true}"/>
         </transition>
@@ -193,6 +196,8 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
         <transition to="(VCiv) Conclusão para despacho inicial" name="15 - Enviar concluso para despacho inicial">
             <condition expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsJuizados').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')))}"/>
         </transition>
+        <transition to="(VCiv) Dar cumprimento a ato judicial de penhora online" name="20 - Dar cumprimento a ato judicial de penhora online"/>
+        <transition to="(VCiv) Citar com um clique" name="21 - Citar com um clique"/>
         <event type="task-start">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:vciv_fbc_aguardar_laudo_tecnico')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('sim_nao:vciv_fbc_aguardar_audiencia')}"/>
@@ -487,13 +492,17 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
                 && 
         competenciaClasseAssuntoHome.processoContemClasseAssunto('159;156')
 ) 
+
 ||
+
 (
         tramitacaoProcessualService.recuperaProcesso().competencia.idCompetencia == 25 
                         && 
         competenciaClasseAssuntoHome.processoContemClasseAssunto('159;156')
 ) 
+
 || 
+
 (
         tramitacaoProcessualService.recuperaProcesso().competencia.idCompetencia != 3
                 &&
@@ -530,6 +539,7 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
     <process-state name="(VCiv) Dar cumprimento a ato judicial de penhora online">
         <sub-process name="Integraçao PJe x Sisbajud" binding="late"/>
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
+
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Despachados sobre homologação e(ou) extinção">
         <task name="(VCiv) Despachados sobre homologação e(ou) extinção" swimlane="Secretaria" priority="3">
@@ -855,9 +865,16 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
         <transition to="(VCiv) Despachados urgentes" name="(VCiv) Despachados urgentes"/>
         <transition to="(VCiv) Despachados sobre suspensão" name="(VCiv) Despachados sobre suspensão"/>
     </decision>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:redistribuir') ? '(VCiv) Análise da secretaria':'(VCiv) Vem de outro fluxo?'}" name="(VCiv) Redistribuido ?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:redistribuir') ? '(VCiv) Análise da secretaria' : '(VCiv) Encaminhar para Análise da secretaria?'}" name="(VCiv) Redistribuido ?">
+        <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
+        <transition to="(VCiv) Encaminhar para Análise da secretaria?" name="(VCiv) Encaminhar para Análise da Secretaria?"/>
+    </decision>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:encaminhar_analise_secretaria') ? '(VCiv) Análise da secretaria' : '(VCiv) Vem de outro fluxo?'}" name="(VCiv) Encaminhar para Análise da secretaria?">
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
         <transition to="(VCiv) Vem de outro fluxo?" name="(VCiv) Vem de outro fluxo?"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('vciv:encaminhar_analise_secretaria')}"/>
+        </event>
     </decision>
     <node name="(VCiv) Limpar ações para redistribuir">
         <transition to="(VCiv) Redistribuição de processo" name="(VCiv) Redistribuição de processo"/>
@@ -941,7 +958,13 @@ Aguardar Perícia / Laudo Técnico / Outros.]]></description>
     <process-state name="(VCiv) Penhora eletrônica - Poti">
         <sub-process name="(VCiv) Poti" binding="late"/>
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
-    </process-state>  
+    </process-state>
+    <node name="(VCiv) Citar com um clique">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_CIT')}"/>
+        </event>
+    </node>  
     <!-- PROCESS-EVENTS -->
     <event type="superstate-enter">
         <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
