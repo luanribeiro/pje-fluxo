@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de elaborar documento">
+    <description><![CDATA[COD.: RPP_FLX_ELAB_DOC.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(RPP) Elaborar documento - EXPEDIR" name="(RPP) Elaborar documento - EXPEDIR"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(RPP) Elaborar documento - EXPEDIR">
+        <task name="(RPP) Elaborar documento - EXPEDIR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+                <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
+                <variable name="minutaEmElaboracao" mapped-name="textEditSignature:minutaEmElaboracao" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento" name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Apagar variáveis do fluxo" name="Cancelar elaboração do documento"/>
+        <transition to="(RPP) Separação em preparação de elaborar documento" name="(RPP) Separação em preparação de elaborar documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Elaborar documento - ASSINAR" name="Encaminhar para assinatura do magistrado"/>
+        <event type="task-end">
+            <action expression="#{not empty processoHome.idProcessoDocumento ? org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('prepararAto:meiosComunicacoes')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('mostrarBotaoGravarNoFluxo')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:miniPac:DocJaExiste')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('minutaEmElaboracao')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minutaEmElaboracao'))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes','E,C,M')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('idTaskInstanceTemp', org.jboss.seam.bpm.taskInstance.getId())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
+            <action expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','34,91,95,160,166')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:DocJaExiste',false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', false)}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(RPP) Separação em preparação de elaborar documento')}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:meiosComunicacoes'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:meiosComunicacoes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaProcuradorias'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaProcuradorias'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaUmExpedientePorEndereco'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaUmExpedientePorEndereco'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaProcuradoriaSelecionada'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaProcuradoriaSelecionada'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaExpedientes'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaExpedientes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaAgrupamentos'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaAgrupamentos'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaInstrumento'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaInstrumento'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp') ? tramitacaoProcessualService.gravaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))) : ''}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:meiosComunicacoes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaProcuradorias'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaProcuradoriaSelecionada'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaUmExpedientePorEndereco'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaInstrumento'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaExpedientes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaAgrupamentos'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar elaboração do documento')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Elaborar documento - ASSINAR">
+        <task name="(RPP) Elaborar documento - ASSINAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
+                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(RPP) Separação em preparação de elaborar documento" name="(RPP) Separação em preparação de elaborar documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento" name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Elaborar documento - EXPEDIR" name="Retornar para minuta"/>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes','E,C,M')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('idTaskInstanceTemp', org.jboss.seam.bpm.taskInstance.getId())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
+            <action expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','34,91,95,160,166')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:DocJaExiste',false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', false)}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(RPP) Separação em preparação de elaborar documento')}"/>
+        </event>
+    </task-node>
+    <fork name="(RPP) Separação em preparação de elaborar documento">
+        <transition to="(RPP) Existe expediente com meio Correios?" name="(RPP) Existe expediente com meio Correios?"/>
+        <transition to="(RPP) Existe expediente com meio Mandado?" name="(RPP) Existe expediente com meio Mandado?"/>
+        <transition to="(RPP) Existe expediente com meio Sistema?" name="(RPP) Existe expediente com meio Sistema?"/>
+    </fork>
+    <decision expression="#{comunicacaoProcessualAction.getExpedientesCorreios().size() &gt; 0 ? '(RPP) Encaminhar via correios' : '(RPP) Junção em preparação de elaborar documento'}" name="(RPP) Existe expediente com meio Correios?">
+        <transition to="(RPP) Junção em preparação de elaborar documento" name="(RPP) Junção em preparação de elaborar documento"/>
+        <transition to="(RPP) Encaminhar via correios" name="(RPP) Encaminhar via correios"/>
+    </decision>
+    <node name="(RPP) Encaminhar via correios">
+        <transition to="(RPP) SubProcesso - Controle de retorno de expediente" name="(RPP) SubProcesso - Controle de retorno de expediente"/>
+        <event type="node-enter">
+            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('C', 'processoExpedienteAtual','#{preencherMovimento.deCodigo(60).associarAoDocumento(processoExpedienteAtual.getProcessoDocumento()).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(74).lancarMovimento()}')}"/>
+        </event>
+    </node>
+    <decision expression="#{comunicacaoProcessualAction.getExpedientesMandados().size() &gt; 0 ? '(RPP) Existe mais de uma central de mandados?' : '(RPP) Junção em preparação de elaborar documento'}" name="(RPP) Existe expediente com meio Mandado?">
+        <transition to="(RPP) Junção em preparação de elaborar documento" name="(RPP) Junção em preparação de elaborar documento"/>
+        <transition to="(RPP) Existe mais de uma central de mandados?" name="(RPP) Existe mais de uma central de mandados?"/>
+    </decision>
+    <decision expression="#{conectorMandados.haVariasCentraisMandado() ? '(RPP) Elaborar documento [central de mandados] - SELECIONAR' : '(RPP) Encaminhar para central de mandados'}" name="(RPP) Existe mais de uma central de mandados?">
+        <transition to="(RPP) Elaborar documento [central de mandados] - SELECIONAR" name="(RPP) Elaborar documento [central de mandados] - SELECIONAR"/>
+        <transition to="(RPP) Encaminhar para central de mandados" name="(RPP) Encaminhar para central de mandados"/>
+    </decision>
+    <task-node end-tasks="true" name="(RPP) Elaborar documento [central de mandados] - SELECIONAR">
+        <task name="(RPP) Elaborar documento [central de mandados] - SELECIONAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_expedientes_centralmandados" mapped-name="frame:Processo_Fluxo_expedientes_centralmandados" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento" name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Encaminhar para central de mandados" name="Encaminhar para central de mandados"/>
+    </task-node>
+    <node name="(RPP) Encaminhar para central de mandados">
+        <transition to="(RPP) SubProcesso - Controle de retorno de expediente" name="(RPP) SubProcesso - Controle de retorno de expediente"/>
+        <event type="node-enter">
+            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('M', 'processoExpedienteAtual','#{preencherMovimento.deCodigo(60).associarAoDocumento(processoExpedienteAtual.getProcessoDocumento()).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(78).lancarMovimento()}')}"/>
+        </event>
+    </node>
+    <decision expression="#{comunicacaoProcessualAction.getExpedientesEletronico().size() &gt; 0 ? '(RPP) Encaminhar via sistema' : '(RPP) Junção em preparação de elaborar documento'}" name="(RPP) Existe expediente com meio Sistema?">
+        <transition to="(RPP) Encaminhar via sistema" name="(RPP) Encaminhar via sistema"/>
+        <transition to="(RPP) Junção em preparação de elaborar documento" name="(RPP) Junção em preparação de elaborar documento"/>
+    </decision>
+    <node name="(RPP) Encaminhar via sistema">
+        <transition to="(RPP) SubProcesso - Controle de retorno de expediente" name="(RPP) SubProcesso - Controle de retorno de expediente"/>
+        <event type="node-enter">
+            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('E', 'processoExpedienteAtual','#{preencherMovimento.deCodigo(60).associarAoDocumento(processoExpedienteAtual.getProcessoDocumento()).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(80).lancarMovimento()}')}"/>
+        </event>
+    </node>
+    <process-state name="(RPP) SubProcesso - Controle de retorno de expediente">
+        <sub-process name="(RPP) Fluxo de controle de retorno de expediente" binding="late"/>
+        <transition to="(RPP) Junção em preparação de elaborar documento" name="(RPP) Junção em preparação de elaborar documento"/>
+    </process-state>
+    <join name="(RPP) Junção em preparação de elaborar documento">
+        <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
+    </join>
+    <node name="(RPP) Apagar variáveis do fluxo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:meiosComunicacoes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaProcuradorias'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaProcuradoriaSelecionada'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaUmExpedientePorEndereco'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaInstrumento'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaIntimacaoPessoal'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaExpedientes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaAgrupamentos'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('comunicacaoProcessualAction:idsExpedientes')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('mostrarBotaoGravarNoFluxo')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:meiosComunicacoes')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('tiposDisponiveisIds')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('frameDefaultLeavingTransition')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:miniPac:DocJaExiste')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:transicao:lancamentoMovimentoObrigatorio')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
+        <task name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento" swimlane="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(RPP) Elaborar documento - EXPEDIR" name="(RPP) Elaborar documento - EXPEDIR"/>
+        <transition to="(RPP) Elaborar documento [central de mandados] - SELECIONAR" name="(RPP) Elaborar documento [central de mandados] - SELECIONAR"/>
+        <transition to="(RPP) Elaborar documento - ASSINAR" name="(RPP) Elaborar documento - ASSINAR"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>  
+    <!-- ACTIONS --> 
+</process-definition>
