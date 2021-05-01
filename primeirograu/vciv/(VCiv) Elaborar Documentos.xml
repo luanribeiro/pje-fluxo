@@ -550,7 +550,6 @@ Parâmetros
         <task name="(VCiv) Assinar Carta Precatória e(ou) Rogatória" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
-                <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
