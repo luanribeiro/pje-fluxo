@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo básico geral">
-    <description><![CDATA[Código do fluxo: CPP_FBG.
-
+    <description><![CDATA[Código do fluxo: RPP_FBG.
+
 Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (RPP) Fluxo básico geral">

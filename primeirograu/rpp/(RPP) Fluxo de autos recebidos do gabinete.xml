@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de autos recebidos do gabinete">
-    <description><![CDATA[.]]></description>  
+    <description><![CDATA[Cód: RPP_AUT_REC_GAB.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (RPP) Fluxo de autos recebidos do gabinete">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>

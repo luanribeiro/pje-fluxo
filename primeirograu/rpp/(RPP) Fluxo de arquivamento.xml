@@ -39,7 +39,7 @@
         <transition to="(RPP) Subfluxo de preparação de ato judicial de decisão sobre reativação" name="Enviar conclusos para decisão sobre reativação"/>
     </task-node>
     <process-state name="(RPP) Subfluxo de preparação de ato judicial de decisão sobre reativação">
-        <sub-process name="(RPP) Fluxo de preparação de ato judicial de decisão sobre reativação.xml" binding="late"/>
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de decisão sobre reativação" binding="late"/>
         <transition to="(RPP) Sinalizou que vai reativar?" name="(RPP) Sinalizou que vai reativar?"/>
     </process-state>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:tjrn:cpp:sinalizacao') == 'manterArquivado' ? '(RPP) ~Arquivo definitivo' : '(RPP) Lançar movimento de reativação'}" name="(RPP) Sinalizou que vai reativar?">

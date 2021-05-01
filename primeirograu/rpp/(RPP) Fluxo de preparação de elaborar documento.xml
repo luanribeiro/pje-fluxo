@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de elaborar documento">
-    <description><![CDATA[COD.: RPP_FLX_ELAB_DOC.]]></description>  
+    <description><![CDATA[COD.: RPP_ELAB_DOC.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de elaborar documento">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
@@ -69,7 +69,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('prepararAto:mapaAgrupamentos'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTemp')))}"/>
         </event>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar elaboração do documento')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar elaboração do documento')}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="(RPP) Elaborar documento - ASSINAR">

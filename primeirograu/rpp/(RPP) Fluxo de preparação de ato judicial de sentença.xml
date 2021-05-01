@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de ato judicial de sentença">
-    <description><![CDATA[Cód: RPP_FLX_PREP_ATO_JUD_SENT.
+    <description><![CDATA[Cód: RPP_PREP_ATO_JUD_SENT.
 
 Descrição:
 Fluxo de preparação de ato judicial de sentença]]></description>  

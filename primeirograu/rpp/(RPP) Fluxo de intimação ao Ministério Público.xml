@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de intimação ao Ministério Público">
-    <description><![CDATA[..]]></description>  
+    <description><![CDATA[Cód: RPP_INT_MP.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>

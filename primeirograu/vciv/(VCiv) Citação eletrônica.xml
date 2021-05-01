@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Citação eletrônica"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (VCiv) Citação eletrônica">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="secretaria" priority="3"/>
+        <transition to="Há audiência marcada?" name="Há audiência marcada?"/>
+    </start-state>  
+    <!-- NODES -->
+    <decision expression="#{not empty processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso()) ? 'Sim' : 'Não'}" name="Há audiência marcada?">
+        <transition to="(VCiv) Não é possível realizar citação eletrônica" name="Sim"/>
+        <transition to="Verificar Cadastro Pessoa Jurídica" name="Não"/>
+    </decision>
+    <task-node end-tasks="true" name="(VCiv) Não é possível realizar citação eletrônica">
+        <task name="(VCiv) Não é possível realizar citação eletrônica" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[- Label: 'Há audiência designada. Esta funcionalidade, por ora, não admite citação para audiência.']]></description>
+        <transition to="Sair" name="Voltar"/>
+        <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Verificar Cadastro Pessoa Jurídica">
+        <description><![CDATA[.]]></description>
+        <transition to="Verificação endereços polo passivo" name="Verificação endereços polo passivo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:listaPartesCitarEletronicamente', collectionUtilsPje.getNewArrayList())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:listaPartesCitarFisicamente', collectionUtilsPje.getNewArrayList())}"/>
+            <action expression="#{empty tramitacaoProcessualService.recuperaProcesso().getProcessoPartePoloPassivoSemAdvogadoList() ? '' : tramitacaoProcessualService.recuperaProcesso().getProcessoPartePoloPassivoSemAdvogadoList().{pp|(pp.getPessoa().getTipoPessoaResumidoAsString() eq 'Pessoa Jurídica') and (atoComunicacaoService.verificarPossibilidadeIntimacaoEletronica(pp, false)) ? collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente'),pp) : collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente'),pp)} }"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:existeReuSemEndereco',false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:quantidadePartesCitarFisicamente',tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente').size())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:indiceParteCitarFisicamente',0)}"/>
+        </event>
+    </node>
+    <node name="Verificação endereços polo passivo">
+        <transition to="Existem personagens para citação?" name="Existem personagens para citação?"/>
+        <event type="node-enter">
+            <action expression="#{empty tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente') ? '' : tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente').{ppf|ppf.getIsEnderecoDesconhecido() ? tramitacaoProcessualService.gravaVariavel('tjrn:existeReuSemEndereco',true) : ''}}"/>
+        </event>
+    </node>
+    <decision expression="#{collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente')) or collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente')) ? 'Sim' : 'Não'}" name="Existem personagens para citação?">
+        <transition to="Existem personagens para citação física sem endereço?" name="Sim"/>
+        <transition to="Sair" name="Não"/>
+    </decision>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:existeReuSemEndereco') ? 'Sim' : 'Não'}" name="Existem personagens para citação física sem endereço?">
+        <transition to="(VCiv) Existem réus sem endereço" name="Sim"/>
+        <transition to="Definir Parâmetros Citação" name="Não"/>
+    </decision>
+    <task-node end-tasks="true" name="(VCiv) Existem réus sem endereço">
+        <task name="(VCiv) Existem réus sem endereço" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[- Label: 'Existem réus para citação física sem endereço. Por favor, retifique, e após tente novamente.']]></description>
+        <transition to="Há audiência marcada?" name="Tentar citar novamente"/>
+        <transition to="Sair" name="Voltar"/>
+        <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Definir Parâmetros Citação">
+        <transition to="Existem personagens para citação eletrônica?" name="Existem personagens para citação eletrônica?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:idsExpedientes','')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:docsInicial',documentoJudicialService.getInicial(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:existeReuParaCitaçaoEletronica',collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente')))}"/>
+        </event>
+    </node>
+    <decision expression="#{collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente')) ? 'Sim' : 'Não'}" name="Existem personagens para citação eletrônica?">
+        <transition to="Citação Eletrônica" name="Sim"/>
+        <transition to="Existem personagens para citação física?" name="Não"/>
+    </decision>
+    <node name="Citação Eletrônica">
+        <transition to="Existem personagens para citação eletrônica?" name="Existem personagens para citação eletrônica?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:parteCitacao', tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente').remove(Integer.valueOf('0')))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:parteCitacaoEhOrgaoPublico', PessoaJuridicaManager.encontraPessoaJuridicaPorPessoa(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao').getPessoa()).getOrgaoPublico())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:citacao:listaMiniPacVO', collectionUtilsPje.getNewArrayList())}"/>
+            <action expression="#{collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO'), miniPacService.carregaMiniPacVO(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao'), false, tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacaoEhOrgaoPublico') ? 15 : 30))}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO').{pp|pp.getMeios().add(preparaAtoComunicacaoAction.recuperarListaDeExpedicaoExpedienteEnum('E').get(0))}}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO').{pp|pp.setUrgente(false)}}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:minutaCitacao',documentoJudicialService.gerarMinuta(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, null, null, parametroService.valueOf('idTipoProcessoDocumentoCitacao'), parametroService.valueOf('idModeloDocumentoCitacaoAutomatica')))}"/>
+            <action expression="#{preencherMovimento.deCodigo(12287).associarAoDocumentoDeId(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao')).lancarMovimentoTemporariamente(processInstance)}"/>
+            <action expression="#{documentoJudicialService.juntarDocumento(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao'), taskInstance.id, processInstance.id)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:mapaDestinatarios',tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO'))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:documentosVinculados',documentoJudicialService.getInicial(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:atoProferido', documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao')).getIdProcessoDocumento())}"/>
+            <action expression="#{miniPacService.processarMiniPac(tramitacaoProcessualService.recuperaProcesso(),documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao')),Boolean.valueOf('true'))}"/>
+        </event>
+    </node>
+    <decision expression="#{collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente')) ? 'Sim' : 'Não'}" name="Existem personagens para citação física?">
+        <transition to="Selecionar parte para citação física" name="Sim"/>
+        <transition to="(VCiv) Citação eletrônica realizada com sucesso" name="Não"/>
+    </decision>
+    <task-node end-tasks="true" name="(VCiv) Citação eletrônica realizada com sucesso">
+        <task name="(VCiv) Citação eletrônica realizada com sucesso" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Sair" name="Prosseguir"/>
+        <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Selecionar parte para citação física">
+        <transition to="Criar Citação Física" name="Criar Citação Física"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:listaMiniPacVO',collectionUtilsPje.getNewArrayList())}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:parteCitacao',tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente').get(tramitacaoProcessualService.recuperaVariavel('tjrn:indiceParteCitarFisicamente')))}"/>
+            <action expression="#{collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:listaMiniPacVO'),miniPacService.carregaMiniPacVO(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao'),parametroService.valueOf('tjrn:citacaoPostalPessoal'), parametroService.valueOf('tjrn:prazoCitacaoPostal')))}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:listaMiniPacVO').{pp|pp.getMeios().add(preparaAtoComunicacaoAction.recuperarListaDeExpedicaoExpedienteEnum('C').get(0))}}"/>
+            <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:listaMiniPacVO').{pp|pp.setUrgente(false)}}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:enderecoCitacao',tramitacaoProcessualService.recuperaVariavel('tjrn:listaMiniPacVO').get(0).getEnderecos().get(0))}"/>
+        </event>
+    </node>
+    <node name="Criar Citação Física">
+        <transition to="Existem outras partes para citação física?" name="Existem personagens para citação física?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:minutaCitacao',documentoJudicialService.gerarMinuta(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, null, null, parametroService.valueOf('idTipoProcessoDocumentoCitacao'), parametroService.valueOf('idModeloDocumentoCitacaoAutomaticaFisica')))}"/>
+            <action expression="#{preencherMovimento.deCodigo(60).associarAoDocumentoDeId(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao')).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(74).lancarMovimentoTemporariamente(processInstance)}"/>
+            <action expression="#{documentoJudicialService.juntarDocumento(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao'), taskInstance.id, processInstance.id)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:mapaDestinatarios',tramitacaoProcessualService.recuperaVariavel('tjrn:listaMiniPacVO'))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:documentosVinculados',documentoJudicialService.getInicial(tramitacaoProcessualService.recuperaProcesso()))}"/>
+            <action expression="#{miniPacService.processarMiniPac(tramitacaoProcessualService.recuperaProcesso(),documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('tjrn:minutaCitacao')),Boolean.valueOf('true'))}"/>
+            <action expression="#{(tramitacaoProcessualService.recuperaVariavel('tjrn:idsExpedientes') eq '') ? (tramitacaoProcessualService.gravaVariavel('tjrn:idsExpedientes',tramitacaoProcessualService.recuperaVariavel('tjrn:idsExpedientes').concat(tramitacaoProcessualService.recuperaVariavel('comunicacaoProcessualAction:idsExpedientes')))) : (tramitacaoProcessualService.gravaVariavel('tjrn:idsExpedientes',tramitacaoProcessualService.recuperaVariavel('tjrn:idsExpedientes').concat(',').concat(tramitacaoProcessualService.recuperaVariavel('comunicacaoProcessualAction:idsExpedientes'))))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:indiceParteCitarFisicamente',tramitacaoProcessualService.recuperaVariavel('tjrn:indiceParteCitarFisicamente')+1)}"/>
+        </event>
+    </node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:indiceParteCitarFisicamente') lt tramitacaoProcessualService.recuperaVariavel('tjrn:quantidadePartesCitarFisicamente')  ? 'Sim' : 'Não'}" name="Existem outras partes para citação física?">
+        <transition to="Selecionar parte para citação física" name="Sim"/>
+        <transition to="Enviar citações físicas para Impressão" name="Não"/>
+    </decision>
+    <node name="Enviar citações físicas para Impressão">
+        <transition to="(VCiv) Imprimir Citação Física" name="(VCiv) Imprimir Citação Física"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('comunicacaoProcessualAction:idsExpedientes',tramitacaoProcessualService.recuperaVariavel('tjrn:idsExpedientes'))}"/>
+            <action expression="#{comunicacaoProcessualAction.enviarExpedientesLancarMovimentos('C', 'processoExpedienteAtual', null)}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="(VCiv) Imprimir Citação Física">
+        <task name="(VCiv) Imprimir Citação Física" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_expedientes_correios" mapped-name="frame:Processo_Fluxo_expedientes_correios" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[- Variável: 'Processo_Fluxo_expedientes_correios'
+            - Label: 'Clique aqui para realizar a impressão']]></description>
+        <transition to="Sair" name="Prosseguir"/>
+        <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action name="upd" expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo','false')}"/>
+        </event>
+    </task-node>
+    <node name="Sair">
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_FBC', processInstance.contextInstance.variables)}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:listaPartesCitarEletronicamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:listaPartesCitarFisicamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:quantidadePartesCitarFisicamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:indiceParteCitarFisicamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:idsExpedientes')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:partesSemEndereco')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:docsInicial')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:listaMiniPacVO')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:parteCitacao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:minutaCitacao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:existeReuParaCitaçaoEletronica')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:parteCitacaoEhOrgaoPublico')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:encaminhar_analise_secretaria', true)}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Citação eletrônica">
+        <task name="Nó de Desvio - (VCiv) Citação eletrônica" swimlane="Nó de Desvio - (VCiv) Citação eletrônica" priority="3"/>
+        <transition to="(VCiv) Não é possível realizar citação eletrônica" name="(VCiv) Não é possível realizar citação eletrônica"/>
+        <transition to="(VCiv) Existem réus sem endereço" name="(VCiv) Existem réus sem endereço"/>
+        <transition to="(VCiv) Citação eletrônica realizada com sucesso" name="(VCiv) Citação eletrônica realizada com sucesso"/>
+        <transition to="(VCiv) Imprimir Citação Física" name="(VCiv) Imprimir Citação Física"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>  
+    <!-- ACTIONS --> 
+</process-definition>

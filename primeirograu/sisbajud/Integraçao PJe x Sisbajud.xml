@@ -43,7 +43,7 @@
     <node name="Protocolar ordem judicial">
         <transition to="Verifica resposta protocolo" name="Verifica resposta protocolo"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:sisbajud:protocolo', bacenRestClient.protocolaOrdemJudicial(authenticator.getAccessToken(), processoTrfHome.instance, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:executados'), processoTrfHome.instance.getValorCausa(), authenticator.getUsuarioLogado().getLogin()))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:sisbajud:protocolo', bacenRestClient.protocolaOrdemJudicial(null, processoTrfHome.instance, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:executados'), processoTrfHome.instance.getValorCausa(), authenticator.getUsuarioLogado().getLogin()))}"/>
         </event>
     </node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo').startsWith('ERRO: ') ? '[SISBAJUD] Com erro': '[SISBAJUD] Aguardando recibo'}" name="Verifica resposta protocolo">
@@ -87,7 +87,7 @@
     <node name="Entregar recibo">
         <transition to="[SISBAJUD] Aguardando recibo" name="[SISBAJUD] Aguardando recibo"/>
         <event type="node-enter">
-            <action expression="#{bacenRestClient.entregaRecibo(authenticator.getAccessToken(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+            <action expression="#{bacenRestClient.entregaRecibo(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
         </event>
     </node>
     <task-node end-tasks="true" name="[SISBAJUD] Protocolados">
@@ -136,7 +136,7 @@
     <node name="Entrega certidão">
         <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados"/>
         <event type="node-enter">
-            <action expression="#{bacenRestClient.entregaCertidao(authenticator.getAccessToken(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+            <action expression="#{bacenRestClient.entregaCertidao(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
         </event>
     </node>
     <task-node end-tasks="true" name="[SISBAJUD] Com erro">
@@ -168,7 +168,7 @@
         </transition>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:sisbajud:cancelamento', bacenRestClient.cancelaOrdemJudicial(authenticator.getAccessToken(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo')))}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:sisbajud:cancelamento', bacenRestClient.cancelaOrdemJudicial(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo')))}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99801') ? '[SISBAJUD] Resposta negativa' :(tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99802') ? '[SISBAJUD] Desbloqueados' : (tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99803') ? '[SISBAJUD] Transferidos parcialmente' : '[SISBAJUD] Transferidos'))}" name="Verifica resposta">
