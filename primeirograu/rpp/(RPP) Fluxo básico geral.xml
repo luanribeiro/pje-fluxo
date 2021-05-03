@@ -3,6 +3,8 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo básico geral">
     <description><![CDATA[Código do fluxo: RPP_FBG.
 
+
+
 Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (RPP) Fluxo básico geral">
@@ -37,7 +39,7 @@ Descrição: Fluxo de entrada de processos do CEJUSC Pré-processual.]]></descripti
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
         </event>
     </task-node>
-    <decision expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso() ? '(RPP) Subfluxo Preparar carta convite' : '(RPP) Sinalizar designar audiência'}" name="(RPP) Existe audiência pendente?">
+    <decision expression="#{processoAudienciaHome.existeAudienciaPendenteProcesso() ? '(RPP) Subfluxo Preparação de carta convite' : '(RPP) Sinalizar designar audiência'}" name="(RPP) Existe audiência pendente?">
         <transition to="(RPP) Subfluxo de preparação de carta convite" name="(RPP) Subfluxo Preparação de carta convite"/>
         <transition to="(RPP) Sinalizar designar audiência" name="(RPP) Sinalizar designar audiência"/>
     </decision>
