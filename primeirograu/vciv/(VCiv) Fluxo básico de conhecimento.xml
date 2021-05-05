@@ -37,10 +37,10 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fbc:EhDeOutroFluxo')}"/>
         </event>
     </decision>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:ProvidenciaInicial').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(VCiv) Escolher providência inicial' : '(VCiv) Tem pedido de urgência?'}" name="(VCiv) É providência inicial?">
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:pg:classeJudicial:ProvidenciaInicial').contains(':'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat(':')) ? '(VCiv) Processo com documentação insuficiente?' : '(VCiv) Tem pedido de urgência?'}" name="(VCiv) É providência inicial?">
         <description><![CDATA[Nó que define se o processo pertence as classes, 305 Liberdade Provisória com ou sem fiança, 306 Relaxamento de Prisão, 12121 Auto de Prisão ,280 Auto de Prisão em Flagrante, 279 Inquérito Policial, 272 Representação Criminal/Notícia de Crime, 278 Termo Circunstanciado.]]></description>
         <transition to="(VCiv) Tem pedido de urgência?" name="(VCiv) Tem pedido de urgência?"/>
-        <transition to="(VCiv) Escolher providência inicial" name="(VCiv) Escolher providência inicial"/>
+        <transition to="(VCiv) Processo com documentação insuficiente?" name="(VCiv) Processo com documentação insuficiente?"/>
     </decision>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Fluxo básico de conhecimento">
@@ -539,7 +539,6 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
     <process-state name="(VCiv) Dar cumprimento a ato judicial de penhora online">
         <sub-process name="Integraçao PJe x Sisbajud" binding="late"/>
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
-
     </process-state>
     <task-node end-tasks="true" name="(VCiv) Despachados sobre homologação e(ou) extinção">
         <task name="(VCiv) Despachados sobre homologação e(ou) extinção" swimlane="Secretaria" priority="3">
