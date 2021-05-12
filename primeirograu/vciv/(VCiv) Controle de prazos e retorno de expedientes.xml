@@ -282,13 +282,6 @@
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:validarCertidaoDecursoPrazo', true)}"/>
         </event>
-        <!--
-        <description><![CDATA[Verifica se houve alguma juntada de documento desde a última intimação lançada nos autos.]]></description>
-        <transition to="(VCiv) Houve alguma manifestação?" name="(VCiv) Houve alguma manifestação?"/>
-        <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao', processoDocumentoManager.getDocumentoRecente(tramitacaoProcessualService.recuperaProcesso(), parametroService.valueOf('idTipoDocumentoIntimacao')))}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao', processoDocumentoManager.recuperaDocumentosJuntados(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')!=null ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao').getDataJuntada() : dateUtil.getDataAtual()).size()&gt;0)}"/>
-        </event> -->
     </node>
     <node name="Recuperar última intimação">
         <description><![CDATA[Produz as variáveis de fluxo 'tjrn:fluxo:vciv:cpre:houveManifestacao' e 'tjrn:fluxo:vciv:cpre:ultimaIntimacao'.]]></description>
@@ -303,11 +296,11 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao', processoDocumentoManager.recuperaDocumentosJuntados(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')!=null ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao').getDataJuntada() : dateUtil.getDataAtual()).size()&gt;0)}"/>
         </event>
     </node>
-    <decision name="Certifica sem validar?" expression="#{empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:validarCertidaoDecursoPrazo') ? 'Sim' : 'Não'}">
+    <decision expression="#{empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:validarCertidaoDecursoPrazo') ? 'Sim' : 'Não'}" name="Certifica sem validar?">
         <transition to="(VCiv) Certidão automática de prazo decorrido" name="Sim"/>
         <transition to="(VCiv) Houve alguma manifestação?" name="Não"/>
     </decision>
-    <decision name="(VCiv) Houve alguma manifestação?" expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')==null || tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao') ? 'Sim' : 'Não'}">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')==null || tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao') ? 'Sim' : 'Não'}" name="(VCiv) Houve alguma manifestação?">
         <description><![CDATA[Valida se houve uma intimação nos autos e nenhuma manifestação para encaminhar para certificar automaticamente o decurso de prazo.]]></description>
         <transition to="(VCiv) Processos com prazos decorridos" name="Sim"/>
         <transition to="(VCiv) Certidão automática de prazo decorrido" name="Não"/>
@@ -381,8 +374,6 @@
     </task-node>
     <task-node end-tasks="true" name="(VCiv) Controlar retorno de expediente">
         <task name="(VCiv) Controlar retorno de expediente" swimlane="Secretaria" priority="3"/>
-        <transition to="Recuperar última intimação" name="Gerar automaticamente certidão de decurso de prazo"/>
-        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado"/>
         <transition to="(VCiv) Aguardando devolução de ofício" name="Aguardar devolução de ofício"/>
         <transition to="(VCiv) Aguardando resposta de ofício" name="Aguardar resposta de ofício"/>
         <transition to="(VCiv) Há expediente AR em aberto?" name="Aguardar devolução do AR"/>

@@ -30,6 +30,9 @@
         <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cit:voltar_fbc', true)}"/>
+        </event>
     </task-node>
     <node name="Verificar Cadastro Pessoa Jurídica">
         <description><![CDATA[.]]></description>
@@ -52,6 +55,9 @@
     <decision expression="#{collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente')) or collectionUtilsPje.isNotEmpty(tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarFisicamente')) ? 'Sim' : 'Não'}" name="Existem personagens para citação?">
         <transition to="Existem personagens para citação física sem endereço?" name="Sim"/>
         <transition to="Sair" name="Não"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cit:voltar_fbc', true)}"/>
+        </event>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:existeReuSemEndereco') ? 'Sim' : 'Não'}" name="Existem personagens para citação física sem endereço?">
         <transition to="(VCiv) Existem réus sem endereço" name="Sim"/>
@@ -70,6 +76,9 @@
         <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cit:voltar_fbc', true)}"/>
+        </event>
     </task-node>
     <node name="Definir Parâmetros Citação">
         <transition to="Existem personagens para citação eletrônica?" name="Existem personagens para citação eletrônica?"/>
@@ -89,7 +98,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:parteCitacao', tramitacaoProcessualService.recuperaVariavel('tjrn:listaPartesCitarEletronicamente').remove(Integer.valueOf('0')))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:parteCitacaoEhOrgaoPublico', PessoaJuridicaManager.encontraPessoaJuridicaPorPessoa(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao').getPessoa()).getOrgaoPublico())}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:citacao:listaMiniPacVO', collectionUtilsPje.getNewArrayList())}"/>
-            <action expression="#{collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO'), miniPacService.carregaMiniPacVO(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao'), false, tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacaoEhOrgaoPublico') ? 15 : 30))}"/>
+            <action expression="#{collectionUtilsPje.addElementToList(tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO'), miniPacService.carregaMiniPacVO(tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacao'), false, tramitacaoProcessualService.recuperaVariavel('tjrn:parteCitacaoEhOrgaoPublico') ? 30 : 15))}"/>
             <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO').{pp|pp.getMeios().add(preparaAtoComunicacaoAction.recuperarListaDeExpedicaoExpedienteEnum('E').get(0))}}"/>
             <action expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:citacao:listaMiniPacVO').{pp|pp.setUrgente(false)}}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:minutaCitacao',documentoJudicialService.gerarMinuta(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, null, null, parametroService.valueOf('idTipoProcessoDocumentoCitacao'), parametroService.valueOf('idModeloDocumentoCitacaoAutomatica')))}"/>
@@ -116,6 +125,9 @@
         <transition to="Nó de Desvio - (VCiv) Citação eletrônica" name="Nó de Desvio - (VCiv) Citação eletrônica">
             <condition expression="#{true}"/>
         </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:sistema', true)}"/>
+        </event>
     </task-node>
     <node name="Selecionar parte para citação física">
         <transition to="Criar Citação Física" name="Criar Citação Física"/>
@@ -155,7 +167,7 @@
     <task-node end-tasks="true" name="(VCiv) Imprimir Citação Física">
         <task name="(VCiv) Imprimir Citação Física" swimlane="secretaria" priority="3">
             <controller>
-                <variable name="Processo_Fluxo_expedientes_correios" mapped-name="frame:Processo_Fluxo_expedientes_correios" access="read,write"/>
+                <variable name="WEB-INF_xhtml_flx_exped_controleCorreios" mapped-name="frame:WEB-INF_xhtml_flx_exped_controleCorreios" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[- Variável: 'Processo_Fluxo_expedientes_correios'
@@ -165,14 +177,12 @@
             <condition expression="#{true}"/>
         </transition>
         <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:correios', true)}"/>
             <action name="upd" expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo','false')}"/>
         </event>
     </task-node>
     <node name="Sair">
-        <transition to="Término" name="Término"/>
-        <event type="node-leave">
-            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_FBC', processInstance.contextInstance.variables)}"/>
-        </event>
+        <transition to="Voltar para análise de secretaria?" name="Voltar para análise de secretaria?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:listaPartesCitarEletronicamente')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:listaPartesCitarFisicamente')}"/>
@@ -186,7 +196,25 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:minutaCitacao')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:existeReuParaCitaçaoEletronica')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:parteCitacaoEhOrgaoPublico')}"/>
+        </event>
+    </node>
+    <decision expression="#{not empty tramitacaoProcessualService.recuperaVariavel('vciv:cit:voltar_fbc') ? 'Sim' : 'Não'}" name="Voltar para análise de secretaria?">
+        <transition to="Voltar para análise de secretaria" name="Sim"/>
+        <transition to="Ir para controle de expedientes" name="Não"/>
+    </decision>
+    <node name="Voltar para análise de secretaria">
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_FBC', processInstance.contextInstance.variables)}"/>
+        </event>
+        <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:encaminhar_analise_secretaria', true)}"/>
+        </event>
+    </node>
+    <node name="Ir para controle de expedientes">
+        <transition to="Término" name="Término"/>
+        <event type="node-leave">
+            <action expression="#{processoJudicialService.incluirNovoFluxo(tramitacaoProcessualService.recuperaProcesso(), 'VCiv_CPRE', processInstance.contextInstance.variables)}"/>
         </event>
     </node>
     <end-state name="Término"/>
