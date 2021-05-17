@@ -866,7 +866,7 @@ Aguardar Perícia / Laudo Técnico / Outros...]]></description>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:redistribuir') ? '(VCiv) Análise da secretaria' : '(VCiv) Encaminhar para Análise da secretaria?'}" name="(VCiv) Redistribuido ?">
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
-        <transition to="(VCiv) Encaminhar para Análise da secretaria?" name="(VCiv) Encaminhar para Análise da Secretaria?"/>
+        <transition to="(VCiv) Encaminhar para Análise da secretaria?" name="(VCiv) Encaminhar para Análise da secretaria?"/>
     </decision>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:encaminhar_analise_secretaria') ? '(VCiv) Análise da secretaria' : '(VCiv) Vem de outro fluxo?'}" name="(VCiv) Encaminhar para Análise da secretaria?">
         <transition to="(VCiv) Análise da secretaria" name="(VCiv) Análise da secretaria"/>
