@@ -110,7 +110,7 @@ Parâmetros
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada alvara" name="Retornar para expedição de alvará">
+        <transition to="(VCiv) Expedir Alvará" name="Retornar para expedição de alvará">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Lançamento de movimentação alvará" name="(VCiv) Lançamento de movimentação alvará">
@@ -129,7 +129,7 @@ Parâmetros
         </event>
     </task-node>
     <node name="(VCiv) Lançamento de movimentação alvará">
-        <transition to="(VCiv) Deslocar secretaria unificada entrega alvara" name="(VCiv) Deslocar secretaria unificada entrega alvara"/>
+        <transition to="(VCiv) Entregar Alvará" name="(VCiv) Entregar Alvará"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(73).lancarMovimento()}"/>
         </event>
@@ -183,13 +183,13 @@ Parâmetros
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada oficio" name="Retornar para expedição de ofício">
+        <transition to="(VCiv) Expedir Ofício" name="Retornar para expedição de ofício">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir Ofício" name="(VCiv) Imprimir Ofício">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para secretaria">
+        <transition to="(VCiv) Imprimir Ofício" name="Documento já assinado! Encaminhar para secretaria">
             <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Deslocar gabinete oficio" name="(VCiv) Deslocar gabinete oficio"/>
@@ -215,10 +215,10 @@ Parâmetros
         <transition to="(VCiv) Expedir Ofício" name="Retornar para expedição de ofício">
              <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir Ofício" name="(VCiv) Imprimir Ofício">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para imprimir oficio">
+        <transition to="(VCiv) Imprimir Ofício" name="Documento já assinado! Encaminhar para imprimir oficio">
              <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Assinar ofício pelo magistrado" name="Encaminhar para assinatura do magistrado"/>
@@ -238,13 +238,13 @@ Parâmetros
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir Ofício" name="(VCiv) Imprimir Ofício">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada oficio" name="Retornar para expedição de ofício">
+        <transition to="(VCiv) Expedir Ofício" name="Retornar para expedição de ofício">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para secretaria">
+        <transition to="(VCiv) Imprimir Ofício" name="Documento já assinado! Encaminhar para secretaria">
             <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
@@ -329,7 +329,7 @@ Parâmetros
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos">
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expedição de outros documentos">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">
@@ -555,7 +555,7 @@ Parâmetros
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos">
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expedição de outros documentos">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">
@@ -588,7 +588,7 @@ Parâmetros
         <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos">
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expedição de outros documentos">
             <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">

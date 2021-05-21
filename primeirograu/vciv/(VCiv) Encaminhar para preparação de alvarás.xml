@@ -9,7 +9,7 @@
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial"/>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+        <transition to="(VCiv) Informar quantidade de alvarás" name="(VCiv) Informar quantidade de alvarás"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(VCiv) Informar quantidade de alvarás">

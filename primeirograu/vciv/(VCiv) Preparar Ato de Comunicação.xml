@@ -176,8 +176,8 @@
         <transition to="Nó de Desvio - (VCiv) Preparar Ato de Comunicação" name="Nó de Desvio - (VCiv) Preparar Ato de Comunicação">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada citacao" name="Retornar para expedição de citação e (ou) intimação"/>
-        <transition to="(VCiv) Deslocar secretaria unificada assinatura citação" name="(VCiv) Deslocar secretaria unificada assinatura citação">
+        <transition to="(VCiv) Preparar citação e(ou) intimação" name="Retornar para expedição de citação e (ou) intimação"/>
+        <transition to="(VCiv) É competência de Fazenda?" name="(VCiv) É competência de Fazenda?">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
@@ -189,7 +189,7 @@
             <action expression="#{tramitacaoProcessualService.gravaVariavel('idTaskInstanceTempCitInt', org.jboss.seam.bpm.taskInstance.getId())}"/>
         </event>
         <event type="task-create">
-            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Deslocar secretaria unificada assinatura citação')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) É competência de Fazenda?')}"/>
             <action expression="#{preparaAtoComunicacaoAction.setMeiosComunicacao('E,C,S,D')}"/>
             <action expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,71')}"/>
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTempCitInt') ? tramitacaoProcessualService.gravaVariavel('prepararAto:meiosComunicacoes'.concat(org.jboss.seam.bpm.taskInstance.getId()), tramitacaoProcessualService.recuperaVariavel('prepararAto:meiosComunicacoes'.concat(tramitacaoProcessualService.recuperaVariavel('idTaskInstanceTempCitInt')))) : ''}"/>
@@ -486,12 +486,12 @@
         <transition to="Nó de Desvio - (VCiv) Preparar Ato de Comunicação" name="Nó de Desvio - (VCiv) Preparar Ato de Comunicação">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada mandado" name="Retonar para expedição de mandado"/>
-        <transition to="(VCiv) Deslocar secretaria unificada assinatura mandado" name="(VCiv) Deslocar secretaria unificada assinatura mandado">
+        <transition to="(VCiv) Expedir Mandado" name="Retonar para expedição de mandado"/>
+        <transition to="(VCiv) Existe alguma Central de Mandados?" name="(VCiv) Existe alguma Central de Mandados?">
             <condition expression="#{true}"/>
         </transition>
         <event type="task-start">
-            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Deslocar secretaria unificada assinatura mandado')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Existe alguma Central de Mandados?')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -627,7 +627,7 @@
         <transition to="(VCiv) Lançar movimento de Expedição de Carta Precatória" name="(VCiv) Lançar movimento de Expedição de Carta Precatória">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada carta precatoria" name="Retornar para expedição de carta precatória"/>
+        <transition to="(VCiv) Expedir Carta Precatória" name="Retornar para expedição de carta precatória"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
@@ -750,7 +750,7 @@
         </event>
     </node>
     <node name="(VCiv) Lançar movimento de Expedição de Carta Precatória">
-        <transition to="(VCiv) Deslocar secretaria unificada assinatura carta precatoria" name="(VCiv) Deslocar secretaria unificada assinatura carta precatoria"/>
+        <transition to="(VCiv) Encaminhar Carta Precatória" name="(VCiv) Encaminhar Carta Precatória"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(76).lancarMovimento()}"/>
         </event>
@@ -849,7 +849,7 @@
         <transition to="(VCiv) Controlar prazos via carta" name="Finalizar"/>
     </task-node>
     <node name="(VCiv) Lançar movimento de Expedição de Carta Rogatória">
-        <transition to="(VCiv) Deslocar secretaria unificada assinatura carta rogatoria" name="(VCiv) Deslocar secretaria unificada assinatura carta rogatoria"/>
+        <transition to="(VCiv) Encaminhar Carta Rogatória" name="(VCiv) Encaminhar Carta Rogatória"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(77).lancarMovimento()}"/>
         </event>
@@ -911,7 +911,7 @@
         <transition to="(VCiv) Lançar movimento de Expedição de Carta Rogatória" name="(VCiv) Lançar movimento de Expedição de Carta Rogatória">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada carta rogatoria" name="Retornar para expedição de carta rogatória"/>
+        <transition to="(VCiv) Expedir Carta Rogatória" name="Retornar para expedição de carta rogatória"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>

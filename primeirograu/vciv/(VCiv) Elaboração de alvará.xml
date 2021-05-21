@@ -12,7 +12,7 @@
     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" priority="3"/>
-        <transition to="(VCiv) Deslocar secretaria unificada inicio" name="(VCiv) Deslocar secretaria unificada inicio"/>
+        <transition to="(VCiv) Expedir alvará(s)" name="(VCiv) Expedir alvará(s)"/>
     </start-state>  
     <!-- NODES -->
     <task-node end-tasks="true" name="(VCiv) Expedir alvará(s)">
@@ -57,7 +57,7 @@
         <transition to="Nó de Desvio - (VCiv) Elaboração de alvará" name="Nó de Desvio - (VCiv) Elaboração de alvará">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="Retornar para expedição de alvarás"/>
+        <transition to="(VCiv) Expedir alvará(s)" name="Retornar para expedição de alvarás"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
@@ -75,9 +75,9 @@
             <action expression="#{preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(73).lancarMovimento()}"/>
         </event>
     </node>
-    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa = '(VCiv) Alvará(s) assinado(s)' AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(VCiv) Deslocar secretaria unificada termino' : '(VCiv) Deslocar secretaria unificada assinado'}" name="(VCiv) Existe registro do processo na tarefa alvará(s) assinado(s)?">
-        <transition to="(VCiv) Deslocar secretaria unificada assinado" name="(VCiv) Deslocar secretaria unificada assinado"/>
-        <transition to="(VCiv) Deslocar secretaria unificada termino" name="(VCiv) Deslocar secretaria unificada termino"/>
+    <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa = '(VCiv) Alvará(s) assinado(s)' AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? 'Término' : '(VCiv) Alvará(s) assinado(s)'}" name="(VCiv) Existe registro do processo na tarefa alvará(s) assinado(s)?">
+        <transition to="(VCiv) Alvará(s) assinado(s)" name="(VCiv) Alvará(s) assinado(s)"/>
+        <transition to="Término" name="Término"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Alvará(s) assinado(s)">
         <task name="(VCiv) Alvará(s) assinado(s)" swimlane="Magistrado" priority="3">
@@ -107,7 +107,7 @@ Tipo: Aviso]]></description>
         </event>
     </task-node>
     <node name="(VCiv) Apagar minuta não assinada de alvará">
-        <transition to="(VCiv) Deslocar secretaria unificada termino" name="(VCiv) Deslocar secretaria unificada termino"/>
+        <transition to="Término" name="Término"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_alvara')}"/>
         </event>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Controle de Audiência">
-    <description><![CDATA[Fluxo responsável por controlar as audiências.]]></description>  
+    <description><![CDATA[Fluxo responsável por controlar as audiências..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469')}"/>
@@ -172,16 +172,16 @@
         <transition to="Nó de Desvio - (VCiv) Controle de Audiência" name="Nó de Desvio - (VCiv) Controle de Audiência">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada magistrado" name="Intimar da audiência">
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
+        <transition to="(VCiv) Selecionar opção de intimação" name="(VCiv) Selecionar opção de intimação">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada magistrado" name="Documento já assinado">
+        <transition to="(VCiv) Selecionar opção de intimação" name="Documento já assinado">
             <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
-            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Intimar da audiência')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Selecionar opção de intimação')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{processoAudienciaHome.instance.setStatusAudiencia(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada'))}"/>
@@ -251,17 +251,17 @@
         <transition to="(VCiv) Informar movimentação" name="Retornar para informar movimentação">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada">
+        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
+        <transition to="(VCiv) Selecionar opção de intimação" name="(VCiv) Selecionar opção de intimação">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="Documento já assinado">
+        <transition to="(VCiv) Selecionar opção de intimação" name="Documento já assinado">
             <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Minutar ata de audiência" name="(VCiv) Minutar ata de audiência"/>
         <event type="task-start">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action name="upd" expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','87,164')}"/>
-            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Deslocar secretaria unificada')}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Selecionar opção de intimação')}"/>
         </event>
         <event type="node-enter">
             <action expression="#{processoAudienciaHome.instance.setStatusAudiencia(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:statusAudienciaSelecionada'))}"/>
@@ -408,14 +408,6 @@
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <process-state name="(VCiv) Deslocar secretaria unificada">
-        <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Selecionar opção de intimação" name="(VCiv) Selecionar opção de intimação"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
-            <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ in (\'pje:fluxo:deslocamento:orgaoCargoDestino,pje:fluxo:deslocamento:orgaoDestino\') order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
-        </event>
-    </process-state>
     <node name="(VCiv) Deslocar OJ origem">
         <transition to="(VCiv) Assinar ata de audiência com ato judicial" name="(VCiv) Assinar ata de audiência com ato judicial"/>
         <event type="node-enter">
@@ -424,14 +416,6 @@
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
         </event>
     </node>
-    <process-state name="(VCiv) Deslocar secretaria unificada magistrado">
-        <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Selecionar opção de intimação" name="(VCiv) Selecionar opção de intimação"/>
-        <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
-            <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ in (\'pje:fluxo:deslocamento:orgaoCargoDestino,pje:fluxo:deslocamento:orgaoDestino\') order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
-        </event>
-    </process-state>
     <node name="(VCiv) Deslocar OJ origem magistrado">
         <transition to="(VCiv) Assinar ata de audiência pelo magistrado" name="(VCiv) Assinar ata de audiência pelo magistrado"/>
         <event type="node-enter">

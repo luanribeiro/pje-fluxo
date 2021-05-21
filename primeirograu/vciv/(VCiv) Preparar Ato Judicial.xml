@@ -993,7 +993,7 @@
         </event>
     </node>
     <node name="(VCiv) Remover documento temporário decisão_despacho_sentença">
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+        <transition to="Término" name="Término"/>
         <event type="node-enter">
             <action expression="${not empty tramitacaoProcessualService.recuperaVariavel('minuta_despacho') and not processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('minuta_despacho')) ? documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_despacho') : '' }'"/>
             <action expression="${not empty tramitacaoProcessualService.recuperaVariavel('minuta_decisao') and not processoHome.isDocumentoAssinado(tramitacaoProcessualService.recuperaVariavel('minuta_decisao')) ? documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_decisao') : '' }'"/>
@@ -1002,7 +1002,7 @@
         </event>
     </node>
     <node name="(VCiv) Remover documento temporário sem efeito">
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+        <transition to="Término" name="Término"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_semefeito')}"/>
         </event>
@@ -1017,7 +1017,7 @@
     </decision>
     <process-state name="(VCiv) Conclusão - Documentação insuficiente">
         <sub-process name="(VCiv) Conclusão para Decisão - Documentação Insuficiente" binding="late"/>
-        <transition to="(VCiv) Deslocar secretaria unificada" name="(VCiv) Deslocar secretaria unificada"/>
+        <transition to="Término" name="Término"/>
     </process-state>
     <node name="(VCiv) Deslocar OJ origem">
         <transition to="(VCiv) Processo com documentação insuficiente?" name="(VCiv) Processo com documentação insuficiente?"/>

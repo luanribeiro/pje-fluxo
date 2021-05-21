@@ -75,15 +75,15 @@ expressão p/ quando ativar parnamirim:
         </transition>
         <transition to="(CEJUSC) Elaborar documento" name="Elaborar documento"/>
         <transition to="(CEJUSC) Intimar da audiência" name="Intimar mandado/correio/sistema/pessoalmente"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências não realizadas" name="Devolver - Não realizado"/>
         <transition to="(CEJUSC) É NATAL ?" name="Designar/Cancelar audiência - DPVAT">
             <condition expression="#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;DPVAT&quot;)}"/>
         </transition>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem acordo" name="Devolver - Sem acordo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com acordo" name="Devolver - Com acordo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem laudo" name="Devolver - Sem laudo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com laudo" name="Devolver - Com laudo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com ausência parcial das partes" name="Devolver - Ausência parcial das partes"/>
+        <transition to="(CEJUSC) Audiências não realizadas" name="Devolver - Não realizado"/>
+        <transition to="(CEJUSC) Audiências realizadas sem acordo" name="Devolver - Sem acordo"/>
+        <transition to="(CEJUSC) Audiências realizadas com acordo" name="Devolver - Com acordo"/>
+        <transition to="(CEJUSC) Audiências realizadas sem laudo" name="Devolver - Sem laudo"/>
+        <transition to="(CEJUSC) Audiências realizadas com laudo" name="Devolver - Com laudo"/>
+        <transition to="(CEJUSC) Audiências realizadas com ausência parcial das partes" name="Devolver - Ausência parcial das partes"/>
         <transition to="(CEJUSC) Audiências realizadas com acordo parcial" name="Devolver - Acordo parcial"/>
         <transition to="(CEJUSC) Designar PERÍCIA DPVAT" name="Designar/Cancelar PERÍCiA"/>
         <transition to="(CEJUSC) Intimar da PERÍCIA" name="Intimar mandado/correio/sistema/pessoalmente - PERÍCIA"/>
@@ -419,13 +419,13 @@ expressão p/ quando ativar parnamirim:
     </node>
     <task-node end-tasks="true" name="(CEJUSC) Escolher tipo de devolução">
         <task name="(CEJUSC) Escolher tipo de devolução" swimlane="CEJUSC" priority="3"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem acordo" name="Devolver - Sem acordo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com acordo" name="Devolver - Com acordo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas sem laudo" name="Devolver - Sem laudo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com laudo" name="Devolver - Com laudo"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências não realizadas" name="Devolver - Não realizado"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com ausência parcial das partes" name="Devolver - Ausência parcial das partes"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada audiências realizadas com acordo parcial" name="Devolver - Acordo parcial"/>
+        <transition to="(CEJUSC) Audiências realizadas sem acordo" name="Devolver - Sem acordo"/>
+        <transition to="(CEJUSC) Audiências realizadas com acordo" name="Devolver - Com acordo"/>
+        <transition to="(CEJUSC) Audiências realizadas sem laudo" name="Devolver - Sem laudo"/>
+        <transition to="(CEJUSC) Audiências realizadas com laudo" name="Devolver - Com laudo"/>
+        <transition to="(CEJUSC) Audiências não realizadas" name="Devolver - Não realizado"/>
+        <transition to="(CEJUSC) Audiências realizadas com ausência parcial das partes" name="Devolver - Ausência parcial das partes"/>
+        <transition to="(CEJUSC) Audiências realizadas com acordo parcial" name="Devolver - Acordo parcial"/>
         <transition to="Nó de Desvio - (VCiv) Controle do CEJUSC" name="Nó de Desvio - (VCiv) Controle do CEJUSC">
             <condition expression="#{true}"/>
         </transition>
@@ -436,8 +436,8 @@ expressão p/ quando ativar parnamirim:
         <transition to="(CEJUSC) É NATAL ?" name="Designar/Cancelar audiência - DPVAT">
             <condition expression="#{authenticator.getUsuarioLocalizacaoAtual().toString().toUpperCase().contains(&quot;DPVAT&quot;)}"/>
         </transition>
-        <transition to="(CEJUSC) Deslocar secretaria unificada pericia realizada" name="Devolver - Perícia realizada"/>
-        <transition to="(CEJUSC) Deslocar secretaria unificada pericia não realizada" name="Devolver - Perícia não realizada"/>
+        <transition to="(CEJUSC) PERÍCIA realizada" name="Devolver - Perícia realizada"/>
+        <transition to="(CEJUSC) PERÍCIA não realizada" name="Devolver - Perícia não realizada"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('cancelou:aud:cejusc')}"/>
         </event>
