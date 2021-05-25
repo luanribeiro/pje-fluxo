@@ -193,7 +193,7 @@
             </controller>
         </task>
         <transition to="Recuperar última intimação" name="Gerar automaticamente certidão de decurso de prazo"/>
-        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado"/>
+        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado (cível)"/>
         <transition to="Término" name="Finalizar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
@@ -248,7 +248,22 @@
         <transition to="(VCiv) Preparar para certificar trânsito em julgado" name="Sim"/>
         <transition to="(VCiv) Preparar para certificar decurso de prazo" name="Não"/>
     </decision>
+
     <node name="(VCiv) Preparar para certificar trânsito em julgado">
+        <transition to="(VCiv) É competência criminal?" name="(VCiv) É competência criminal?"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:competenciaCriminal', entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:query_eh_criminal')).setParameter('idProcesso',tramitacaoProcessualService.recuperaProcesso().getIdProcessoTrf()).getSingleResult() eq 1)}"/>
+        </event>
+    </node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:competenciaCriminal') ? 'Sim' : 'Não'}" name="(VCiv) É competência criminal?">
+        <transition to="(VCiv) Processos com prazos decorridos após sentença" name="Sim"/>
+        <transition to="(VCiv) Preparar variáveis para certificar trânsito em julgado" name="Não"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:fluxo:vciv:cpre:competenciaCriminal')}"/>
+        </event>
+    </decision>
+
+    <node name="(VCiv) Preparar variáveis para certificar trânsito em julgado">
         <transition to="(VCiv) Houve alguma manifestação após a sentença ou acórdão?" name="(VCiv) Houve alguma manifestação após a sentença ou acórdão?"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:fluxo:vciv:cpre:documentosPosSentencaAcordao')}"/>
@@ -331,7 +346,7 @@
             </controller>
         </task>
         <transition to="Recuperar última intimação" name="Gerar automaticamente certidão de decurso de prazo"/>
-        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado"/>
+        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado (cível)"/>
         <transition to="Término" name="Finalizar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
