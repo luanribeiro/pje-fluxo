@@ -37,7 +37,7 @@
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','244')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','160')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar elaboração da carta convite')}"/>
         </event>
@@ -62,7 +62,7 @@
         </event>
         <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','227')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','160')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
         </event>
     </task-node>
