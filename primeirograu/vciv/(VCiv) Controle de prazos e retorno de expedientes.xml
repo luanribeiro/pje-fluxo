@@ -248,7 +248,6 @@
         <transition to="(VCiv) Preparar para certificar trânsito em julgado" name="Sim"/>
         <transition to="(VCiv) Preparar para certificar decurso de prazo" name="Não"/>
     </decision>
-
     <node name="(VCiv) Preparar para certificar trânsito em julgado">
         <transition to="(VCiv) É competência criminal?" name="(VCiv) É competência criminal?"/>
         <event type="node-enter">
@@ -262,7 +261,6 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('tjrn:fluxo:vciv:cpre:competenciaCriminal')}"/>
         </event>
     </decision>
-
     <node name="(VCiv) Preparar variáveis para certificar trânsito em julgado">
         <transition to="(VCiv) Houve alguma manifestação após a sentença ou acórdão?" name="(VCiv) Houve alguma manifestação após a sentença ou acórdão?"/>
         <event type="node-leave">
@@ -307,8 +305,8 @@
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tjrn:fluxo:vciv:cpre:expedientesProcesso', processoParteExpedienteManager.getParteExpedienteFromProcesso(tramitacaoProcessualService.recuperaProcesso()))}"/>
             <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso') ? tramitacaoProcessualService.gravaVariavelTarefa('tjrn:fluxo:vciv:cpre:expedientesProcesso', collectionUtilsPje.ordenarLista(tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso'), 'idProcessoParteExpediente')) : ''}"/>
-            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso') ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso').{exp | exp.getProcessoExpediente().getTipoProcessoDocumento() eq parametroService.valueOf('idTipoDocumentoIntimacao') ? tramitacaoProcessualService.gravaVariavelTarefa('tjrn:fluxo:vciv:cpre:ultimaIntimacao', exp.getProcessoExpediente().getProcessoDocumento()) : ''} : ''}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao', processoDocumentoManager.recuperaDocumentosJuntados(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')!=null ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao').getDataJuntada() : dateUtil.getDataAtual()).size()&gt;0)}"/>
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso') ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:expedientesProcesso').{exp | exp.getProcessoExpediente().getTipoProcessoDocumento() eq parametroService.valueOf('idTipoDocumentoIntimacao') ? tramitacaoProcessualService.gravaVariavelTarefa('tjrn:fluxo:vciv:cpre:ultimaIntimacao', exp.getProcessoExpediente()) : ''} : ''}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('tjrn:fluxo:vciv:cpre:houveManifestacao', processoDocumentoManager.recuperaDocumentosJuntados(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao')!=null and tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao').getProcessoDocumento()!=null ? tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:ultimaIntimacao').getProcessoDocumento().getDataJuntada() : dateUtil.getDataAtual()).size()&gt;0)}"/>
         </event>
     </node>
     <decision expression="#{empty tramitacaoProcessualService.recuperaVariavel('tjrn:fluxo:vciv:cpre:validarCertidaoDecursoPrazo') ? 'Sim' : 'Não'}" name="Certifica sem validar?">
@@ -346,7 +344,6 @@
             </controller>
         </task>
         <transition to="Recuperar última intimação" name="Gerar automaticamente certidão de decurso de prazo"/>
-        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado (cível)"/>
         <transition to="Término" name="Finalizar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
@@ -382,6 +379,7 @@
                 <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
             </controller>
         </task>
+        <transition to="(VCiv) Certidão automática de trânsito em julgado" name="Gerar automaticamente certidão de trânsito em julgado (cível)"/>
         <transition to="Término" name="Finalizar e sair da tarefa"/>
         <transition to="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes" name="Nó de Desvio - (VCiv) Controle de prazos e retorno de expedientes">
             <condition expression="#{true}"/>
