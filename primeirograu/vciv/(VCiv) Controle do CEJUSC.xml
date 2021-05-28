@@ -847,7 +847,7 @@ aviso4:A opção "CEJUSC - DPVAT - PERÍCIA" encaminhará o processo para a realizaç
         </event>
     </task-node>
     <process-state name="(CEJUSC) Controle de PERÍCIA do CEJUSC">
-        <sub-process name="(VCiv) Controle de audiências do CEJUSC - PERÍCIA" binding="late"/>
+        <sub-process name="(VCiv) Controle de audiências do CEJUSC" binding="late"/>
         <transition to="(CEJUSC) Cancelou realizar audiência ?" name="(CEJUSC) Cancelou realizar audiência ?"/>
     </process-state>  
     <!-- PROCESS-EVENTS -->
