@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Recibo"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Recibo">
+    <description><![CDATA[Código do fluxo: PJE_BACEN_99806
+Fluxo: PJE_BACEN_99806
+Nome do processo: Bacen Recibo]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - Bacen Recibo">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>

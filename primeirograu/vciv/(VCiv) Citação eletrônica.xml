@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Citação eletrônica"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Citação eletrônica">
+    <description><![CDATA[Código do fluxo: VCiv_CIT.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - (VCiv) Citação eletrônica">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>

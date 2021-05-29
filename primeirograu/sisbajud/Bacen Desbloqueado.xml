@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Desbloqueado"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Desbloqueado">
+    <description><![CDATA[Código do fluxo: PJE_BACEN_99802
+Fluxo: PJE_BACEN_99802
+Nome do processo: Bacen Desbloqueado]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="solicitante">
         <assignment actor-id="#{actor.id}"/>

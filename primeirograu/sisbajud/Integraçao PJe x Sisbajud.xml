@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Integraçao PJe x Sisbajud"> 
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Integraçao PJe x Sisbajud">
+    <description><![CDATA[Código do fluxo: PJE_BACEN.]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - Integraçao PJe x Sisbajud">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
