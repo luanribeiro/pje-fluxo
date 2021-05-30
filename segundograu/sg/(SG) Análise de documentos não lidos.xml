@@ -26,7 +26,7 @@ Secretaria  Secretaria TUJ           Chefe de Secretaria]]></description>
         <transition to="(SG) Foi juntado pelo Ministério Público?" name="(SG) Foi juntado pelo Ministério Público?"/>
         <transition to="Término" name="Término"/>
     </decision>
-    <decision expression="#{processoDocumentoManager.getDocumento(tramitacaoProcessualService.recuperaProcesso(), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pelo Ministério Público?">
+    <decision expression="#{processoDocumentoManager.findById(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes')).nomeUsuarioAlteracao.indexOf('- Ministério Público') &gt; -1 ? '(SG) Documentos não lidos [Ministério Público] - ANALISAR' : '(SG) Documentos não lidos - ANALISAR'}" name="(SG) Foi juntado pelo Ministério Público?">
         <transition to="(SG) Documentos não lidos [Ministério Público] - ANALISAR" name="(SG) Documentos não lidos [Ministério Público] - ANALISAR"/>
         <transition to="(SG) Documentos não lidos - ANALISAR" name="(SG) Documentos não lidos - ANALISAR"/>
     </decision>
