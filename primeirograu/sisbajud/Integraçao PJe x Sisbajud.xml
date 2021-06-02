@@ -23,6 +23,7 @@
         </task>
         <transition to="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio"/>
         <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Término" name="Sair"/>
         <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
             <condition expression="#{true}"/>
         </transition>
@@ -37,6 +38,7 @@
             </controller>
         </task>
         <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Término" name="Sair"/>
         <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
             <condition expression="#{true}"/>
         </transition>
@@ -149,6 +151,7 @@
         </task>
         <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
         <transition to="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="Término" name="Sair"/>
         <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
             <condition expression="#{true}"/>
         </transition>
