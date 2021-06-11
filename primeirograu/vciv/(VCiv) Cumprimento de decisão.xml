@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Cumprimento de decisão">
-    <description><![CDATA[Fluxo para cumprimento de determinações do magistrado e outras providências da Secretaria.]]></description>  
+    <description><![CDATA[Fluxo para cumprimento de determinações do magistrado e outras providências da Secretaria...]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretaria e Servidor de cálculo">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,5:5891')}"/>
@@ -154,7 +154,7 @@
         </transition>
         <transition to="(VCiv) Junção em cumprimento de decisão" name="Finalizar tarefa"/>
         <event type="task-start">
-            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('outro Tribunal).comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(90).lancarMovimento()}"/>
+            <action expression="#{preencherMovimento.deCodigo(123).comComplementoDeCodigo(7).doTipoLivre().preencherComTexto('outro Tribunal').comComplementoDeCodigo(18).doTipoDominio().preencherComElementoDeCodigo(90).lancarMovimento()}"/>
         </event>
     </task-node>
     <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:fbc:certificar_decurso') ? '(VCiv) Certificação de decurso de prazo' : '(VCiv) Junção em cumprimento de decisão'}" name="(VCiv) Certificar decurso de prazo?">

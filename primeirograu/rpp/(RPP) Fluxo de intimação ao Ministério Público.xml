@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de intimação ao Ministério Público">
+    <description><![CDATA[Cód: RPP_INT_MP.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(RPP) Intimação ao Ministério Público - PREPARAR" name="(RPP) Intimação ao Ministério Público - PREPARAR"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(RPP) Intimação ao Ministério Público - PREPARAR">
+        <task name="(RPP) Intimação ao Ministério Público - PREPARAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_prepararExpediente" mapped-name="frame:Processo_Fluxo_prepararExpediente" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(RPP) Intimação ao Ministério Público - AGUARDAR" name="Aguardando manifestação do Ministério Público"/>
+        <transition to="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público" name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:pac:intimar_mp', 'true')}"/>
+        </event>
+        <event type="task-create">
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Aguardando manifestação do Ministério Público')}"/>
+            <action expression="#{taskInstanceUtil.setVariable('tiposDisponiveisIds','60,69,65,71')}"/>
+            <action name="upd" expression="#{preparaAtoComunicacaoAction.setMeiosComunicacao('E,C,S')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Intimação ao Ministério Público - AGUARDAR">
+        <task name="(RPP) Intimação ao Ministério Público - AGUARDAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público" name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Intimação ao Ministério Público respondida - ANALISAR" name=" Intimação ao Ministério Público respondida"/>
+        <event type="task-start">
+            <action expression="#{preencherMovimento.deCodigo(493).comComplementoDeCodigo(13).doTipoLivre().preencherComTexto('Ministério Público').lancarMovimento()}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Intimação ao Ministério Público respondida - ANALISAR">
+        <task name="(RPP) Intimação ao Ministério Público respondida - ANALISAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público" name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Subfluxo para enviar concluso para sentença" name="Enviar concluso para sentença"/>
+        <transition to="(RPP) Subfluxo para enviar concluso para despacho" name="Enviar concluso para despacho"/>
+    </task-node>
+    <process-state name="(RPP) Subfluxo para enviar concluso para sentença">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de sentença" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <process-state name="(RPP) Subfluxo para enviar concluso para despacho">
+        <sub-process name="(RPP) Fluxo de preparação de ato judicial de despacho" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público">
+        <task name="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público" swimlane="Nó de Desvio - (RPP) Fluxo de intimação ao Ministério Público" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(RPP) Intimação ao Ministério Público - PREPARAR" name="(RPP) Intimação ao Ministério Público - PREPARAR"/>
+        <transition to="(RPP) Intimação ao Ministério Público - AGUARDAR" name="(RPP) Intimação ao Ministério Público - AGUARDAR"/>
+        <transition to="(RPP) Intimação ao Ministério Público respondida - ANALISAR" name="(RPP) Intimação ao Ministério Público respondida - ANALISAR"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>  
+    <!-- ACTIONS --> 
+</process-definition>

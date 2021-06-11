@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de carta convite">
+    <description><![CDATA[Cód: RPP_PREP_CART_CONV.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de carta convite">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="(RPP) Carta convite - ELABORAR" name="(RPP) Carta convite - ELABORAR"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(RPP) Carta convite - ELABORAR">
+        <task name="(RPP) Carta convite - ELABORAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="miniPac" mapped-name="miniPAC:miniPac" access="read,write"/>
+                <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
+                <variable name="minutaAtoJudicial" mapped-name="textEditSignature:minutaAtoJudicial" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de carta convite" name="Nó de Desvio - (RPP) Fluxo de preparação de carta convite">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Carta convite - ASSINAR" name="Encaminhar para assinatura"/>
+        <transition to="(RPP) Apagar variáveis do fluxo" name="Cancelar elaboração da carta convite"/>
+        <transition to="Término" name="Término">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('idTaskInstanceTemp', org.jboss.seam.bpm.taskInstance.getId())}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','160')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Cancelar elaboração da carta convite')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Carta convite - ASSINAR">
+        <task name="(RPP) Carta convite - ASSINAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="assinarLote" mapped-name="assinarLote:assinarLote" access="read,write"/>
+                <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de carta convite" name="Nó de Desvio - (RPP) Fluxo de preparação de carta convite">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Carta convite - ELABORAR" name="Retornar para elaboração"/>
+        <transition to="Término" name="Término">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-end">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('idTaskInstanceTemp', org.jboss.seam.bpm.taskInstance.getId())}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','160')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Término')}"/>
+        </event>
+    </task-node>
+    <node name="(RPP) Apagar variáveis do fluxo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaAtoJudicial')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de preparação de carta convite">
+        <task name="Nó de Desvio - (RPP) Fluxo de preparação de carta convite" swimlane="Nó de Desvio - (RPP) Fluxo de preparação de carta convite" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="(RPP) Carta convite - ELABORAR" name="(RPP) Carta convite - ELABORAR"/>
+        <transition to="(RPP) Carta convite - ASSINAR" name="(RPP) Carta convite - ASSINAR"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>  
+    <!-- ACTIONS --> 
+</process-definition>

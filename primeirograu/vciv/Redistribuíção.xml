@@ -15,9 +15,9 @@
         <transition to="Eh Cejusc?" name="Eh Cejusc?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:EhDoCejusc') ? 'Processos Redistribuídos do Cejusc' : 'Deslocar secretaria unificada'}" name="Eh Cejusc?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:EhDoCejusc') ? 'Processos Redistribuídos do Cejusc' : 'Processos Redistribuídos de outras varas'}" name="Eh Cejusc?">
         <transition to="Processos Redistribuídos do Cejusc" name="Processos Redistribuídos do Cejusc"/>
-        <transition to="Deslocar secretaria unificada" name="Deslocar secretaria unificada"/>
+        <transition to="Processos Redistribuídos de outras varas" name="Processos Redistribuídos de outras varas"/>
     </decision>
     <task-node end-tasks="true" name="Processos Redistribuídos de outras varas">
         <task name="Processos Redistribuídos de outras varas" swimlane="Secretária"/>
@@ -26,7 +26,7 @@
             <condition expression="#{true}"/>
         </transition>
         <event type="node-enter">
-            <action expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsCiveisMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')) || parametroUtil.getParametro('pje:tjrn:OJsFamiliaMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) ? entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador = null, id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate() : null}"/>
+            <action expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsCiveisMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')) || parametroUtil.getParametro('pje:tjrn:OJsFamiliaMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) ? entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate() : null}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Processos Redistribuídos do Cejusc">

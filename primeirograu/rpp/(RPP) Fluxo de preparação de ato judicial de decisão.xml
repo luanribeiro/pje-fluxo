@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(RPP) Fluxo de preparação de ato judicial de decisão">
+    <description><![CDATA[Cód: RPP_PREP_ATO_JUD_DEC.
+
+Descrição:
+Fluxo de preparação de ato judicial de decisão]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Gabinete">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,7:5197')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" priority="3"/>
+        <transition to="(RPP) Conclusos para decisão - MINUTAR" name="(RPP) Conclusos para decisão - MINUTAR"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="(RPP) Conclusos para decisão - MINUTAR">
+        <task name="(RPP) Conclusos para decisão - MINUTAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="minutaAtoJudicial" mapped-name="textEditSignature:minutaAtoJudicial" access="read,write"/>
+                <variable name="minutarLote" mapped-name="minutarLote:minutarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(RPP) Conclusos para decisão - ASSINAR" name="Encaminhar para assinatura"/>
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão]">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="(RPP) Subfluxo de Análise da Secretaria" name="Retornar para secretaria"/>
+        <event type="task-end">
+            <action expression="#{not empty tramitacaoProcessualService.recuperaVariavelTarefa('textEditSignature:minutaAtoJudicial') ? tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditSignature:minutaAtoJudicial')) : ''}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão]')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{(processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios) ? lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}') : ''}"/>
+            <action expression="#{(processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios) ? tramitacaoProcessualService.gravaVariavel('pje:atoProferido', tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')) : ''}"/>
+        </event>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('mostrarBotaoGravarNoFluxo', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão]')}"/>
+            <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Retornar para secretaria')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="(RPP) Conclusos para decisão - ASSINAR">
+        <task name="(RPP) Conclusos para decisão - ASSINAR" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="movimentarLote" mapped-name="movimentarLote:movimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="(RPP) Conclusos para decisão - MINUTAR" name="Retornar para minutar"/>
+        <transition to="(RPP) Subfluxo de autos recebidos do gabinete [decisão]" name="(RPP) Subfluxo Autos recebidos do gabinete [decisão]">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '62,63,64')}"/>
+            <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(RPP) Subfluxo Autos recebidos do gabinete [decisão]')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
+        </event>
+    </task-node>
+    <process-state name="(RPP) Subfluxo de autos recebidos do gabinete [decisão]">
+        <sub-process name="(RPP) Fluxo de autos recebidos do gabinete" binding="late"/>
+        <transition to="(RPP) Apagar variáveis do fluxo" name="(RPP) Apagar variáveis do fluxo"/>
+    </process-state>
+    <process-state name="(RPP) Subfluxo de Análise da Secretaria">
+        <sub-process name="(RPP) Fluxo básico geral" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:tjrn:rpp:sinalizacao', 'true')}"/>
+        </event>
+    </process-state>
+    <node name="(RPP) Apagar variáveis do fluxo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('MovimentosLancadosTemporariamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaAtoJudicial')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão">
+        <task name="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão" swimlane="Nó de Desvio - (RPP) Fluxo de preparação de ato judicial de decisão" priority="3"/>
+        <transition to="(RPP) Conclusos para decisão - MINUTAR" name="(RPP) Conclusos para decisão - MINUTAR"/>
+        <transition to="(RPP) Conclusos para decisão - ASSINAR" name="(RPP) Conclusos para decisão - ASSINAR"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>

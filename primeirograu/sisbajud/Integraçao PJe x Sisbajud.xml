@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Integraçao PJe x Sisbajud">
+    <description><![CDATA[Código do fluxo: PJE_BACEN.]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Integraçao PJe x Sisbajud">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
+    </swimlane>
+    <swimlane name="secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="secretaria" priority="3"/>
+        <transition to="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores" name="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores">
+        <task name="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Término" name="Sair"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio">
+        <task name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_bacen" mapped-name="frame:Processo_Fluxo_bacen" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Término" name="Sair"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Protocolar ordem judicial">
+        <transition to="Verifica resposta protocolo" name="Verifica resposta protocolo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:sisbajud:protocolo', bacenRestClient.protocolaOrdemJudicial(null, processoTrfHome.instance, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:executados'), processoTrfHome.instance.getValorCausa(), authenticator.getUsuarioLogado().getLogin()))}"/>
+        </event>
+    </node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo').startsWith('ERRO: ') ? '[SISBAJUD] Com erro': '[SISBAJUD] Aguardando recibo'}" name="Verifica resposta protocolo">
+        <transition to="[SISBAJUD] Com erro" name="[SISBAJUD] Com erro"/>
+        <transition to="[SISBAJUD] Aguardando recibo" name="[SISBAJUD] Aguardando recibo"/>
+    </decision>
+    <task-node end-tasks="true" name="[SISBAJUD] Aguardando recibo">
+        <task name="[SISBAJUD] Aguardando recibo" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="info" mapped-name="textMessage:info" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Verifica logs recibo" name="[SISBAJUD] Verifica logs recibo"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '[SISBAJUD] Protocolados')}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99806', true)}&quot;/&gt;"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Verifica logs recibo">
+        <task name="[SISBAJUD] Verifica logs recibo" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados"/>
+        <transition to="Entregar recibo" name="[SISBAJUD] Entregar recibo"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <node name="Entregar recibo">
+        <transition to="[SISBAJUD] Aguardando recibo" name="[SISBAJUD] Aguardando recibo"/>
+        <event type="node-enter">
+            <action expression="#{bacenRestClient.entregaRecibo(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="[SISBAJUD] Protocolados">
+        <task name="[SISBAJUD] Protocolados" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[SISBAJUD] Protocolo cancelado" name="[SISBAJUD] Cancela protocolo"/>
+        <transition to="[SISBAJUD] Verifica logs certidão" name="[SISBAJUD] Verifica logs certidão"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Verifica resposta" name="Verifica resposta">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99801', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99802', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99803', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99804', true)}&quot;/&gt;"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verifica resposta')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Verifica logs certidão">
+        <task name="[SISBAJUD] Verifica logs certidão" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Entrega certidão" name="Entrega certidão"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados"/>
+        <transition to="[SISBAJUD] Resposta negativa" name="[SISBAJUD] Resposta negativa"/>
+        <transition to="[SISBAJUD] Desbloqueados" name="[SISBAJUD] Desbloqueados"/>
+        <transition to="[SISBAJUD] Transferidos parcialmente" name="[SISBAJUD] Transferidos parcialmente"/>
+        <transition to="[SISBAJUD] Transferidos" name="[SISBAJUD] Transferidos"/>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <node name="Entrega certidão">
+        <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados"/>
+        <event type="node-enter">
+            <action expression="#{bacenRestClient.entregaCertidao(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="[SISBAJUD] Com erro">
+        <task name="[SISBAJUD] Com erro" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Protocolar ordem judicial" name="[SISBAJUD] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="Término" name="Sair"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}&quot;/&gt;"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Protocolo cancelado">
+        <task name="[SISBAJUD] Protocolo cancelado" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:sisbajud:cancelamento', bacenRestClient.cancelaOrdemJudicial(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo')))}"/>
+        </event>
+    </task-node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99801') ? '[SISBAJUD] Resposta negativa' :(tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99802') ? '[SISBAJUD] Desbloqueados' : (tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99803') ? '[SISBAJUD] Transferidos parcialmente' : '[SISBAJUD] Transferidos'))}" name="Verifica resposta">
+        <transition to="[SISBAJUD] Desbloqueados" name="[SISBAJUD] Desbloqueados"/>
+        <transition to="[SISBAJUD] Transferidos" name="[SISBAJUD] Transferidos"/>
+        <transition to="[SISBAJUD] Transferidos parcialmente" name="[SISBAJUD] Transferidos parcialmente"/>
+        <transition to="[SISBAJUD] Resposta negativa" name="[SISBAJUD] Resposta negativa"/>
+    </decision>
+    <task-node end-tasks="true" name="[SISBAJUD] Resposta negativa">
+        <task name="[SISBAJUD] Resposta negativa" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Transferidos parcialmente">
+        <task name="[SISBAJUD] Transferidos parcialmente" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Transferidos">
+        <task name="[SISBAJUD] Transferidos" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[SISBAJUD] Desbloqueados">
+        <task name="[SISBAJUD] Desbloqueados" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Integraçao PJe x Sisbajud" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Integraçao PJe x Sisbajud">
+        <task name="Nó de Desvio - Integraçao PJe x Sisbajud" swimlane="Nó de Desvio - Integraçao PJe x Sisbajud" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores" name="[SISBAJUD] Aguardando abertura de ordem judicial de bloqueio de valores">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Com erro" name="[SISBAJUD] Com erro">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Protocolados" name="[SISBAJUD] Protocolados">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Desbloqueados" name="[SISBAJUD] Desbloqueados"/>
+        <transition to="[SISBAJUD] Protocolo cancelado" name="[SISBAJUD] Protocolo cancelado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[SISBAJUD] Transferidos" name="[SISBAJUD] Transferidos"/>
+        <transition to="[SISBAJUD] Transferidos parcialmente" name="[SISBAJUD] Transferidos parcialmente"/>
+        <transition to="[SISBAJUD] Resposta negativa" name="[SISBAJUD] Resposta negativa"/>
+        <transition to="[SISBAJUD] Selecionar partes e indicar valor do bloqueio" name="[SISBAJUD] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="[SISBAJUD] Aguardando recibo" name="[SISBAJUD] Aguardando recibo"/>
+        <transition to="[SISBAJUD] Verifica logs recibo" name="[SISBAJUD] Verifica logs recibo"/>
+        <transition to="[SISBAJUD] Verifica logs certidão" name="[SISBAJUD] Verifica logs certidão"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>

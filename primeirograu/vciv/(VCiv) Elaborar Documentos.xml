@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="(VCiv) Elaborar Documentos">
-    <description><![CDATA[Fluxo destinado a elaboração de documentos do tipo Alvará, Ofício e outros.
-Parâmetros
-1. pje:tjrn:classesValorRecuperado: Classes nas quais deve ser informado o valor recuperado.]]></description>  
+    <description><![CDATA[Fluxo destinado a elaboraÃ§Ã£o de documentos do tipo AlvarÃ¡, OfÃ­cio e outros.
+ParÃ¢metros
+1. pje:tjrn:classesValorRecuperado: Classes nas quais deve ser informado o valor recuperado..]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Magistrado">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1469,5:1338,8:5852,8:5853,6:5901')}"/>
     </swimlane>
-    <swimlane name="Nó de Desvio - (VCiv) Elaborar Documentos">
+    <swimlane name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('-1:1338,1342:1469')}"/>
     </swimlane>
     <swimlane name="Secretaria">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,8:5852,8:5853')}" actor-id="#{actor.id}"/>
     </swimlane>  
     <!-- START-STATE -->
-    <start-state name="Início">
+    <start-state name="InÃ­cio">
         <task name="Tarefa inicial" priority="3"/>
-        <transition to="(VCiv) Separação em Elaborar Documentos" name="(VCiv) Separação em Elaborar Documentos"/>
+        <transition to="(VCiv) SeparaÃ§Ã£o em Elaborar Documentos" name="(VCiv) SeparaÃ§Ã£o em Elaborar Documentos"/>
     </start-state>  
     <!-- NODES -->
-    <end-state name="Término">
+    <end-state name="TÃ©rmino">
         <event type="node-enter">
             <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
             <action name="upd" expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
     </end-state>
-    <task-node end-tasks="true" name="Nó de Desvio - (VCiv) Elaborar Documentos">
-        <task name="Nó de Desvio - (VCiv) Elaborar Documentos" swimlane="Nó de Desvio - (VCiv) Elaborar Documentos" priority="3"/>
-        <transition to="Término" name="Término"/>
-        <transition to="(VCiv) Expedir Alvará" name="(VCiv) Expedir Alvará"/>
-        <transition to="(VCiv) Entregar Alvará" name="(VCiv) Entregar Alvará"/>
-        <transition to="(VCiv) Expedir Ofício" name="(VCiv) Expedir Ofício"/>
-        <transition to="(VCiv) Imprimir Ofício" name="(VCiv) Imprimir Ofício"/>
+    <task-node end-tasks="true" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
+        <task name="NÃ³ de Desvio - (VCiv) Elaborar Documentos" swimlane="NÃ³ de Desvio - (VCiv) Elaborar Documentos" priority="3"/>
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
+        <transition to="(VCiv) Expedir AlvarÃ¡" name="(VCiv) Expedir AlvarÃ¡"/>
+        <transition to="(VCiv) Entregar AlvarÃ¡" name="(VCiv) Entregar AlvarÃ¡"/>
+        <transition to="(VCiv) Expedir OfÃ­cio" name="(VCiv) Expedir OfÃ­cio"/>
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="(VCiv) Imprimir OfÃ­cio"/>
         <transition to="(VCiv) Expedir outros documentos" name="(VCiv) Expedir outros documentos"/>
         <transition to="(VCiv) Imprimir outros documentos" name="(VCiv) Imprimir outros documentos"/>
-        <transition to="(VCiv) Assinar Alvará" name="(VCiv) Assinar Alvará"/>
-        <transition to="(VCiv) Assinar Ofício" name="(VCiv) Assinar Ofício"/>
+        <transition to="(VCiv) Assinar AlvarÃ¡" name="(VCiv) Assinar AlvarÃ¡"/>
+        <transition to="(VCiv) Assinar OfÃ­cio" name="(VCiv) Assinar OfÃ­cio"/>
         <transition to="(VCiv) Assinar outros documentos" name="(VCiv) Assinar outros documentos"/>
-        <transition to="(VCiv) Certificar Trânsito em Julgado" name="(VCiv) Certificar Trânsito em Julgado"/>
-        <transition to="(VCiv) Assinar Certidão de Trânsito em Julgado" name="(VCiv) Assinar Certidão de Trânsito em Julgado"/>
-        <transition to="(VCiv) Imprimir Certidão de Trânsito em Julgado" name="(VCiv) Imprimir Certidão de Trânsito em Julgado">
+        <transition to="(VCiv) Certificar TrÃ¢nsito em Julgado" name="(VCiv) Certificar TrÃ¢nsito em Julgado"/>
+        <transition to="(VCiv) Assinar CertidÃ£o de TrÃ¢nsito em Julgado" name="(VCiv) Assinar CertidÃ£o de TrÃ¢nsito em Julgado"/>
+        <transition to="(VCiv) Imprimir CertidÃ£o de TrÃ¢nsito em Julgado" name="(VCiv) Imprimir CertidÃ£o de TrÃ¢nsito em Julgado">
             <condition expression="#{true}"/>
         </transition>
         <transition to="(VCiv) Certificar decurso de prazo" name="(VCiv) Certificar decurso de prazo"/>
-        <transition to="(VCiv) Assinar certidão de decurso de prazo" name="(VCiv) Assinar certidão de decurso de prazo"/>
-        <transition to="(VCiv) Imprimir certidão de decurso de prazo" name="(VCiv) Imprimir certidão de decurso de prazo"/>
-        <transition to="(VCiv) Assinar Carta Precatória e(ou) Rogatória" name="(VCiv) Assinar Carta Precatória e(ou) Rogatória"/>
+        <transition to="(VCiv) Assinar certidÃ£o de decurso de prazo" name="(VCiv) Assinar certidÃ£o de decurso de prazo"/>
+        <transition to="(VCiv) Imprimir certidÃ£o de decurso de prazo" name="(VCiv) Imprimir certidÃ£o de decurso de prazo"/>
+        <transition to="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria" name="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria"/>
         <transition to="(VCiv) Assinar Edital" name="(VCiv) Assinar Edital"/>
-        <transition to="(VCiv) Assinar ofício pelo chefe de secretaria" name="(VCiv) Assinar ofício pelo chefe de secretaria"/>
-        <transition to="(VCiv) Assinar ofício pelo magistrado" name="(VCiv) Assinar ofício pelo magistrado"/>
+        <transition to="(VCiv) Assinar ofÃ­cio pelo chefe de secretaria" name="(VCiv) Assinar ofÃ­cio pelo chefe de secretaria"/>
+        <transition to="(VCiv) Assinar ofÃ­cio pelo magistrado" name="(VCiv) Assinar ofÃ­cio pelo magistrado"/>
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
     </task-node>
-    <fork name="(VCiv) Separação em Elaborar Documentos">
-        <transition to="(VCiv) É Alvará?" name="(VCiv) É Alvará?"/>
-        <transition to="(VCiv) É Ofício?" name="(VCiv) É Ofício?"/>
-        <transition to="(VCiv) É outros documentos?" name="(VCiv) É outros documentos?"/>
-        <transition to="(VCiv) É Certificar Trânsito em Julgado?" name="(VCiv) É Certificar Trânsito em Julgado?"/>
-        <transition to="(VCiv) É certificar decurso de prazo?" name="(VCiv) É certificar decurso de prazo?"/>
+    <fork name="(VCiv) SeparaÃ§Ã£o em Elaborar Documentos">
+        <transition to="(VCiv) Ã‰ AlvarÃ¡?" name="(VCiv) Ã‰ AlvarÃ¡?"/>
+        <transition to="(VCiv) Ã‰ OfÃ­cio?" name="(VCiv) Ã‰ OfÃ­cio?"/>
+        <transition to="(VCiv) Ã‰ outros documentos?" name="(VCiv) Ã‰ outros documentos?"/>
+        <transition to="(VCiv) Ã‰ Certificar TrÃ¢nsito em Julgado?" name="(VCiv) Ã‰ Certificar TrÃ¢nsito em Julgado?"/>
+        <transition to="(VCiv) Ã‰ certificar decurso de prazo?" name="(VCiv) Ã‰ certificar decurso de prazo?"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('minuta_alvara')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('minuta_oficio')}"/>
@@ -67,31 +67,31 @@ Parâmetros
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
     </fork>
-    <join name="(VCiv) Junção em Elaborar Documentos">
-        <transition to="Término" name="Término"/>
+    <join name="(VCiv) JunÃ§Ã£o em Elaborar Documentos">
+        <transition to="TÃ©rmino" name="TÃ©rmino"/>
         <event type="node-enter">
             <action expression="#{lancadorMovimentosService.apagarMovimentosTemporarios()}"/>
         </event>
     </join>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_alvara') ? '(VCiv) Expedir Alvará' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É Alvará?">
-        <transition to="(VCiv) Expedir Alvará" name="(VCiv) Expedir Alvará"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_alvara') ? '(VCiv) Expedir AlvarÃ¡' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Ã‰ AlvarÃ¡?">
+        <transition to="(VCiv) Expedir AlvarÃ¡" name="(VCiv) Expedir AlvarÃ¡"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </decision>
-    <task-node end-tasks="true" name="(VCiv) Expedir Alvará">
-        <task name="(VCiv) Expedir Alvará" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Expedir AlvarÃ¡">
+        <task name="(VCiv) Expedir AlvarÃ¡" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_alvara" mapped-name="textEditCombo:minuta_alvara" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Remover documento temporário alvará" name="Ignorar expedição de alvará"/>
+        <transition to="(VCiv) Remover documento temporÃ¡rio alvarÃ¡" name="Ignorar expediÃ§Ã£o de alvarÃ¡"/>
         <transition to="(VCiv) Deslocar gabinete alvara" name="Encaminhar para assinatura"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','91')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expedição de alvará')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expediÃ§Ã£o de alvarÃ¡')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_alvara'))}"/>
@@ -100,73 +100,71 @@ Parâmetros
             <action expression="#{not empty processoHome.idProcessoDocumento ? org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar Alvará">
-        <task name="(VCiv) Assinar Alvará" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar AlvarÃ¡">
+        <task name="(VCiv) Assinar AlvarÃ¡" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada alvara" name="Retornar para expedição de alvará">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir AlvarÃ¡" name="Retornar para expediÃ§Ã£o de alvarÃ¡">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação alvará" name="(VCiv) Lançamento de movimentação alvará">
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o alvarÃ¡" name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o alvarÃ¡">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação alvará" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o alvarÃ¡" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <event type="task-start">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Lançamento de movimentação alvará}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) LanÃ§amento de movimentaÃ§Ã£o alvarÃ¡}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '91')}"/>
         </event>
     </task-node>
-    <node name="(VCiv) Lançamento de movimentação alvará">
-        <transition to="(VCiv) Deslocar secretaria unificada entrega alvara" name="(VCiv) Deslocar secretaria unificada entrega alvara"/>
+    <node name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o alvarÃ¡">
+        <transition to="(VCiv) Entregar AlvarÃ¡" name="(VCiv) Entregar AlvarÃ¡"/>
         <event type="node-enter">
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(73).lancarMovimento()}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(VCiv) Entregar Alvará">
-        <task name="(VCiv) Entregar Alvará" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Entregar AlvarÃ¡">
+        <task name="(VCiv) Entregar AlvarÃ¡" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" mapped-name="page:Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="Finalizar tarefa"/>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="Finalizar tarefa"/>
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_oficio') ? '(VCiv) Expedir Ofício' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É Ofício?">
-        <transition to="(VCiv) Expedir Ofício" name="(VCiv) Expedir Ofício"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_oficio') ? '(VCiv) Expedir OfÃ­cio' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Ã‰ OfÃ­cio?">
+        <transition to="(VCiv) Expedir OfÃ­cio" name="(VCiv) Expedir OfÃ­cio"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </decision>
-    <task-node end-tasks="true" name="(VCiv) Expedir Ofício">
-        <task name="(VCiv) Expedir Ofício" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Expedir OfÃ­cio">
+        <task name="(VCiv) Expedir OfÃ­cio" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_oficio" mapped-name="textEditCombo:minuta_oficio" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Remover documento temporário ofício" name="Ignorar expedição de ofício"/>
-        <transition to="(VCiv) Assinar ofício pelo chefe de secretaria" name="Encaminhar para assinatura do chefe de secretaria"/>
+        <transition to="(VCiv) Remover documento temporÃ¡rio ofÃ­cio" name="Ignorar expediÃ§Ã£o de ofÃ­cio"/>
+        <transition to="(VCiv) Assinar ofÃ­cio pelo chefe de secretaria" name="Encaminhar para assinatura do chefe de secretaria"/>
         <transition to="(VCiv) Deslocar gabinete oficio" name="Encaminhar para assinatura do magistrado"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','34')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expedição de ofício')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expediÃ§Ã£o de ofÃ­cio')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_oficio'))}"/>
@@ -175,109 +173,103 @@ Parâmetros
             <action expression="#{not empty processoHome.idProcessoDocumento ? org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento) : ''}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar Ofício">
-        <task name="(VCiv) Assinar Ofício" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar OfÃ­cio">
+        <task name="(VCiv) Assinar OfÃ­cio" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada oficio" name="Retornar para expedição de ofício">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir OfÃ­cio" name="Retornar para expediÃ§Ã£o de ofÃ­cio">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="(VCiv) Imprimir OfÃ­cio">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <transition to="(VCiv) Deslocar gabinete oficio" name="(VCiv) Deslocar gabinete oficio"/>
-        <event type="task-start">
+        <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-        </event>
-        <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir Ofício')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir OfÃ­cio')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar ofício pelo chefe de secretaria">
-        <task name="(VCiv) Assinar ofício pelo chefe de secretaria" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar ofÃ­cio pelo chefe de secretaria">
+        <task name="(VCiv) Assinar ofÃ­cio pelo chefe de secretaria" swimlane="Secretaria" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Expedir Ofício" name="Retornar para expedição de ofício">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir OfÃ­cio" name="Retornar para expediÃ§Ã£o de ofÃ­cio">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="(VCiv) Imprimir OfÃ­cio">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para imprimir oficio">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="Documento jÃ¡ assinado! Encaminhar para imprimir oficio">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Assinar ofício pelo magistrado" name="Encaminhar para assinatura do magistrado"/>
-        <event type="task-start">
+        <transition to="(VCiv) Assinar ofÃ­cio pelo magistrado" name="Encaminhar para assinatura do magistrado"/>
+        <event type="task-create">
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-        </event>
-        <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir Ofício')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir OfÃ­cio')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar ofício pelo magistrado">
-        <task name="(VCiv) Assinar ofício pelo magistrado" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar ofÃ­cio pelo magistrado">
+        <task name="(VCiv) Assinar ofÃ­cio pelo magistrado" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="(VCiv) Imprimir Ofício">
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="(VCiv) Imprimir OfÃ­cio">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada oficio" name="Retornar para expedição de ofício">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir OfÃ­cio" name="Retornar para expediÃ§Ã£o de ofÃ­cio">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada imprimir oficio" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <event type="task-start">
+        <event type="task-create">
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir OfÃ­cio')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '34')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
-        </event>
-        <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Imprimir Ofício')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Imprimir Ofício">
-        <task name="(VCiv) Imprimir Ofício" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Imprimir OfÃ­cio">
+        <task name="(VCiv) Imprimir OfÃ­cio" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="Finalizar tarefa"/>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="Finalizar tarefa"/>
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) SubProcesso - Aguardar devolução de ofício" name="Encaminhar para aguardar devolução de ofício"/>
+        <transition to="(VCiv) SubProcesso - Aguardar devoluÃ§Ã£o de ofÃ­cio" name="Encaminhar para aguardar devoluÃ§Ã£o de ofÃ­cio"/>
         <event type="task-start">
             <action expression="#{preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(79).lancarMovimento()}"/>
         </event>
@@ -285,20 +277,20 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:oficio', true)}"/>
         </event>
     </task-node>
-    <process-state name="(VCiv) SubProcesso - Aguardar devolução de ofício">
+    <process-state name="(VCiv) SubProcesso - Aguardar devoluÃ§Ã£o de ofÃ­cio">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </process-state>
-    <process-state name="(VCiv) SubProcesso - Aguardar trânsito em julgado">
+    <process-state name="(VCiv) SubProcesso - Aguardar trÃ¢nsito em julgado">
         <sub-process name="(VCiv) Controle de prazos e retorno de expedientes" binding="late"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('vciv:cpre:certidao', true)}"/>
         </event>
     </process-state>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_outros_documentos') ? '(VCiv) Expedir outros documentos' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É outros documentos?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:expedir_outros_documentos') ? '(VCiv) Expedir outros documentos' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Ã‰ outros documentos?">
         <transition to="(VCiv) Expedir outros documentos" name="(VCiv) Expedir outros documentos"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Expedir outros documentos">
         <task name="(VCiv) Expedir outros documentos" swimlane="Secretaria" priority="3">
@@ -307,15 +299,15 @@ Parâmetros
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Remover documento temporário outros documentos" name="Ignorar expedição de outros documentos"/>
-        <transition to="(VCiv) É gabinete?" name="Encaminhar para assinatura do magistrado"/>
-        <transition to="(VCiv) É Secretaria?" name="Encaminhar para assinatura da secretaria"/>
+        <transition to="(VCiv) Remover documento temporÃ¡rio outros documentos" name="Ignorar expediÃ§Ã£o de outros documentos"/>
+        <transition to="(VCiv) Ã‰ gabinete?" name="Encaminhar para assinatura do magistrado"/>
+        <transition to="(VCiv) Ã‰ Secretaria?" name="Encaminhar para assinatura da secretaria"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','57,67,159,160,161,162,163,164,165,166,94,205,172,95,231,241,242,238')}"/>
-            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expedição de outros documentos')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar expediÃ§Ã£o de outros documentos')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_outros_documentos'))}"/>
@@ -334,37 +326,37 @@ Parâmetros
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos"/>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expediÃ§Ã£o de outros documentos">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <event type="task-start">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '57,67,159,160,161,162,163,164,165,166,94,205,172,95,231,241,242,238')}"/>
-        </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Lançamento de movimentação outros documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '57,67,159,160,161,162,163,164,165,166,94,205,172,95,231,241,242,238')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
     </task-node>
-    <node name="(VCiv) Lançamento de movimentação outros documentos">
-        <transition to="(VCiv) Deslocar secretaria unificada entrega precatória e rogatória" name="(VCiv) Deslocar secretaria unificada entrega precatória e rogatória"/>
+    <node name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos">
+        <transition to="(VCiv) Deslocar secretaria unificada entrega precatÃ³ria e rogatÃ³ria" name="(VCiv) Deslocar secretaria unificada entrega precatÃ³ria e rogatÃ³ria"/>
         <event type="node-enter">
             <action expression="#{processoDocumentoManager.getProcessoDocumento(tramitacaoProcessualService.recuperaProcesso().getNumeroProcesso(), null, papelDAO.findByCodeName('admin'), null).get(0).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 57 ? preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(107).lancarMovimento() : ( processoDocumentoManager.getProcessoDocumento(tramitacaoProcessualService.recuperaProcesso().getNumeroProcesso(), null, papelDAO.findByCodeName('admin'), null).get(0).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 67 ? preencherMovimento.deCodigo(11383).lancarMovimento() : ( processoDocumentoManager.getProcessoDocumento(tramitacaoProcessualService.recuperaProcesso().getNumeroProcesso(), null, papelDAO.findByCodeName('admin'), null).get(0).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 238 ? preencherMovimento.deCodigo(60).associarAoDocumento(documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('pje:atoProferido'))).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(78).lancarMovimento() : preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(80).lancarMovimento() ) )}"/>
         </event>
     </node>
-    <decision expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 94 ? '(VCiv) Assinar Carta Precatória e(ou) Rogatória' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 205 ? '(VCiv) Assinar Carta Precatória e(ou) Rogatória' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 172 ? '(VCiv) Assinar Alvará' : '(VCiv) Assinar outros documentos'))}" name="(VCiv) É Secretaria?">
-        <transition to="(VCiv) Assinar Alvará" name="(VCiv) Assinar Alvará"/>
+    <decision expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 94 ? '(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 205 ? '(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 172 ? '(VCiv) Assinar AlvarÃ¡' : '(VCiv) Assinar outros documentos'))}" name="(VCiv) Ã‰ Secretaria?">
+        <transition to="(VCiv) Assinar AlvarÃ¡" name="(VCiv) Assinar AlvarÃ¡"/>
         <transition to="(VCiv) Assinar outros documentos" name="(VCiv) Assinar outros documentos"/>
-        <transition to="(VCiv) Assinar Carta Precatória e(ou) Rogatória" name="(VCiv) Assinar Carta Precatória e(ou) Rogatória"/>
+        <transition to="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria" name="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Imprimir outros documentos">
         <task name="(VCiv) Imprimir outros documentos" swimlane="Secretaria" priority="3">
@@ -372,34 +364,34 @@ Parâmetros
                 <variable name="Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" mapped-name="page:Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="Finalizar tarefa"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="Finalizar tarefa"/>
         <event type="task-start">
             <action expression="#{processoDocumentoManager.getProcessoDocumento(tramitacaoProcessualService.recuperaProcesso().getNumeroProcesso(), null, papelDAO.findByCodeName('admin'), null).get(0).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 94 ? preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(76).lancarMovimento() : ( processoDocumentoManager.getProcessoDocumento(tramitacaoProcessualService.recuperaProcesso().getNumeroProcesso(), null, papelDAO.findByCodeName('admin'), null).get(0).getTipoProcessoDocumento().getIdTipoProcessoDocumento() == 205 ? preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(77).lancarMovimento() : preencherMovimento.deCodigo(60).comComplementoDeCodigo(4).doTipoDominio().preencherComElementoDeCodigo(80).lancarMovimento())}"/>
         </event>
     </task-node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:certificar_transito') ? '(VCiv) Certificar Trânsito em Julgado' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É Certificar Trânsito em Julgado?">
-        <transition to="(VCiv) Certificar Trânsito em Julgado" name="(VCiv) Certificar Trânsito em Julgado"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:certificar_transito') ? '(VCiv) Certificar TrÃ¢nsito em Julgado' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Ã‰ Certificar TrÃ¢nsito em Julgado?">
+        <transition to="(VCiv) Certificar TrÃ¢nsito em Julgado" name="(VCiv) Certificar TrÃ¢nsito em Julgado"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </decision>
-    <task-node end-tasks="true" name="(VCiv) Certificar Trânsito em Julgado">
-        <task name="(VCiv) Certificar Trânsito em Julgado" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Certificar TrÃ¢nsito em Julgado">
+        <task name="(VCiv) Certificar TrÃ¢nsito em Julgado" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="minuta_certidao_transito_julgado" mapped-name="textEditCombo:minuta_certidao_transito_julgado" access="read,write"/>
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
         <description><![CDATA[.]]></description>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Assinar Certidão de Trânsito em Julgado" name="Encaminhar para assinatura"/>
-        <transition to="(VCiv) Remover documento temporário trânsito julgado" name="Ignorar certificação de trânsito em julgado"/>
+        <transition to="(VCiv) Assinar CertidÃ£o de TrÃ¢nsito em Julgado" name="Encaminhar para assinatura"/>
+        <transition to="(VCiv) Remover documento temporÃ¡rio trÃ¢nsito julgado" name="Ignorar certificaÃ§Ã£o de trÃ¢nsito em julgado"/>
         <event type="task-start">
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '70')}"/>
-            <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
+            <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
         </event>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('minutaEmElaboracao', tramitacaoProcessualService.recuperaVariavelTarefa('textEditCombo:minuta_certidao_transito_julgado'))}"/>
@@ -410,26 +402,28 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('frameDefaultLeavingTransition')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar certificação de trânsito em julgado')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar certificaÃ§Ã£o de trÃ¢nsito em julgado')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar Certidão de Trânsito em Julgado">
-        <task name="(VCiv) Assinar Certidão de Trânsito em Julgado" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar CertidÃ£o de TrÃ¢nsito em Julgado">
+        <task name="(VCiv) Assinar CertidÃ£o de TrÃ¢nsito em Julgado" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
                 <variable name="movimentacaoLote" mapped-name="movimentarLote:movimentacaoLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Certificar Trânsito em Julgado" name="Retornar para certificar"/>
+        <transition to="(VCiv) Certificar TrÃ¢nsito em Julgado" name="Retornar para certificar">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
+        </transition>
         <transition to="(VCiv) Informa valor recuperado?" name="(VCiv) Informa valor recuperado?">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Informa valor recuperado?" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Informa valor recuperado?" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -441,13 +435,13 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(VCiv) Informa valor recuperado?')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Imprimir Certidão de Trânsito em Julgado">
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+    <task-node end-tasks="true" name="(VCiv) Imprimir CertidÃ£o de TrÃ¢nsito em Julgado">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:certificar_decurso') ? '(VCiv) Certificar decurso de prazo' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) É certificar decurso de prazo?">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('vciv:cumpridec:certificar_decurso') ? '(VCiv) Certificar decurso de prazo' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Ã‰ certificar decurso de prazo?">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <transition to="(VCiv) Certificar decurso de prazo" name="(VCiv) Certificar decurso de prazo"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Certificar decurso de prazo">
@@ -457,11 +451,11 @@ Parâmetros
                 <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Assinar certidão de decurso de prazo" name="Encaminhar para assinatura"/>
-        <transition to="(VCiv) Remover documento temporário decurso prazo" name="Ignorar certidão de decurso de prazo"/>
+        <transition to="(VCiv) Assinar certidÃ£o de decurso de prazo" name="Encaminhar para assinatura"/>
+        <transition to="(VCiv) Remover documento temporÃ¡rio decurso prazo" name="Ignorar certidÃ£o de decurso de prazo"/>
         <event type="task-start">
             <action name="Condicao do lancamento temporario de movimentos" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '220')}"/>
@@ -474,11 +468,11 @@ Parâmetros
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('TipoDocumentoTipoProcessoDocumento')}"/>
         </event>
         <event type="task-create">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar certidão de decurso de prazo')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos', 'Ignorar certidÃ£o de decurso de prazo')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Assinar certidão de decurso de prazo">
-        <task name="(VCiv) Assinar certidão de decurso de prazo" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar certidÃ£o de decurso de prazo">
+        <task name="(VCiv) Assinar certidÃ£o de decurso de prazo" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
@@ -486,16 +480,16 @@ Parâmetros
             </controller>
         </task>
         <transition to="(VCiv) Certificar decurso de prazo" name="Retornar para certificar">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.apagaVariavelTarefa('tiposDisponiveisIds')}"/>
@@ -504,122 +498,117 @@ Parâmetros
         <event type="task-create">
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','220')}"/>
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(VCiv) Junção em Elaborar Documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', '(VCiv) JunÃ§Ã£o em Elaborar Documentos')}"/>
         </event>
     </task-node>
-    <task-node end-tasks="true" name="(VCiv) Imprimir certidão de decurso de prazo">
-        <task name="(VCiv) Imprimir certidão de decurso de prazo" swimlane="Secretaria" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Imprimir certidÃ£o de decurso de prazo">
+        <task name="(VCiv) Imprimir certidÃ£o de decurso de prazo" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" mapped-name="page:Processo_ConsultaProcesso_Detalhe_detalheProcessoVisualizacao" access="read,write"/>
             </controller>
         </task>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="Finalizar tarefa"/>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="Finalizar tarefa"/>
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
     </task-node>
-    <node name="(VCiv) Remover documento temporário alvará">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <node name="(VCiv) Remover documento temporÃ¡rio alvarÃ¡">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_alvara')}"/>
             <action name="upd" expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minutaEmElaboracao')}"/>
         </event>
     </node>
-    <node name="(VCiv) Remover documento temporário ofício">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <node name="(VCiv) Remover documento temporÃ¡rio ofÃ­cio">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_oficio')}"/>
             <action name="upd" expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minutaEmElaboracao')}"/>
         </event>
     </node>
-    <node name="(VCiv) Remover documento temporário outros documentos">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <node name="(VCiv) Remover documento temporÃ¡rio outros documentos">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action name="upd" expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_outros_documentos')}"/>
         </event>
     </node>
-    <node name="(VCiv) Remover documento temporário trânsito julgado">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <node name="(VCiv) Remover documento temporÃ¡rio trÃ¢nsito julgado">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_certidao_transito_julgado')}"/>
             <action name="upd" expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minutaEmElaboracao')}"/>
         </event>
     </node>
-    <node name="(VCiv) Remover documento temporário decurso prazo">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+    <node name="(VCiv) Remover documento temporÃ¡rio decurso prazo">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-enter">
             <action expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minuta_certidao_decurso_prazo')}"/>
             <action name="upd" expression="${documentoJudicialService.removerDocumentoAPartirDeVariavalDeFluxo('minutaEmElaboracao')}"/>
         </event>
     </node>
-    <task-node end-tasks="true" name="(VCiv) Assinar Carta Precatória e(ou) Rogatória">
-        <task name="(VCiv) Assinar Carta Precatória e(ou) Rogatória" swimlane="Magistrado" priority="3">
+    <task-node end-tasks="true" name="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria">
+        <task name="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
-                <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expediÃ§Ã£o de outros documentos">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <event type="task-start">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '94,205')}"/>
-        </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Lançamento de movimentação outros documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '94,205')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <decision expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 94 ? '(VCiv) Deslocar gabinete' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 205 ? '(VCiv) Deslocar gabinete' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 172 ? '(VCiv) Deslocar gabinete edital' : '(VCiv) Deslocar gabinete outros documentos'))}" name="(VCiv) É gabinete?">
+    <decision expression="#{documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 94 ? '(VCiv) Deslocar gabinete' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 205 ? '(VCiv) Deslocar gabinete' : ( documentoJudicialService.getDocumento(tramitacaoProcessualService.recuperaVariavel('minutaEmElaboracao')).getTipoProcessoDocumento().idTipoProcessoDocumento == 172 ? '(VCiv) Deslocar gabinete edital' : '(VCiv) Deslocar gabinete outros documentos'))}" name="(VCiv) Ã‰ gabinete?">
         <transition to="(VCiv) Deslocar gabinete edital" name="(VCiv) Deslocar gabinete edital"/>
-        <transition to="(VCiv) Deslocar gabinete precatória e rogatoria" name="(VCiv) Deslocar gabinete"/>
+        <transition to="(VCiv) Deslocar gabinete precatÃ³ria e rogatoria" name="(VCiv) Deslocar gabinete"/>
         <transition to="(VCiv) Deslocar gabinete outros documentos" name="(VCiv) Deslocar gabinete outros documentos"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Assinar Edital">
-        <task name="(VCiv) Assinar Edital" swimlane="Magistrado" priority="3">
+        <task name="(VCiv) Assinar Edital" swimlane="Magistrado" priority="4">
             <controller>
                 <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
                 <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
             </controller>
         </task>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Deslocar secretaria unificada precatória e rogatória" name="Retornar para expedição de outros documentos">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) Expedir outros documentos" name="Retornar para expediÃ§Ã£o de outros documentos">
+            <condition expression="#{!revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="(VCiv) Lançamento de movimentação outros documentos">
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Lançamento de movimentação outros documentos" name="Documento já assinado! Encaminhar para secretaria">
-            <condition expression="#{processoHome.instance.idProcesso &gt; 0 and not empty revisarMinutaAction.processoDocumento.processoDocumentoBin.signatarios and revisarMinutaAction.processoDocumento.ativo}"/>
+        <transition to="(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos" name="Documento jÃ¡ assinado! Encaminhar para secretaria">
+            <condition expression="#{revisarMinutaAction.isDocumentoAssinado()}"/>
         </transition>
-        <event type="task-start">
-            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '172')}"/>
-        </event>
         <event type="task-create">
-            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) Lançamento de movimentação outros documentos')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds', '172')}"/>
+            <action expression="#{taskInstanceUtil.setFrameDefaultTransition('(VCiv) LanÃ§amento de movimentaÃ§Ã£o outros documentos')}"/>
             <action expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
         </event>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('condicaoLancamentoMovimentosTemporario')}"/>
         </event>
     </task-node>
-    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) Junção em Elaborar Documentos'}" name="(VCiv) Informa valor recuperado?">
+    <decision expression="#{parametroUtil.getParametro('pje:tjrn:classesValorRecuperado').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().classeJudicial.codClasseJudicial).concat('_')) ? '(VCiv) Informar valor recuperado' : '(VCiv) JunÃ§Ã£o em Elaborar Documentos'}" name="(VCiv) Informa valor recuperado?">
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
     </decision>
     <task-node end-tasks="true" name="(VCiv) Informar valor recuperado">
         <task name="(VCiv) Informar valor recuperado" swimlane="Secretaria" priority="3">
@@ -629,40 +618,40 @@ Parâmetros
                 <variable name="aviso_valor_recuperado_2" mapped-name="textAlert:aviso_valor_recuperado_2" access="read,write"/>
             </controller>
         </task>
-        <description><![CDATA[Variáveis:
+        <description><![CDATA[VariÃ¡veis:
 aviso_valor_recuperado_1: #{tramitacaoProcessualService.recuperaVariavel('aviso_erro_valor_recuperado') != null ? tramitacaoProcessualService.recuperaVariavel('aviso_erro_valor_recuperado') : ''}
 vef_valor_recuperado: "Informe o valor recuperado(Formato: 9.999,99):" - Texto
 aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumprimento da meta 5 do CNJ."
 - Aviso]]></description>
-        <transition to="Nó de Desvio - (VCiv) Elaborar Documentos" name="Nó de Desvio - (VCiv) Elaborar Documentos">
+        <transition to="NÃ³ de Desvio - (VCiv) Elaborar Documentos" name="NÃ³ de Desvio - (VCiv) Elaborar Documentos">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="(VCiv) Valor válido ?" name="Prosseguir"/>
+        <transition to="(VCiv) Valor vÃ¡lido ?" name="Prosseguir"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('data_valor_recuperado', dateUtil.getDataAtual('dd/MM/yyyy'))}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('valor_recuperado', tramitacaoProcessualService.recuperaVariavelTarefa('text:vef_valor_recuperado')) }"/>
             <action expression="#tramitacaoProcessualService.apagaVariavel('aviso_erro_valor_recuperado')"/>
         </event>
     </task-node>
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel(&quot;valor_recuperado&quot;).toString().matches(&quot;^\\d{1,3}(?:\\.\\d{3})*,\\d{2}$&quot;) ? '(VCiv) Junção em Elaborar Documentos':'(VCiv) Aviso valor inválido'}" name="(VCiv) Valor válido ?">
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
-        <transition to="(VCiv) Aviso valor inválido" name="(VCiv) Aviso valor inválido"/>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel(&quot;valor_recuperado&quot;).toString().matches(&quot;^\\d{1,3}(?:\\.\\d{3})*,\\d{2}$&quot;) ? '(VCiv) JunÃ§Ã£o em Elaborar Documentos':'(VCiv) Aviso valor invÃ¡lido'}" name="(VCiv) Valor vÃ¡lido ?">
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
+        <transition to="(VCiv) Aviso valor invÃ¡lido" name="(VCiv) Aviso valor invÃ¡lido"/>
     </decision>
-    <node name="(VCiv) Aviso valor inválido">
+    <node name="(VCiv) Aviso valor invÃ¡lido">
         <transition to="(VCiv) Informar valor recuperado" name="(VCiv) Informar valor recuperado"/>
         <event type="node-enter">
-            <action expression="#{tramitacaoProcessualService.gravaVariavel('aviso_erro_valor_recuperado', 'Formato inválido. Favor, informar o valor novamente.')}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('aviso_erro_valor_recuperado', 'Formato invÃ¡lido. Favor, informar o valor novamente.')}"/>
         </event>
     </node>
     <process-state name="(VCiv) Deslocar secretaria unificada alvara">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Expedir Alvará" name="(VCiv) Expedir Alvará"/>
+        <transition to="(VCiv) Expedir AlvarÃ¡" name="(VCiv) Expedir AlvarÃ¡"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
         </event>
     </process-state>
-    <process-state name="(VCiv) Deslocar secretaria unificada precatória e rogatória">
+    <process-state name="(VCiv) Deslocar secretaria unificada precatÃ³ria e rogatÃ³ria">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
         <transition to="(VCiv) Expedir outros documentos" name="(VCiv) Expedir outros documentos"/>
         <event type="node-leave">
@@ -670,9 +659,9 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
         </event>
     </process-state>
-    <process-state name="(VCiv) Deslocar secretaria unificada entrega precatória e rogatória">
+    <process-state name="(VCiv) Deslocar secretaria unificada entrega precatÃ³ria e rogatÃ³ria">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Junção em Elaborar Documentos" name="(VCiv) Junção em Elaborar Documentos"/>
+        <transition to="(VCiv) JunÃ§Ã£o em Elaborar Documentos" name="(VCiv) JunÃ§Ã£o em Elaborar Documentos"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
@@ -680,7 +669,7 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
     </process-state>
     <process-state name="(VCiv) Deslocar secretaria unificada entrega alvara">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Entregar Alvará" name="(VCiv) Entregar Alvará"/>
+        <transition to="(VCiv) Entregar AlvarÃ¡" name="(VCiv) Entregar AlvarÃ¡"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
@@ -688,14 +677,14 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
     </process-state>
     <process-state name="(VCiv) Deslocar secretaria unificada oficio">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Expedir Ofício" name="(VCiv) Expedir Ofício"/>
+        <transition to="(VCiv) Expedir OfÃ­cio" name="(VCiv) Expedir OfÃ­cio"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
         </event>
     </process-state>
     <node name="(VCiv) Deslocar gabinete oficio">
-        <transition to="(VCiv) Assinar ofício pelo magistrado" name="(VCiv) Assinar ofício pelo magistrado"/>
+        <transition to="(VCiv) Assinar ofÃ­cio pelo magistrado" name="(VCiv) Assinar ofÃ­cio pelo magistrado"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
@@ -704,14 +693,14 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
     </node>
     <process-state name="(VCiv) Deslocar secretaria unificada imprimir oficio">
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
-        <transition to="(VCiv) Imprimir Ofício" name="(VCiv) Imprimir Ofício"/>
+        <transition to="(VCiv) Imprimir OfÃ­cio" name="(VCiv) Imprimir OfÃ­cio"/>
         <event type="node-leave">
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
             <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
         </event>
     </process-state>
     <node name="(VCiv) Deslocar gabinete alvara">
-        <transition to="(VCiv) Assinar Alvará" name="(VCiv) Assinar Alvará"/>
+        <transition to="(VCiv) Assinar AlvarÃ¡" name="(VCiv) Assinar AlvarÃ¡"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino')}"/>
@@ -726,8 +715,8 @@ aviso_valor_recuperado_2: "O valor recuperado deve ser informado para cumpriment
             <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino'), tramitacaoProcessualService.recuperaVariavel('pje:fluxo:deslocamento:colegiadoDestino'))}"/>
         </event>
     </node>
-    <node name="(VCiv) Deslocar gabinete precatória e rogatoria">
-        <transition to="(VCiv) Assinar Carta Precatória e(ou) Rogatória" name="(VCiv) Assinar Carta Precatória e(ou) Rogatória"/>
+    <node name="(VCiv) Deslocar gabinete precatÃ³ria e rogatoria">
+        <transition to="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria" name="(VCiv) Assinar Carta PrecatÃ³ria e(ou) RogatÃ³ria"/>
         <event type="node-enter">
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
             <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoCargoDestino')}"/>

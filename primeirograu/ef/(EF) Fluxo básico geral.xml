@@ -13,7 +13,7 @@ Secretaria  Corregedoria   Magistrado Corregedor]]></description>
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretaria"/>
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
         <transition to="(EF) É de outro fluxo?" name="(EF) É de outro fluxo?"/>
     </start-state>  
     <!-- NODES -->
@@ -54,7 +54,7 @@ Secretaria  Corregedoria   Magistrado Corregedor]]></description>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
     </process-state>
     <task-node end-tasks="true" name="(EF) Secretaria - ANALISAR">
-        <task name="(EF) Secretaria - ANALISAR" swimlane="Secretaria">
+        <task name="(EF) Secretaria - ANALISAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
                 <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
@@ -231,6 +231,7 @@ ESTA VARIÁVEL É APENAS PARA A CLASSE "EMBARGOS À EXECUÇÃO". COMO O FLUXO, A PRIN
         <transition to="(EF) Gravar variavel fluxo unico - Enviar à Contadoria Judicial - COJUD" name="11 - Enviar à Contadoria Judicial - COJUD"/>
         <transition to="(EF) Gravar variavel fluxo unico - Enviar à Penhora eletrônica - Poti" name="12 - Enviar à Penhora eletrônica - Poti"/>
         <transition to="(EF) Gravar variavel fluxo unico - Intimar advogados automaticamente" name="13 - Intimar advogados (automaticamente)"/>
+        <transition to="(EF) Dar cumprimento a ato judicial de penhora online" name="14 - Dar cumprimento a ato judicial de penhora online"/>
         <event type="task-end">
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:opcoesCumprimento', '')}"/>
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:fbg:opcoesCumprimento', tramitacaoProcessualService.recuperaVariavel('ef:fbg:opcoesCumprimento').concat(tramitacaoProcessualService.recuperaVariavelTarefa('sim_nao:ef_fbg_alterar_tipo_documento') == true ? '{ef_fbg_alterar_tipo_documento}' : ''))}"/>
@@ -330,7 +331,7 @@ ESTA VARIÁVEL É APENAS PARA A CLASSE "EMBARGOS À EXECUÇÃO". COMO O FLUXO, A PRIN
         </event>
     </process-state>
     <task-node end-tasks="true" name="(EF) Secretaria aguardando cumprimento - AGUARDAR">
-        <task name="(EF) Secretaria aguardando cumprimento - AGUARDAR" swimlane="Secretaria">
+        <task name="(EF) Secretaria aguardando cumprimento - AGUARDAR" swimlane="Secretaria" priority="3">
             <controller>
                 <variable name="aviso1" mapped-name="textAlert:aviso1" access="read,write"/>
             </controller>
@@ -434,6 +435,10 @@ ESTA VARIÁVEL É APENAS PARA A CLASSE "EMBARGOS À EXECUÇÃO". COMO O FLUXO, A PRIN
             <action expression="#{tramitacaoProcessualService.gravaVariavel('ef:paj:sub_fluxo_unico', '(EF) Intimar advogados automaticamente')}"/>
         </event>
     </node>
+    <process-state name="(EF) Dar cumprimento a ato judicial de penhora online">
+        <sub-process name="Integraçao PJe x Sisbajud" binding="late"/>
+        <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
+    </process-state>
     <decision expression="#{entityManager.createNativeQuery(&quot;select count(*) from vs_situacao_processo_new s where s.nm_tarefa &lt;&gt; '(EF) Secretaria - ANALISAR' AND s.id_processo_trf = :idProcessoTrf&quot;).setParameter(&quot;idProcessoTrf&quot;, tramitacaoProcessualService.recuperaProcesso().idProcessoTrf).getSingleResult() &gt; 0 ? '(EF) Gravar mensagem nao pode entrar no fluxo' : tramitacaoProcessualService.recuperaVariavel('ef:paj:sub_fluxo_unico')}" name="(EF) Pode ir para subfluxo único?">
         <transition to="(EF) Arquivamento de processo" name="(EF) Arquivamento de processo"/>
         <transition to="(EF) Cancelamento de distribuição" name="(EF) Cancelamento de distribuição"/>
@@ -489,7 +494,7 @@ ESTA VARIÁVEL É APENAS PARA A CLASSE "EMBARGOS À EXECUÇÃO". COMO O FLUXO, A PRIN
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - (EF) Fluxo básico geral">
-        <task name="Nó de Desvio - (EF) Fluxo básico geral"/>
+        <task name="Nó de Desvio - (EF) Fluxo básico geral" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="(EF) Secretaria - ANALISAR" name="(EF) Secretaria - ANALISAR"/>
         <transition to="(EF) Secretaria aguardando cumprimento - AGUARDAR" name="(EF) Secretaria aguardando cumprimento - AGUARDAR"/>
