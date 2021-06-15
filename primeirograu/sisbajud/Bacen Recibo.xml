@@ -7,8 +7,11 @@ Nome do processo: Bacen Recibo]]></description>
     <!-- SWIMLANES -->
     <swimlane name="Nó de Desvio - Bacen Recibo">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
+    </swimlane>
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
     </swimlane>  
-    <!-- START-STATE -->
+     <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" priority="3"/>
         <transition to="Sinaliza" name="Início"/>

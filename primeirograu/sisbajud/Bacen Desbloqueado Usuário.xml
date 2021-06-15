@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Resposta Negativa">
-    <description><![CDATA[Código do fluxo: PJE_BACEN_99801
-Fluxo: PJE_BACEN_99801
-Nome do processo: Bacen Resposta Negativa]]></description>  
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Desbloqueado Usuário"> 
     <!-- SWIMLANES -->
-    <swimlane name="Nó de Desvio - Bacen Resposta Negativa">
-        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338')}"/>
-    </swimlane>  
+    <swimlane name="Nó de Desvio - Bacen Aguardando Transferência">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469')}"/>
+    </swimlane>
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>   
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Nó de Desvio - Bacen Resposta Negativa" priority="3"/>
-        <transition to="Sinaliza" name="Início"/>
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
     </start-state>  
     <!-- NODES -->
     <node name="Sinaliza">
         <transition to="Término" name="Término"/>
         <event type="node-enter">
-            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99801&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99808&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
         </event>
     </node>
     <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - Bacen Resposta Negativa">
-        <task name="Nó de Desvio - Bacen Resposta Negativa" priority="3"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <task name="Nó de Desvio - Bacen Transferido Parcialmente" swimlane="Nó de Desvio - Bacen Transferido Parcialmente" priority="3"/>
         <transition to="Término" name="Término"/>
     </task-node>  
     <!-- PROCESS-EVENTS -->

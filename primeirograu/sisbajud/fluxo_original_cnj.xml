@@ -1,0 +1,915 @@
+TAREFA: [BACEN] Com erro - COMPONENTE: Aviso: #{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo')}
+
+TAREFA: [BACEN] Aguardando documento - COMPONENTE: Aviso Customizado: Esta tarefa será transitada automaticamente quando o sistema receber o documento do serviço bacen.
+
+TAREFA: [BACEN] Protocolo cancelado - COMPONENTE: Aviso: #{tramitacaoProcessualService.recuperaVariavelTarefa('pje:fluxo:sisbajud:cancelamento')}
+
+TAREFA: [BACEN] Verifica logs - COMPONENTE: Aviso: #{bacenRestClient.recuperaLogs(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}
+
+=======================================================================================
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Bacen">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('9:1338')}"/>
+    </swimlane>
+    <swimlane name="secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('9:1338,4:1469')}" actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="secretaria" priority="3"/>
+        <transition to="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores" name="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores">
+        <task name="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[BACEN] Selecionar partes e indicar valor do bloqueio" name="[BACEN] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="Protocolar ordem judicial" name="[BACEN] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Selecionar partes e indicar valor do bloqueio">
+        <task name="[BACEN] Selecionar partes e indicar valor do bloqueio" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_bacen" mapped-name="frame:Processo_Fluxo_bacen" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Protocolar ordem judicial" name="[BACEN] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Protocolar ordem judicial">
+        <transition to="Verifica protocolo" name="Verifica protocolo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:sisbajud:protocolo', bacenRestClient.protocolaOrdemJudicial(null, processoTrfHome.instance, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:executados'), processoTrfHome.instance.getValorCausa(), authenticator.getUsuarioLogado().getLogin()))}"/>
+        </event>
+    </node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo').startsWith('ERRO: ') ? '[BACEN] Com erro': '[BACEN] Aguardando documento'}" name="Verifica protocolo">
+        <transition to="[BACEN] Com erro" name="[BACEN] Com erro"/>
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+    </decision>
+    <task-node end-tasks="true" name="[BACEN] Com erro">
+        <task name="[BACEN] Com erro" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Protocolar ordem judicial" name="[BACEN] Protocolar ordem judicial de bloqueio de valores"/>
+        <transition to="[BACEN] Selecionar partes e indicar valor do bloqueio" name="[BACEN] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}&quot;/&gt;"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Aguardando documento">
+        <task name="[BACEN] Aguardando documento" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="info" mapped-name="textMessage:info" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Verifica documento" name="Verifica documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[BACEN] Verifica logs" name="[BACEN] Verifica logs"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verifica documento')}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99801', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99802', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99803', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99804', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99806', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99807', true)}&quot;/&gt;"/>
+        </event>
+    </task-node>
+    <node name="Entrega documento">
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+        <event type="node-enter">
+            <action expression="#{bacenRestClient.entregaDocumento(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="[BACEN] Verifica logs">
+        <task name="[BACEN] Verifica logs" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="aviso" mapped-name="textAlert:aviso" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Entrega documento" name="[BACEN] Entrega documento"/>
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+        <transition to="[BACEN] Protocolados" name="[BACEN] Protocolados"/>
+        <transition to="[BACEN] Aguardando desdobramento" name="[BACEN] Aguardando desdobramento"/>
+        <transition to="[BACEN] Resposta negativa" name="[BACEN] Resposta negativa"/>
+        <transition to="[BACEN] Desbloqueados" name="[BACEN] Desbloqueados"/>
+        <transition to="[BACEN] Transferidos parcialmente" name="[BACEN] Transferidos parcialmente"/>
+        <transition to="[BACEN] Transferidos" name="[BACEN] Transferidos"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99806') ? '[BACEN] Protocolados' : ( tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99807') ? '[BACEN] Aguardando desdobramento' : (tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99801') ? '[BACEN] Resposta negativa' :(tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99802') ? '[BACEN] Desbloqueados' : (tramitacaoProcessualService.recuperaVariavel('pje:evento:sinalizacao:processos').equals('bacen:resposta:documento:99803') ? '[BACEN] Transferidos parcialmente' : '[BACEN] Transferidos'))))}" name="Verifica documento">
+        <transition to="[BACEN] Protocolados" name="[BACEN] Protocolados"/>
+        <transition to="[BACEN] Aguardando desdobramento" name="[BACEN] Aguardando desdobramento"/>
+        <transition to="[BACEN] Resposta negativa" name="[BACEN] Resposta negativa"/>
+        <transition to="[BACEN] Desbloqueados" name="[BACEN] Desbloqueados"/>
+        <transition to="[BACEN] Transferidos parcialmente" name="[BACEN] Transferidos parcialmente"/>
+        <transition to="[BACEN] Transferidos" name="[BACEN] Transferidos"/>
+    </decision>
+    <task-node end-tasks="true" name="[BACEN] Protocolados">
+        <task name="[BACEN] Protocolados" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="[BACEN] Protocolo cancelado" name="[BACEN] Cancela protocolo"/>
+        <transition to="[BACEN] Verifica logs" name="[BACEN] Verifica logs"/>
+        <transition to="Verifica documento" name="Verifica documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99801', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99802', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99803', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99804', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99807', true)}&quot;/&gt;"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verifica documento')}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Protocolo cancelado">
+        <task name="[BACEN] Protocolo cancelado" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:sisbajud:cancelamento', bacenRestClient.cancelaOrdemJudicial(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo')))}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Aguardando desdobramento">
+        <task name="[BACEN] Aguardando desdobramento" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Desbloqueia valores" name="[BACEN] Desbloqueia valores"/>
+        <transition to="Realiza desdobramento" name="[BACEN] Realiza desdobramento"/>
+        <transition to="[BACEN] Verifica logs" name="[BACEN] Verifica logs"/>
+        <transition to="Verifica documento" name="Verifica documento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99801', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99802', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99803', true)}&quot;/&gt;"/>
+            <action expression="&lt;action expression=&quot;#{tramitacaoProcessualService.gravaVariavelTarefa('bacen:resposta:documento:99804', true)}&quot;/&gt;"/>
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('frameDefaultLeavingTransition', 'Verifica documento')}"/>
+        </event>
+    </task-node>
+    <node name="Realiza desdobramento">
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+        <event type="node-enter">
+            <action expression="#{bacenRestClient.realizaDesdobramento(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+        </event>
+    </node>
+    <node name="Desbloqueia valores">
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+        <event type="node-enter">
+            <action expression="#{bacenRestClient.desbloqueiaValores(null, tramitacaoProcessualService.recuperaVariavel('pje:fluxo:sisbajud:protocolo'))}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="[BACEN] Resposta negativa">
+        <task name="[BACEN] Resposta negativa" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Transferidos parcialmente">
+        <task name="[BACEN] Transferidos parcialmente" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Transferidos">
+        <task name="[BACEN] Transferidos" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="[BACEN] Desbloqueados">
+        <task name="[BACEN] Desbloqueados" swimlane="secretaria" priority="3">
+            <controller>
+                <variable name="Processo_Fluxo_visualizarDecisao" mapped-name="frame:Processo_Fluxo_visualizarDecisao" access="read,write"/>
+                <variable name="MovimentarEmLote" mapped-name="movimentarLote:MovimentarEmLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen" name="Nó de Desvio - Bacen">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-create">
+            <action expression="#{tramitacaoProcessualService.gravaVariavelTarefa('mostrarBotaoGravarNoFluxo', false)}"/>
+        </event>
+    </task-node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen">
+        <task name="Nó de Desvio - Bacen" swimlane="Nó de Desvio - Bacen" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores" name="[BACEN] Aguardando abertura de ordem judicial de bloqueio de valores">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[BACEN] Com erro" name="[BACEN] Com erro">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[BACEN] Protocolados" name="[BACEN] Protocolados">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[BACEN] Desbloqueados" name="[BACEN] Desbloqueados"/>
+        <transition to="[BACEN] Protocolo cancelado" name="[BACEN] Protocolo cancelado">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="[BACEN] Transferidos" name="[BACEN] Transferidos"/>
+        <transition to="[BACEN] Transferidos parcialmente" name="[BACEN] Transferidos parcialmente"/>
+        <transition to="[BACEN] Resposta negativa" name="[BACEN] Resposta negativa"/>
+        <transition to="[BACEN] Selecionar partes e indicar valor do bloqueio" name="[BACEN] Selecionar partes e indicar valor do bloqueio"/>
+        <transition to="[BACEN] Aguardando documento" name="[BACEN] Aguardando documento"/>
+        <transition to="[BACEN] Verifica logs" name="[BACEN] Verifica logs"/>
+        <transition to="[BACEN] Aguardando desdobramento" name="[BACEN] Aguardando desdobramento"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Resposta Negativa"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Bacen Resposta Negativa">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Nó de Desvio - Bacen Resposta Negativa" priority="3"/>
+        <transition to="Sinaliza" name="Início"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99801&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Resposta Negativa">
+        <task name="Nó de Desvio - Bacen Resposta Negativa" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Desbloqueado"> 
+    <!-- SWIMLANES -->
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Bacen Desbloqueado">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338,1342:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99802&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Desbloqueado">
+        <task name="Nó de Desvio - Bacen Desbloqueado" swimlane="Nó de Desvio - Bacen Desbloqueado" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Transferido Parcialmente"> 
+    <!-- SWIMLANES -->
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338,1342:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99803&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <task name="Nó de Desvio - Bacen Transferido Parcialmente" swimlane="Nó de Desvio - Bacen Transferido Parcialmente" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Transferido"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Bacen Transferido">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338,1342:1469')}"/>
+    </swimlane>
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99804&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Transferido">
+        <task name="Nó de Desvio - Bacen Transferido" swimlane="Nó de Desvio - Bacen Transferido" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Recibo"> 
+    <!-- SWIMLANES -->
+    <swimlane name="Nó de Desvio - Bacen Recibo">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('9:1338,4:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" priority="3"/>
+        <transition to="Sinaliza" name="Início"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), 'bacen:resposta:documento:99806', true, true, true, 'pje:atoProferido='.concat(tramitacaoProcessualService.recuperaVariavel('pje:fluxo:incidental:peticoes').toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Resposta Negativa">
+        <task name="Nó de Desvio - Bacen Resposta Negativa" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen Recibo" name="Nó de Desvio - Bacen Recibo">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Recibo">
+        <task name="Nó de Desvio - Bacen Recibo" swimlane="Nó de Desvio - Bacen Recibo" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="Nó de Desvio - Bacen Resposta Negativa" name="Nó de Desvio - Bacen Resposta Negativa"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Aguardando Transferência"> 
+    <!-- SWIMLANES -->
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338,1342:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99807&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <task name="Nó de Desvio - Bacen Transferido Parcialmente" swimlane="Nó de Desvio - Bacen Transferido Parcialmente" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
+
+=======================================================================================
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Bacen Desbloqueado Usuário"> 
+    <!-- SWIMLANES -->
+    <swimlane name="solicitante">
+        <assignment actor-id="#{actor.id}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('26:1338,1342:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Sinaliza" name="Sinaliza"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Sinaliza">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(), &quot;bacen:resposta:documento:99808&quot;, true, true, true, &quot;pje:atoProferido=&quot;.concat(tramitacaoProcessualService.recuperaVariavel(&quot;pje:fluxo:incidental:peticoes&quot;).toString()))}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Bacen Transferido Parcialmente">
+        <task name="Nó de Desvio - Bacen Transferido Parcialmente" swimlane="Nó de Desvio - Bacen Transferido Parcialmente" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+    <!-- PROCESS-EVENTS -->
+    <event type="superstate-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="before-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-create">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-created">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-assign">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="transition">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="after-signal">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="timer">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="task-start">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="subprocess-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="process-end">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="superstate-leave">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event>
+    <event type="node-enter">
+        <script>br.com.infox.ibpm.util.JbpmEvents.raiseEvent(executionContext)</script>
+    </event> 
+</process-definition>
