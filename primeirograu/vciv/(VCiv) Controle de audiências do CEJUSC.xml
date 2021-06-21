@@ -25,7 +25,7 @@
             <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
         </event>
     </node>
-    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false)) == null ? 'Término' : '(CEJUSC) Realizar audiência'}" name="(CEJUSC) Verifica se existe audiência designada">
+    <decision expression="#{processoJudicialManager.getProximaAudienciaDesignada(tramitacaoProcessualService.recuperaProcesso(), false) == null ? 'Término' : '(CEJUSC) Realizar audiência'}" name="(CEJUSC) Verifica se existe audiência designada">
         <transition to="(CEJUSC) Realizar audiência" name="(CEJUSC) Realizar audiência"/>
         <transition to="Término" name="Término"/>
     </decision>
