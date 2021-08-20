@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Redistribuíção">
-    <description><![CDATA[.......]]></description>  
+    <description><![CDATA[.....]]></description>  
     <!-- SWIMLANES -->
     <swimlane name="Secretária">
         <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1338,6:1469,8:5852,8:5853')}" actor-id="#{actor.id}"/>
@@ -11,26 +11,26 @@
     </swimlane>  
     <!-- START-STATE -->
     <start-state name="Início">
-        <task name="Tarefa inicial" swimlane="Secretária"/>
+        <task name="Tarefa inicial" swimlane="Secretária" priority="3"/>
         <transition to="Eh Cejusc?" name="Eh Cejusc?"/>
     </start-state>  
     <!-- NODES -->
-    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:EhDoCejusc') ? 'Processos Redistribuídos do Cejusc' : 'Processos Redistribuídos de outras varas'}" name="Eh Cejusc?">
+    <decision expression="#{tramitacaoProcessualService.recuperaVariavel('pje:fbc:EhDoCejusc') ? 'Processos Redistribuídos do Cejusc' : 'Deslocar secretaria unificada'}" name="Eh Cejusc?">
         <transition to="Processos Redistribuídos do Cejusc" name="Processos Redistribuídos do Cejusc"/>
-        <transition to="Processos Redistribuídos de outras varas" name="Processos Redistribuídos de outras varas"/>
+        <transition to="Deslocar secretaria unificada" name="Deslocar secretaria unificada"/>
     </decision>
     <task-node end-tasks="true" name="Processos Redistribuídos de outras varas">
-        <task name="Processos Redistribuídos de outras varas" swimlane="Secretária"/>
+        <task name="Processos Redistribuídos de outras varas" swimlane="Secretária" priority="3"/>
         <transition to="Enviar concluso para decisão inicial e_ou urgência inicial" name="Encaminhar para Análise da Secretaria"/>
         <transition to="Nó de Desvio - Redistribuíção" name="Nó de Desvio - Redistribuíção">
             <condition expression="#{true}"/>
         </transition>
         <event type="node-enter">
-            <action expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsCiveisMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')) || parametroUtil.getParametro('pje:tjrn:OJsFamiliaMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) ? entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate() : null}"/>
+            <action expression="#{!(parametroUtil.getParametro('pje:tjrn:OJsCiveisMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_')) || parametroUtil.getParametro('pje:tjrn:OJsFamiliaMossoro').contains('_'.concat(tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.idOrgaoJulgador).concat('_'))) ? entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador = null, id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate() : null}"/>
         </event>
     </task-node>
     <task-node end-tasks="true" name="Processos Redistribuídos do Cejusc">
-        <task name="Processos Redistribuídos do Cejusc" swimlane="Secretária"/>
+        <task name="Processos Redistribuídos do Cejusc" swimlane="Secretária" priority="3"/>
         <transition to="Nó de Desvio - Redistribuíção" name="Nó de Desvio - Redistribuíção">
             <condition expression="#{true}"/>
         </transition>
@@ -46,7 +46,7 @@
     </process-state>
     <end-state name="Término"/>
     <task-node end-tasks="true" name="Nó de Desvio - Redistribuíção">
-        <task name="Nó de Desvio - Redistribuíção" swimlane="Nó de Desvio - Redistribuíção"/>
+        <task name="Nó de Desvio - Redistribuíção" swimlane="Nó de Desvio - Redistribuíção" priority="3"/>
         <transition to="Término" name="Término"/>
         <transition to="Processos Redistribuídos de outras varas" name="Processos Redistribuídos de outras varas"/>
         <transition to="Processos Redistribuídos do Cejusc" name="Processos Redistribuídos do Cejusc"/>
@@ -55,8 +55,7 @@
         <sub-process name="(SEC) Deslocamento para secretaria unificada" binding="late"/>
         <transition to="Processos Redistribuídos de outras varas" name="Processos Redistribuídos de outras varas"/>
         <event type="node-leave">
-            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
-            <action expression="#{entityManager.createNativeQuery('delete from jbpm_variableinstance where id_ in( select vi.id_ from jbpm_variableinstance vi join jbpm_processinstance pi on (pi.id_= vi.processinstance_) join tb_processo_instance tpi on (tpi.id_proc_inst = pi.id_) join tb_processo tp on (tpi.id_processo = tp.id_processo) where tp.nr_processo = :numeroProcesso and name_ in (\'pje:fluxo:deslocamento:orgaoCargoDestino,pje:fluxo:deslocamento:orgaoDestino\') order by id_ desc)').setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
+            <action expression="#{entityManager.createNativeQuery(parametroUtil.getParametro('pje:tjrn:sqlLimpezaUnificada')).setParameter('numeroProcesso', tramitacaoProcessualService.recuperaProcesso().getProcesso().getNumeroProcesso()).executeUpdate()}"/>
         </event>
     </process-state>  
     <!-- PROCESS-EVENTS -->
