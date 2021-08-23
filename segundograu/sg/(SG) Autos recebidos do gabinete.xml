@@ -48,9 +48,7 @@ Secretaria  Secretaria Segundo Grau  Servidor Geral]]></description>
         <transition to="Nó de Desvio - (SG) Autos recebidos do gabinete" name="Nó de Desvio - (SG) Autos recebidos do gabinete">
             <condition expression="#{true}"/>
         </transition>
-        <transition to="Término" name="Cumprir determinações">
-            <condition expression="#{tramitacaoProcessualService.temSituacao('jus:andamento')}"/>
-        </transition>
+        <transition to="Término" name="Cumprir determinações"/>
         <transition to="(SG) Citar e(ou) intimar sobre reativação" name="Citar e(ou) intimar sobre reativação">
             <condition expression="#{tramitacaoProcessualService.temSituacao('jus:arquivado') or tramitacaoProcessualService.temSituacao('jus:suspenso')}"/>
         </transition>
