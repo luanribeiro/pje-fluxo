@@ -32,7 +32,7 @@ Magistrado   Gabinete TUJ    Magistrado]]></description>
     <node name="(TUJ) Deslocamento da tarefa">
         <transition to="(TUJ) Lançar movimento de concluso para decisão" name="(TUJ) Lançar movimento de concluso para decisão"/>
         <event type="node-enter">
-            <action name="upd" expression="#{entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador = null, id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate()}"/>
+            <action name="upd" expression="#{entityManager.createNativeQuery('update tb_processo_instance set id_orgao_julgador_cargo = null where id_processo = :idProcesso').setParameter('idProcesso', tramitacaoProcessualService.recuperaVariavel('processo')).executeUpdate()}"/>
         </event>
     </node>
     <node name="(TUJ) Lançar movimento de concluso para decisão">
